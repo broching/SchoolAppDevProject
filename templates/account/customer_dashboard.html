@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Customer Profile
+{% endblock title %}
+
+{% block content %}
+<h1>Welcome Customer {{ session["customer"]["_User__username"] }}. This is your dashboard</h1>
+{% endblock content %}
