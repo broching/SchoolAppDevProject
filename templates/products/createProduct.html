@@ -1,8 +1,12 @@
 {% extends "productbase.html" %}
 {% block title %}Create Inventory{% endblock %}
+
+{% block content %}
+<h1 class="display-4">Products</h1>
+{% endblock %}
+
 {% block content2 %}
 {% from "includes/_formHelper.html" import render_field %}
-<h1 class="display-4 m-3">Create Inventory</h1>
 <div class="formdiv1">
     <form method="POST" action="" class="m-3 createprodform">
     <div class="form-group">
