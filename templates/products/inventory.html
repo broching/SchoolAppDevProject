@@ -1,0 +1,58 @@
+{% extends "productbase.html" %}
+{% block title %}Inventory{% endblock %}
+{% block content %}<h1 class="display-4">Inventory</h1>{% endblock %}
+{% block content2 %}
+<div class="m-2">
+
+    <div class="secondheader"><a href="/createProduct">Add new</a></div>
+
+    <!--    Conditions-->
+    <div>
+        {% if count == 0 %}
+        <p>There are no customers.</p>
+        {% elif count == 1 %}
+        <p>There is 1 customer.</p>
+        {% else %}
+        <p>There are {{ count }} customers.</p>
+        {% endif %}
+    </div>
+
+    <!--    Table to display products for Staff-->
+    <div class="productitems2343">
+        <table class="table table-striped">
+
+            <thead>
+            <tr class="tarow1first">
+                <th>Image</th>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Description</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for product in products_list %}
+            <tr>
+                <td>{{ product.get_product_image() }}</td>
+                <td>{{ product.get_product_id() }}</td>
+                <td>{{ product.get_product_name() }}</td>
+                <td>{{ product.get_product_price() }}</td>
+                <td>{{ product.get_product_quantity() }}</td>
+                <td>{{ product.get_product_description() }}</td>
+                <td><a href="#" class="btn btn-warning">Update</a></td>
+                <td>
+                    <form action="" method="POST">
+                        <input type="submit" value="X" class="btn btn-danger">
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+{% endblock %}

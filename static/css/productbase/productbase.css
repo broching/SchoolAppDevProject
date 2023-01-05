@@ -1,0 +1,48 @@
+/* Category bar styling */
+.catbar{
+    width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 20px;
+}
+
+.catbar li{
+    display: inline-block;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.secondheader{
+    display: inline-block;
+}
+
+.productitems2343{
+    text-align: center;
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.productitems2343 th{
+    color: white;
+    background-color: #212121;
+}
+
+.productitems2343.tarow1first{
+    border-radius: 10px;
+}
+
+
+.formdiv1{
+    width: 75%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.createprodform{
+    font-size: 20px;
+}
+
+.createprodform div{
+    margin-bottom: 20px;
+}
