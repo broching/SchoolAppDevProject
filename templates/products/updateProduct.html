@@ -1,9 +1,9 @@
 {% extends "productbase.html" %}
-{% block title %}Create Inventory{% endblock %}
+{% block title %}Update Product{% endblock %}
 {% block content %}<h1 class="display-4">Inventory</h1>{% endblock %}
 {% block content2 %}
 {% from "includes/_formHelper.html" import render_field %}
-<h1 class="h2 m-3">Create Product</h1>
+<h1 class="h2 m-3">Update Product</h1>
 <div class="formdiv1">
     <form method="POST" action="" class="m-3 createprodform">
     <div class="form-group">
@@ -33,7 +33,7 @@
     <div class="form-group">
         {{ render_field(form.product_image, class="form-control") }}
     </div>
-    <input type="submit" value="Submit" class="btn btn-primary" style="float: right; margin-top: 10px; margin-bottom: 20px;"/>
+    <input type="submit" value="Update" class="btn btn-primary" style="float: right; margin-top: 10px; margin-bottom: 20px;"/>
 </form>
 </div>
 

@@ -1,7 +1,7 @@
 class Product:
     count_id = 0
 
-    def __init__(self, name, productType, id, quantity, image, price, priceRange, description):
+    def __init__(self, name, productType, quantity, image, price, priceRange, description, cost, id):
         Product.count_id += 1
         self.__productName = name
         self.__id = id
@@ -11,10 +11,14 @@ class Product:
         self.__priceRange = priceRange
         self.__description = description
         self.__productType = productType
+        self.__productCost = cost
 
     # getters
     def get_product_name(self):
         return self.__productName
+
+    def get_product_type(self):
+        return self.__productType
 
     def get_product_id(self):
         return self.__id
@@ -34,9 +38,15 @@ class Product:
     def get_product_description(self):
         return self.__description
 
+    def get_product_cost(self):
+        return self.__productCost
+
     # setters
     def set_product_name(self, name):
         self.__productName = name
+
+    def set_product_type(self, type):
+        self.__productType = type
 
     def set_product_id(self, id):
         self.__id = id
@@ -52,3 +62,6 @@ class Product:
 
     def set_product_description(self, description):
         self.__description = description
+
+    def set_product_cost(self, cost):
+        self.__productCost = cost
