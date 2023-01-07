@@ -30,6 +30,9 @@ def home():
 def products():
     return render_template('products/products.html')
 
+@app.route('/services')
+def services():
+    return render_template('services/services.html')
 
 @app.route('/inventory')
 def inventory():
