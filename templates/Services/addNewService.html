@@ -1,8 +1,8 @@
-{% extends "service.html" %}
-{% block title %}Update Services{% endblock %}
+{% extends "Services/servicebase.html.html" %}
+{% block title %}Create Inventory{% endblock %}
 {% block content2 %}
 {% from "includes/_formHelper.html" import render_field %}
-<h1 class="h2 m-3">Update Services</h1>
+<h1 class="h2 m-3">Create Services</h1>
 <div class="formdiv1">
     <form method="POST" action="" class="m-3 createprodform">
     <div class="form-group">
@@ -32,7 +32,7 @@
     <div class="form-group">
         {{ render_field(form.service_image, class="form-control") }}
     </div>
-    <input type="submit" value="Update" class="btn btn-primary" style="float: right; margin-top: 10px; margin-bottom: 20px;"/>
+    <input type="submit" value="Submit" class="btn btn-primary" style="float: right; margin-top: 10px; margin-bottom: 20px;"/>
 </form>
 </div>
 
