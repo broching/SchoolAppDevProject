@@ -163,9 +163,5 @@ def reviews():
 
     return render_template('reviews/reviews.html')
 
-@app.route('/createReview', methods=['GET', 'POST'])
-def createReview():
-    pass
-
 if __name__ == "__main__":
     app.run(debug=True)
