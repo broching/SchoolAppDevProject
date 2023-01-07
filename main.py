@@ -142,6 +142,10 @@ def deleteProduct(id):
         print(f"Error in retrieving products from product.db - {ex}")
     return redirect(url_for('inventory'))
 
+@app.route('/reviews')
+def reviews():
+    return render_template('reviews/reviews.html')
+
 
 if __name__ == "__main__":
     app.run(debug=True)
