@@ -144,8 +144,25 @@ def deleteProduct(id):
 
 @app.route('/reviews')
 def reviews():
+    reviews_list = []
+    try:
+        reviews_dict = {}
+        with shelve.open('reviews.db','r') as db:
+            if 'reviews' in db:
+                reviews_dict = db['reviews']
+            for key in reviews_dict:
+                review = reviews_dict.get(key)
+                reviews_list.append(review)
+    except IOError as ex:
+        print(f"Error in retrieving reviews from review.db - {ex}")
+    except Exception as ex:
+        print(f"Unknown error in retrieving customers from customer.db - {ex}")
+
     return render_template('reviews/reviews.html')
 
+@app.route('/createReview', methods=['GET', 'POST'])
+def createReview():
+    pass
 
 if __name__ == "__main__":
     app.run(debug=True)
