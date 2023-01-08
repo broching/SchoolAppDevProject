@@ -11,7 +11,6 @@
     <nav class="nav nav-borders">
         <a class="nav-link active ms-0" href="#profile" data-bs-toggle="tab" target="__blank">Profile</a>
         <a class="nav-link" href="#billing" data-bs-toggle="tab" target="__blank">Billing</a>
-        <a class="nav-link" href = "#security" data-bs-toggle="tab" target="__blank">Security</a>
     </nav>
 
     <hr class="mt-0 mb-4">
@@ -109,6 +108,86 @@
             </div>
             </div>
         </form>
+            <div class="row">
+            <div class="col-lg-8">
+                <!-- Change password card-->
+                <div class="card mb-4">
+                    <div class="card-header">Change Password</div>
+                    <div class="card-body">
+        <form method="post" action="{{url_for('account.customer_security')}}">
+                            {{ update_security_form.hidden_tag() }}
+
+                            <div class="mb-3">
+                                {{ update_security_form.current_password.label(class="small mb-1") }}
+                                {{ update_security_form.current_password(class="form-control", placeholder='Current password') }}
+                            </div>
+                            <!-- Form Group (new password)-->
+                            <div class="mb-3">
+                                {{ update_security_form.password1.label(class="small mb-1") }}
+                                {{ update_security_form.password1(class="form-control", placeholder='Enter new password') }}
+                            </div>
+                            <!-- Form Group (confirm password)-->
+                            <div class="mb-3">
+                                {{ update_security_form.password2.label(class="small mb-1") }}
+                                {{ update_security_form.password2(class="form-control", placeholder='Confirm new password') }}
+                            </div>
+            {{ update_security_form.submit2(class="btn btn-primary") }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <!-- Two factor authentication card-->
+                <div class="card mb-4">
+                    <div class="card-header">Account Recovery</div>
+                    <div class="card-body">
+                        <p>Forget your password? We can send you a recovery email (email that is linked to your account) for you to reset your password</p>
+                            <div class="mt-3">
+                                <button>Send email</button>
+                            </div>
+
+        </form>
+                    </div>
+                </div>
+                <!-- Delete account card-->
+                <div class="card mb-4">
+                    <div class="card-header">Delete Account</div>
+                    <div class="card-body">
+                        <p>Deleting your account is a permanent action and cannot be undone. If you are sure you want to delete your account, select the button below.</p>
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-danger-soft text-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                          I understand, delete my account
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h2 class="modal-title fs-5" id="exampleModalLabel" style="color:red;">Confirm Delete account</h2>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body">
+                                Deleting your account is a permanent action and cannot be undone. Are you are sure you want to delete your account, please confirm
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                  <form method="post" action="{{url_for('account.customer_delete')}}" >
+                                      {{ delete_account_form.submit3(class="btn btn-danger") }}
+                                  </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        </div>
         </div>
 
         <div class="container tab-pane fade" id="billing">
@@ -214,89 +293,5 @@
                 </div>
             </div>
         </div>
-
-        <div class="container tab-pane fade" id="security">
-
-                    <div class="row">
-            <div class="col-lg-8">
-                <!-- Change password card-->
-                <div class="card mb-4">
-                    <div class="card-header">Change Password</div>
-                    <div class="card-body">
-        <form method="post" action="{{url_for('account.customer_security')}}">
-                            {{ update_security_form.hidden_tag() }}
-
-                            <div class="mb-3">
-                                {{ update_security_form.current_password.label(class="small mb-1") }}
-                                {{ update_security_form.current_password(class="form-control", placeholder='Current password') }}
-                            </div>
-                            <!-- Form Group (new password)-->
-                            <div class="mb-3">
-                                {{ update_security_form.password1.label(class="small mb-1") }}
-                                {{ update_security_form.password1(class="form-control", placeholder='Enter new password') }}
-                            </div>
-                            <!-- Form Group (confirm password)-->
-                            <div class="mb-3">
-                                {{ update_security_form.password2.label(class="small mb-1") }}
-                                {{ update_security_form.password2(class="form-control", placeholder='Confirm new password') }}
-                            </div>
-            {{ update_security_form.submit2(class="btn btn-primary") }}
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <!-- Two factor authentication card-->
-                <div class="card mb-4">
-                    <div class="card-header">Account Recovery</div>
-                    <div class="card-body">
-                        <p>Forget your password? We can send you a recovery email (email that is linked to your account) for you to reset your password</p>
-                            <div class="mt-3">
-                                <button>Send email</button>
-                            </div>
-
-        </form>
-                    </div>
-                </div>
-                <!-- Delete account card-->
-                <div class="card mb-4">
-                    <div class="card-header">Delete Account</div>
-                    <div class="card-body">
-                        <p>Deleting your account is a permanent action and cannot be undone. If you are sure you want to delete your account, select the button below.</p>
-                        <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-danger-soft text-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                          I understand, delete my account
-                        </button>
-
-                        <!-- Modal -->
-                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                          <div class="modal-dialog">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <h2 class="modal-title fs-5" id="exampleModalLabel" style="color:red;">Confirm Delete account</h2>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                              </div>
-                              <div class="modal-body">
-                                Deleting your account is a permanent action and cannot be undone. Are you are sure you want to delete your account, please confirm
-                              </div>
-                              <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                  <form method="post" action="{{url_for('account.customer_delete')}}" >
-                                      {{ delete_account_form.submit3(class="btn btn-danger") }}
-                                  </form>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-
-
-
-                    </div>
-                </div>
-            </div>
-        </div>
-        </div>
-        </div>
-
     </div>
 {% endblock %}
