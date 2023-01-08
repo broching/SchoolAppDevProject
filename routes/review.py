@@ -58,19 +58,18 @@ def createReview():
 def filterReview():
     product_id_list = []
     try:
-        with shelve.open('DB/reviews/review.db','r') as db:
+        with shelve.open('DB/reviews/review.db', 'r') as db:
             if 'Reviews' in db:
                 reviews_dict = db['Reviews']
                 if Review.get_review_id() in product_id_list:
-                   with shelve.open('DB/reviews/product_reviews.db','a') as db:
-                       product_reviews_dict = {}
-                       if 'Product Reviews' in db:
-                           product_reviews_dict = db['Product Reviews']
-                           product_reviews_dict.pop()
+                    with shelve.open('DB/reviews/product_reviews.db', 'a') as db:
+                        product_reviews_dict = {}
+                        if 'Product Reviews' in db:
+                            product_reviews_dict = db['Product Reviews']
+                            product_reviews_dict.pop()
     except IOError:
         print("Error in filtering the reviews made for products.")
     return redirect(url_for('review.reviewsStorage'))
-
 
 
 @review.route('/deleteReview/<int:id>', methods=['POST'])
