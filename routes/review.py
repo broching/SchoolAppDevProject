@@ -1,5 +1,7 @@
 import shelve
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, url_for, redirect
+from models.reviews.Review import Review
+from models.reviews.createReview import CreateNewReview
 
 review = Blueprint('review', __name__)
 
@@ -26,3 +28,27 @@ def reviewsList():
         print(f"Unknown error in retrieving reviews from review.db - {ex}")
 
     return render_template('reviews/reviewsList.html', count=len(reviews_list), reviews_list=reviews_list)
+
+
+@review.route('/createReview', methods=['GET', 'POST'])
+def createReview():
+    create_review_form = CreateNewReview(request.form)
+    if request.method == 'POST' and create_review_form.validate():
+        try:
+            with shelve.open('review.db', 'c') as db:
+                reviews_dict = {}
+                if 'Reviews' in db:
+                    reviews_dict = db['Reviews']
+                review = Review(create_review_form.rating.data,
+                                create_review_form.comment.data,
+                                create_review_form.image.data,
+                                create_review_form.video.data
+                                )
+
+                reviews_dict[review.get_review_id()] = review
+                db['Reviews'] = reviews_dict
+        except IOError:
+            print("Error in retrieving Reviews from Review.db.")
+        return redirect(url_for('review.reviewsList'))
+    else:
+        return render_template('reviews/createReview.html', form=create_review_form)
