@@ -1,39 +1,33 @@
-{% extends "service.html" %}
-{% block title %}Update Services{% endblock %}
-{% block content2 %}
+{% extends "Services/services.html" %}
+{% block title %}Book Appointment{% endblock %}
+{% block content %}
 {% from "includes/_formHelper.html" import render_field %}
-<h1 class="h2 m-3">Update Services</h1>
-<div class="formdiv1">
-    <form method="POST" action="" class="m-3 createprodform">
-    <div class="form-group">
-        {{ render_field(form.service_name, class="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ render_field(form.service_type, class="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ render_field(form.service_price, class="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ render_field(form.service_cost, class="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ render_field(form.service_quantity, class="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ render_field(form.service_price_range, class="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ render_field(form.service_description, class="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ render_field(form.service_id, class="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ render_field(form.service_image, class="form-control") }}
-    </div>
-    <input type="submit" value="Update" class="btn btn-primary" style="float: right; margin-top: 10px; margin-bottom: 20px;"/>
-</form>
-</div>
+<h1 class="display-4">Book Appointment</h1>
 
-{% endblock %}
+<form method="POST" action="">
+    <div class="form-group">
+        {{ render_field(form.first_name, class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ render_field(form.last_name, class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ render_field(form.email, class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ render_field(form.appointment_date, class="form-control datepicker") }}
+    </div>
+    <div class="form-group">
+        {{ render_field(form.appointment_time, class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ render_field(form.membership, class="form-check", style="list-style-type:none") }}
+    </div>
+    <div id="prof">
+        <div class="form-group">
+            {{ render_field(form.remarks, class="form-control") }}
+        </div>
+    </div>
+    <input type="submit" value="Submit" class="btn btn-primary"/>
+</form>
+{% endblock %
