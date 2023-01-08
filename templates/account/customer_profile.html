@@ -24,7 +24,8 @@
                                 <!-- Profile picture image--> {% if session['customer']['_Account__user_image'] %} <img
                                     class="account-img rounded-circle"
                                     src="../../static/media/images/account/{{ session['customer']['_Account__user_image'] }}"
-                                    alt=""> {% else %} <img class="account-img rounded-circle"
+                                    alt="">
+                                {% else %} <img class="account-img rounded-circle"
                                                             src="../../static/media/images/account/blank_account.png"
                                                             alt=""> {% endif %}
                                 <!-- Profile picture help block-->
@@ -32,9 +33,7 @@
                                 <!-- Profile picture upload button-->
                                 {{ update_profile_form.image.label() }}
                                 <br>
-                                {{ update_profile_form.image(class="btn btn-primary", accept=".png,.jpg") }} {% if
-                                update_profile_form.image.errors %} {{ update_profile_form.image.errors }} {% else %} {%
-                                endif %}
+                                {{ update_profile_form.image(class="btn btn-primary", accept=".png,.jpg") }}
                             </div>
                         </div>
                     </div>
@@ -47,8 +46,7 @@
                                 <div class="mb-3">
                                     {{ update_profile_form.username.label(class="small mb-1") }}
                                     {{ update_profile_form.username(class="form-control" ,
-                                    value=session['customer']['_Account__username'], placeholder='Enter your
-                                    username')}}
+                                    value=session['customer']['_Account__username'], placeholder='Enter your username')}}
                                 </div>
                                 <!-- Form Row-->
                                 <div class="row gx-3 mb-3">
@@ -56,17 +54,16 @@
                                     <div class="col-md-6">
                                         {{ update_profile_form.first_name.label(class="small mb-1") }} {% if not
                                         session['customer']['_Account__first_name'] %} {{
-                                        update_profile_form.first_name(class="form-control", placeholder='Enter your
-                                        First name')}} {% else %} {{
-                                        update_profile_form.first_name(class="form-control",
+                                        update_profile_form.first_name(class="form-control", placeholder='Enter your First name')}}
+                                        {% else %}
+                                        {{ update_profile_form.first_name(class="form-control",
                                         value=session['customer']['_Account__first_name'])}} {% endif %}
                                     </div>
                                     <!-- Form Group (last name)-->
                                     <div class="col-md-6">
                                         {{ update_profile_form.last_name.label(class="small mb-1") }} {% if not
                                         session['customer']['_Account__last_name'] %} {{
-                                        update_profile_form.last_name(class="form-control", placeholder='Enter your Last
-                                        name')}} {% else %} {{ update_profile_form.last_name(class="form-control",
+                                        update_profile_form.last_name(class="form-control", placeholder='Enter your Last name')}} {% else %} {{ update_profile_form.last_name(class="form-control",
                                         value=session['customer']['_Account__last_name'])}} {% endif %}
                                     </div>
                                 </div>
