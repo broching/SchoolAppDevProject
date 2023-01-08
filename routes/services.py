@@ -1,8 +1,7 @@
 import shelve
-
 from flask import Blueprint, render_template, request, url_for, flash, redirect, Flask
 
-services = Blueprint('services', __name__)
+service = Blueprint('service', __name__)
 
 app = Flask(__name__)
 
@@ -21,6 +20,6 @@ def add_new_service():
 
     service_list = []
     for key in services_dict:
-        services = services_dict, get(key)
+        services = services_dict,get(key)
         service_list.append(services)
     return render_template('add_new_service.html')

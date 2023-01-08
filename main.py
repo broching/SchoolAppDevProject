@@ -2,7 +2,7 @@ import shelve
 from datetime import timedelta
 from flask import Flask, render_template, request, redirect, url_for
 
-from routes import services
+from routes.services import service
 from routes.auth import auth
 from routes.account import account
 from routes.review import review
@@ -21,7 +21,7 @@ app.register_blueprint(auth)
 app.register_blueprint(account)
 app.register_blueprint(review)
 app.register_blueprint(productr)
-app.register_blueprint(services)
+app.register_blueprint(service)
 
 # session config
 app.permanent_session_lifetime = timedelta(days=15)
