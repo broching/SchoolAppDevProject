@@ -6,6 +6,8 @@ from routes.account import account
 from models.products.Inventorybackend import CreateNewProduct
 from models.products.Product import Product
 
+from routes.review import review
+
 # app initialization
 app = Flask(__name__)
 
@@ -15,6 +17,7 @@ app.config["SECRET_KEY"] = "64169bc491f8cb891fc0417d2eb29bb5"
 # registered blueprints to app
 app.register_blueprint(auth)
 app.register_blueprint(account)
+app.register_blueprint(review)
 
 # session config
 app.permanent_session_lifetime = timedelta(days=15)
@@ -146,30 +149,6 @@ def deleteProduct(id):
     except IOError as ex:
         print(f"Error in retrieving products from product.db - {ex}")
     return redirect(url_for('inventory'))
-
-
-@app.route('/reviews')
-def reviews():
-    return render_template('reviews/reviews.html')
-
-
-@app.route('/reviewsList')
-def reviewsList():
-    reviews_list = []
-    try:
-        reviews_dict = {}
-        with shelve.open('review.db', 'r') as db:
-            if 'Reviews' in db:
-                reviews_dict = db['Reviews']
-            for key in reviews_dict:
-                review = reviews_dict.get(key)
-                reviews_list.append(review)
-    except IOError as ex:
-        print(f"Error in retrieving reviews from review.db - {ex}")
-    except Exception as ex:
-        print(f"Unknown error in retrieving reviews from review.db - {ex}")
-
-    return render_template('reviews/reviewsList.html', count=len(reviews_list), reviews_list=reviews_list)
 
 
 if __name__ == "__main__":
