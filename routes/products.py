@@ -1,16 +1,17 @@
 import shelve
-
-from flask import render_template, request, redirect, url_for, Blueprint
-
+from flask import Blueprint, render_template, request, redirect, url_for
 from models.products.Inventorybackend import CreateNewProduct
 from models.products.Product import Product
 
-products = Blueprint('products', __name__)
-@products.route('/products')
+productr = Blueprint('productr', __name__)
+
+
+@productr.route('/products')
 def products():
     return render_template('products/products.html')
 
-@products.route('/inventory')
+
+@productr.route('/inventory')
 def inventory():
     products_list = []
     try:
@@ -29,7 +30,7 @@ def inventory():
     return render_template('products/inventory.html', count=len(products_list), products_list=products_list)
 
 
-@products.route('/createProduct', methods=['GET', 'POST'])
+@productr.route('/createProduct', methods=['GET', 'POST'])
 def createProduct():
     create_product_form = CreateNewProduct(request.form)
     if request.method == 'POST' and create_product_form.validate():
@@ -50,12 +51,12 @@ def createProduct():
                 db['Products'] = products_dict
         except IOError:
             print("Error in retrieving Products from Product.db.")
-        return redirect(url_for('inventory'))
+        return redirect(url_for('productr.inventory'))
     else:
         return render_template('products/createProduct.html', form=create_product_form)
 
 
-@products.route('/updateProduct/<int:id>/', methods=['GET', 'POST'])
+@productr.route('/updateProduct/<int:id>/', methods=['GET', 'POST'])
 def updateProduct(id):
     update_product_form = CreateNewProduct(request.form)
     if request.method == 'POST' and update_product_form.validate():
@@ -79,7 +80,7 @@ def updateProduct(id):
         except IOError as ex:
             print(f"Error in updating products to products.db - {ex}")
 
-        return redirect(url_for('inventory'))
+        return redirect(url_for('productr.inventory'))
     else:
         try:
             with shelve.open('DB/products/product.db', 'w') as db:
@@ -103,7 +104,7 @@ def updateProduct(id):
         return render_template('products/updateProduct.html', form=update_product_form)
 
 
-@products.route('/deleteProduct/<int:id>', methods=['POST'])
+@productr.route('/deleteProduct/<int:id>', methods=['POST'])
 def deleteProduct(id):
     products_dict = {}
     try:
@@ -119,4 +120,4 @@ def deleteProduct(id):
 
     except IOError as ex:
         print(f"Error in retrieving products from product.db - {ex}")
-    return redirect(url_for('inventory'))
+    return redirect(url_for('productr.inventory'))
