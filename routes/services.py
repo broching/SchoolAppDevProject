@@ -1,6 +1,8 @@
+import shelve
+
 from flask import Blueprint, render_template, request, url_for, flash, redirect, Flask
 
-services = Blueprint('Services', __name__)
+services = Blueprint('services', __name__)
 
 app = Flask(__name__)
 
