@@ -33,5 +33,6 @@ def home():
 def services():
     return render_template('services/services.html')
 
+
 if __name__ == "__main__":
     app.run(debug=True)
