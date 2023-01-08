@@ -1,6 +1,8 @@
 import shelve
 from datetime import timedelta
 from flask import Flask, render_template, request, redirect, url_for
+
+from routes import services
 from routes.auth import auth
 from routes.account import account
 from routes.review import review
@@ -8,7 +10,7 @@ from routes.products import productr
 from models.products.Inventorybackend import CreateNewProduct
 from models.products.Product import Product
 
-# app initialization
+
 app = Flask(__name__)
 
 # app config
@@ -31,9 +33,7 @@ def home():
     return render_template('home/home.html')
 
 
-@app.route('/services')
-def services():
-    return render_template('services/services.html')
+
 
 
 if __name__ == "__main__":
