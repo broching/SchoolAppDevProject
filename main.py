@@ -19,6 +19,7 @@ app.register_blueprint(auth)
 app.register_blueprint(account)
 app.register_blueprint(review)
 app.register_blueprint(productr)
+app.register_blueprint(services)
 
 # session config
 app.permanent_session_lifetime = timedelta(days=15)
