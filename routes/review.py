@@ -3,6 +3,7 @@ from flask import Blueprint, render_template, request, url_for, redirect
 from models.reviews.Review import Review
 from models.reviews.productReview import productReview
 from models.reviews.createProductReview import CreateProductReview
+from models.reviews.createServiceReview import CreateServiceReview
 
 review = Blueprint('review', __name__)
 
@@ -57,7 +58,7 @@ def createProductReview():
 #still doing
 @review.route('/createServiceReview', methods=['GET', 'POST'])
 def createServiceReview():
-    create_product_review_form = CreateProductReview(request.form)
+    create_service_review_form = CreateServiceReview(request.form)
     if request.method == 'POST' and create_product_review_form.validate():
         try:
             with shelve.open('DB/reviews/productReviews/productReview.db', 'c') as db:
