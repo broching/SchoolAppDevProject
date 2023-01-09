@@ -1,12 +1,9 @@
 class Review:
     count_id = 0
 
-    def __init__(self, product_id, service_id, stylist, rating, comment, image, video):
+    def __init__(self, rating, comment, image, video):
         Review.count_id += 1
         self.__review_id = Review.count_id
-        self.__product_id = product_id
-        self.__service_id = service_id
-        self.__stylist = stylist
         self.__rating = rating
         self.__comment = comment
         self.__image = image
@@ -17,24 +14,6 @@ class Review:
 
     def set_review_id(self, review_id):
         self.__review_id = review_id
-
-    def get_product_id(self):
-        return self.__product_id
-
-    def set_product_id(self, product_id):
-        self.__product_id = product_id
-
-    def get_service_id(self):
-        return self.__service_id
-
-    def set_service_id(self, service_id):
-        self.__service_id = service_id
-
-    def get_stylist(self):
-        return self.__stylist
-
-    def set_stylist(self, stylist):
-        self.__stylist = stylist
 
     def get_rating(self):
         return self.__rating

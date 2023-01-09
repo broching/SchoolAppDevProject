@@ -3,7 +3,6 @@ from wtforms import Form, StringField, TextAreaField, validators, SelectField, I
 from models.reviews.Review import Review
 
 
-# rough draft - not finalised yet
 class CreateNewReview(Form):
     rating = IntegerField('Product/Service Rating', [validators.DataRequired()])
 

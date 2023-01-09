@@ -1,11 +1,15 @@
+import shelve
 from datetime import timedelta
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 
 from routes.services import service
 from routes.auth import auth
 from routes.account import account
 from routes.review import review
 from routes.products import productr
+from models.products.Inventorybackend import CreateNewProduct
+from models.products.Product import Product
+
 
 app = Flask(__name__)
 
@@ -27,6 +31,9 @@ app.permanent_session_lifetime = timedelta(days=15)
 @app.route('/')
 def home():
     return render_template('home/home.html')
+
+
+
 
 
 if __name__ == "__main__":
