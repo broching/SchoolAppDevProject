@@ -2,6 +2,7 @@ import shelve
 from flask import Blueprint, render_template, request, url_for, redirect
 from models.reviews.Review import Review
 from models.reviews.productReview import productReview
+from models.reviews.serviceReview import serviceReview
 from models.reviews.createProductReview import CreateProductReview
 from models.reviews.createServiceReview import CreateServiceReview
 
@@ -55,30 +56,30 @@ def createProductReview():
     else:
         return render_template('reviews/createProductReview.html', form=create_product_review_form)
 
-#still doing
+
+# still doing
 @review.route('/createServiceReview', methods=['GET', 'POST'])
 def createServiceReview():
     create_service_review_form = CreateServiceReview(request.form)
-    if request.method == 'POST' and create_product_review_form.validate():
+    if request.method == 'POST' and create_service_review_form.validate():
         try:
-            with shelve.open('DB/reviews/productReviews/productReview.db', 'c') as db:
-                product_reviews_dict = {}
-                if 'Product_Reviews' in db:
-                    product_reviews_dict = db['Product_Reviews']
-                product_review = productReview(create_product_review_form.product_rating.data,
-                                               create_product_review_form.product_comment.data,
-                                               create_product_review_form.product_image.data,
-                                               create_product_review_form.product_video.data)
-                product_review.set_product_review_id(product_review.get_product_review_id())
+            with shelve.open('DB/reviews/serviceReviews/serviceReview.db', 'c') as db:
+                service_reviews_dict = {}
+                if 'Service_Reviews' in db:
+                    service_reviews_dict = db['Service_Reviews']
+                service_review = serviceReview(create_service_review_form.service_rating.data,
+                                               create_service_review_form.service_comment.data,
+                                               create_service_review_form.service_image.data,
+                                               create_service_review_form.service_video.data)
+                service_review.set_service_review_id(service_review.get_service_review_id())
 
-                product_reviews_dict[product_review.get_product_review_id()] = product_review
-                db['Product_Reviews'] = product_reviews_dict
+                service_reviews_dict[service_review.get_service_review_id()] = service_review
+                db['Service_Reviews'] = service_reviews_dict
         except IOError:
-            print("Error in retrieving Product Reviews from Product_Reviews.db.")
+            print("Error in retrieving Service Reviews from Service_Reviews.db.")
         return redirect(url_for('review.reviewsStorage'))
     else:
-        return render_template('reviews/createProductReview.html', form=create_product_review_form)
-
+        return render_template('reviews/createServiceReview.html', form=create_service_review_form)
 
 
 @review.route('/filterReview', methods=['GET', 'POST'])
