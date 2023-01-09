@@ -54,6 +54,8 @@ def createProductReview():
     else:
         return render_template('reviews/createProductReview.html', form=create_product_review_form)
 
+
+
 @review.route('/filterReview', methods=['GET', 'POST'])
 def filterReview():
     product_id_list = []
