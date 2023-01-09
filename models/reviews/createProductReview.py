@@ -2,8 +2,9 @@ from wtforms import Form, StringField, TextAreaField, validators, SelectField, I
 
 from models.reviews.productReview import productReview
 
+
 class CreateProductReview(Form):
-    product_rating = IntegerField('Product/Service Rating', [validators.DataRequired()])
+    product_rating = IntegerField('Product Rating', [validators.DataRequired()])
 
     product_comment = TextAreaField('Write your review here', [validators.Optional()])
 
