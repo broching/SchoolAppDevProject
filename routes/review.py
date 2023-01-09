@@ -54,6 +54,30 @@ def createProductReview():
     else:
         return render_template('reviews/createProductReview.html', form=create_product_review_form)
 
+#still doing
+@review.route('/createServiceReview', methods=['GET', 'POST'])
+def createServiceReview():
+    create_product_review_form = CreateProductReview(request.form)
+    if request.method == 'POST' and create_product_review_form.validate():
+        try:
+            with shelve.open('DB/reviews/productReviews/productReview.db', 'c') as db:
+                product_reviews_dict = {}
+                if 'Product_Reviews' in db:
+                    product_reviews_dict = db['Product_Reviews']
+                product_review = productReview(create_product_review_form.product_rating.data,
+                                               create_product_review_form.product_comment.data,
+                                               create_product_review_form.product_image.data,
+                                               create_product_review_form.product_video.data)
+                product_review.set_product_review_id(product_review.get_product_review_id())
+
+                product_reviews_dict[product_review.get_product_review_id()] = product_review
+                db['Product_Reviews'] = product_reviews_dict
+        except IOError:
+            print("Error in retrieving Product Reviews from Product_Reviews.db.")
+        return redirect(url_for('review.reviewsStorage'))
+    else:
+        return render_template('reviews/createProductReview.html', form=create_product_review_form)
+
 
 
 @review.route('/filterReview', methods=['GET', 'POST'])
