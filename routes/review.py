@@ -14,25 +14,6 @@ def reviews():
     return render_template('reviews/reviews.html')
 
 
-@review.route('/reviewsStorage')
-def reviewsStorage():
-    reviews_storage = []
-    try:
-        reviews_dict = {}
-        with shelve.open('review.db', 'r') as db:
-            if 'Reviews' in db:
-                reviews_dict = db['Reviews']
-            for key in reviews_dict:
-                review = reviews_dict.get(key)
-                reviews_storage.append(review)
-    except IOError as ex:
-        print(f"Error in retrieving reviews from review.db - {ex}")
-    except Exception as ex:
-        print(f"Unknown error in retrieving reviews from review.db - {ex}")
-
-    return render_template('reviews/reviewsStorage.html', count=len(reviews_storage), reviews_storage=reviews_storage)
-
-
 @review.route('/createProductReview', methods=['GET', 'POST'])
 def createProductReview():
     create_product_review_form = CreateProductReview(request.form)
@@ -57,7 +38,25 @@ def createProductReview():
         return render_template('reviews/createProductReview.html', form=create_product_review_form)
 
 
-# still doing
+@review.route('/productReviews')
+def productReviews():
+    product_reviews_list = []
+    try:
+        with shelve.open('DB/reviews/productReviews', 'r') as db:
+            if 'Product_Reviews' in db:
+                product_reviews_dict = db['Product_Reviews']
+            for key in product_reviews_dict:
+                product_review = product_reviews_dict.get(key)
+                product_reviews_list.append(product_review)
+    except IOError as ex:
+        print(f"Error in retrieving product reviews from Product_Reviews.db - {ex}")
+    except Exception as ex:
+        print(f"Unknown error in retrieving product reviews from Product_Reviews.db - {ex}")
+
+    return render_template('reviews/productReviews.html', count=len(product_reviews_list),
+                           products_list=product_reviews_list)
+
+
 @review.route('/createServiceReview', methods=['GET', 'POST'])
 def createServiceReview():
     create_service_review_form = CreateServiceReview(request.form)
@@ -80,24 +79,6 @@ def createServiceReview():
         return redirect(url_for('review.reviewsStorage'))
     else:
         return render_template('reviews/createServiceReview.html', form=create_service_review_form)
-
-
-@review.route('/filterReview', methods=['GET', 'POST'])
-def filterReview():
-    product_id_list = []
-    try:
-        with shelve.open('DB/reviews/review.db', 'r') as db:
-            if 'Reviews' in db:
-                reviews_dict = db['Reviews']
-                if Review.get_review_id() in product_id_list:
-                    with shelve.open('DB/reviews/product_reviews.db', 'a') as db:
-                        product_reviews_dict = {}
-                        if 'Product Reviews' in db:
-                            product_reviews_dict = db['Product Reviews']
-                            product_reviews_dict.pop()
-    except IOError:
-        print("Error in filtering the reviews made for products.")
-    return redirect(url_for('review.reviewsStorage'))
 
 
 @review.route('/deleteReview/<int:id>', methods=['POST'])
