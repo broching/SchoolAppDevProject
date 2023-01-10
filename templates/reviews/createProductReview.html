@@ -1,28 +1,40 @@
-{% extends "reviews/reviewsbase.html" %}
-{% block title %}Adding A Product Review{% endblock %}
-{% block content %}<h1 class="display-4"></h1>{% endblock %}
+{% extends "reviewsbase.html" %}
+{% block title %}Create Inventory{% endblock %}
+{% block content %}<h1 class="display-4">Inventory</h1>{% endblock %}
 {% block content2 %}
 {% from "includes/_formHelper.html" import render_field %}
 <h1 class="h2 m-3">Create Product Review</h1>
 <div class="formdiv1">
-    <form method="POST" action="" class="m-3 createproductreviewform">
+    <form method="POST" action="/productReviews" class="m-3 createprodform">
     <div class="form-group">
-        {{ render_field(form.product_rating, class="form-control") }}
+        {{ render_field(form.product_name, class="form-control") }}
     </div>
     <div class="form-group">
-        {{ render_field(form.product_comment, class="form-control") }}
+        {{ render_field(form.product_type, class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ render_field(form.product_price, class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ render_field(form.product_cost, class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ render_field(form.product_quantity, class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ render_field(form.product_price_range, class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ render_field(form.product_description, class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ render_field(form.product_id, class="form-control") }}
     </div>
     <div class="form-group">
         {{ render_field(form.product_image, class="form-control") }}
     </div>
-    <div class="form-group">
-        {{ render_field(form.product_video, class="form-control") }}
-    </div>
     <input type="submit" value="Submit" class="btn btn-primary" style="float: right; margin-top: 10px; margin-bottom: 20px;"/>
 </form>
 </div>
-
-    <div class="secondheader"><a href="/productReviews">All product reviews</a></div>
-
 
 {% endblock %}

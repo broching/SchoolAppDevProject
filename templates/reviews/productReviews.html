@@ -18,29 +18,30 @@
     </div>
 
     <!--    Table to display all product reviews-->
-    <div class="productitems2343">
+    <div class="product_reviews">
         <table class="table table-striped">
 
             <thead>
             <tr class="tarow1first">
-                <th style="width: 100px;">Image</th>
-                <th>ID</th>
-                <th>Name</th>
-                <th style="width: 80px;">Price</th>
-                <th style="width: 80px;">Cost</th>
-                <th>Quantity</th>
-                <th style="width: 300px;">Description</th>
-                <th style="width: 50px"></th>
-                <th style="width: 50px"></th>
+                <th>Product ID</th>
+                <th style="width: 300px;">Image</th>
+                <th style="width: 300px;">Video</th>
+                <th style="width: 100px;">Rating</th>
+                <th style="width: 400px;">Comment</th>
             </tr>
             </thead>
 
             <tbody>
             {% for product_review in product_reviews_list %}
             <tr>
-                <td style="width: 100px; height: 100px; padding: 5px">{{ product.get_product_image() }}</td>
-                <td>{{ product.get_product_name() }}</td>
-                <td>{{ product_review.get_product_review_rating() }}</td>
+                <td style="width: 100px; height: 100px; padding: 5px">{{ product_review.get_product_image() }}</td>
+                <td>{{ product_review.get_product_rating() }}</td>
+                <td>{{ product_review.get_product_comment() }}</td>
+                <td>{{ product_review.get_product_image() }}</td>
+                <td>{{ product_review.get_product_video() }}</td>
+                <td>{{ product_review.get_product_review_id() }}</td>
+
+
                 <td><a href="/updateProduct/{{product.get_product_id()}}" class="btn btn-warning">Update</a></td>
                 <td>
                     <form action="{{url_for('productr.deleteProduct', id=product.get_product_id())}}" method="POST">

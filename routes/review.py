@@ -23,11 +23,11 @@ def createProductReview():
                 product_reviews_dict = {}
                 if 'Product_Reviews' in db:
                     product_reviews_dict = db['Product_Reviews']
-                product_review = productReview(create_product_review_form.product_rating.data,
+                product_review = productReview(create_product_review_form.product_review_id,
+                                               create_product_review_form.product_rating.data,
                                                create_product_review_form.product_comment.data,
                                                create_product_review_form.product_image.data,
                                                create_product_review_form.product_video.data)
-                product_review.set_product_review_id(product_review.get_product_review_id())
 
                 product_reviews_dict[product_review.get_product_review_id()] = product_review
                 db['Product_Reviews'] = product_reviews_dict

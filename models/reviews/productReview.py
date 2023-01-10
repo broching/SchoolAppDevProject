@@ -1,9 +1,7 @@
 class productReview:
-    count_id = 0
 
-    def __init__(self, product_rating, product_comment, product_image, product_video):
-        productReview.count_id += 1
-        self.__product_review_id = productReview.count_id
+    def __init__(self, product_review_id, product_rating, product_comment, product_image, product_video):
+        self.__product_review_id = product_review_id
         self.__product_rating = product_rating
         self.__product_comment = product_comment
         self.__product_image = product_image
