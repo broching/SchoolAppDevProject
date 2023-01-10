@@ -7,6 +7,7 @@ from routes.auth import auth
 from routes.account import account
 from routes.review import review
 from routes.products import productr
+from routes.avatar import avatar_blueprint
 
 app = Flask(__name__)
 
@@ -19,6 +20,7 @@ app.register_blueprint(account)
 app.register_blueprint(review)
 app.register_blueprint(productr)
 app.register_blueprint(service)
+app.register_blueprint(avatar_blueprint)
 
 # session config
 app.permanent_session_lifetime = timedelta(days=15)
