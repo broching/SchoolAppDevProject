@@ -1,5 +1,7 @@
 import shelve
+
 from flask import Blueprint, render_template, request, url_for, redirect, Flask
+from wtforms import form
 
 from models.Services.Forms import AddNewService
 
@@ -15,7 +17,10 @@ def services():
 
 @service.route('/Services/addNewServiceform')
 def add_new_service():
-    return render_template('Services/addNewServiceform.html')
+    form = AddNewService()
+
+    return render_template('Services/addNewServiceform.html',
+                           form=form)
 
 
 @service.route('/addNewServiceform')
@@ -34,7 +39,7 @@ def inventory():
     except Exception as ex:
         print(f"Unknown error in retrieving customers from customer.db - {ex}")
 
-    return render_template('products/inventory.html', count=len(service_dict), service_list=service_list)
+    return render_template('Services/service.html', count=len(service_dict), form=form)
 
 
 @service.route('/addNewServiceform', methods=['GET', 'POST'])
@@ -60,4 +65,4 @@ def book_appointment():
             print("Error in retrieving Appointment")
 
     else:
-        return render_template('Services/addNewService.html', form=Apointment_booking_form)
+        return render_template('Services/addNewService.html', form=AddNewService)
