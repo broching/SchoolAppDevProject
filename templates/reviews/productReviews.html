@@ -1,0 +1,58 @@
+{% extends "reviewsbase.html" %}
+{% block title %}All Product Reviews{% endblock %}
+{% block content %}<h1 class="display-4"></h1>{% endblock %}
+{% block content2 %}
+<div class="m-2">
+
+    <div class="secondheader"><a href="#">Add new</a></div>
+
+    <!--    Conditions-->
+    <div>
+        {% if count == 0 %}
+        <p>There are no reviews.</p>
+        {% elif count == 1 %}
+        <p>There is 1 review.</p>
+        {% else %}
+        <p>There are {{ count }} reviews.</p>
+        {% endif %}
+    </div>
+
+    <!--    Table to display all product reviews-->
+    <div class="productitems2343">
+        <table class="table table-striped">
+
+            <thead>
+            <tr class="tarow1first">
+                <th style="width: 100px;">Image</th>
+                <th>ID</th>
+                <th>Name</th>
+                <th style="width: 80px;">Price</th>
+                <th style="width: 80px;">Cost</th>
+                <th>Quantity</th>
+                <th style="width: 300px;">Description</th>
+                <th style="width: 50px"></th>
+                <th style="width: 50px"></th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for product_review in product_reviews_list %}
+            <tr>
+                <td style="width: 100px; height: 100px; padding: 5px">{{ product.get_product_image() }}</td>
+                <td>{{ product.get_product_name() }}</td>
+                <td>{{ product_review.get_product_review_rating() }}</td>
+                <td><a href="/updateProduct/{{product.get_product_id()}}" class="btn btn-warning">Update</a></td>
+                <td>
+                    <form action="{{url_for('productr.deleteProduct', id=product.get_product_id())}}" method="POST">
+                        <input type="submit" value="X" class="btn btn-danger">
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+{% endblock %}

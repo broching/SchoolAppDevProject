@@ -33,7 +33,7 @@ def createProductReview():
                 db['Product_Reviews'] = product_reviews_dict
         except IOError:
             print("Error in retrieving Product Reviews from Product_Reviews.db.")
-        return redirect(url_for('review.reviewsStorage'))
+        return redirect(url_for('review.productReviews'))
     else:
         return render_template('reviews/createProductReview.html', form=create_product_review_form)
 
@@ -42,7 +42,8 @@ def createProductReview():
 def productReviews():
     product_reviews_list = []
     try:
-        with shelve.open('DB/reviews/productReviews', 'r') as db:
+        product_reviews_dict = {}
+        with shelve.open('DB/reviews/productReviews.db', 'r') as db:
             if 'Product_Reviews' in db:
                 product_reviews_dict = db['Product_Reviews']
             for key in product_reviews_dict:
@@ -54,7 +55,7 @@ def productReviews():
         print(f"Unknown error in retrieving product reviews from Product_Reviews.db - {ex}")
 
     return render_template('reviews/productReviews.html', count=len(product_reviews_list),
-                           products_list=product_reviews_list)
+                           product_reviews_list=product_reviews_list)
 
 
 @review.route('/createServiceReview', methods=['GET', 'POST'])
@@ -88,7 +89,6 @@ def deleteReview(review_id):
         with shelve.open('DB/reviews/review.db', 'w') as db:
             if 'Reviews' in db:
                 reviews_dict = db['Reviews']
-
             reviews_dict.pop(review_id)
             db['Reviews'] = reviews_dict
             db.close()
