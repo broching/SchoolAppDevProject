@@ -1,6 +1,5 @@
 import shelve
 from flask import Blueprint, render_template, request, url_for, redirect
-from models.reviews.Review import Review
 from models.reviews.productReview import productReview
 from models.reviews.serviceReview import serviceReview
 from models.reviews.createProductReview import CreateProductReview
@@ -13,7 +12,6 @@ review = Blueprint('review', __name__)
 def reviews():
     return render_template('reviews/reviews.html')
 
-
 @review.route('/createProductReview', methods=['GET', 'POST'])
 def createProductReview():
     create_product_review_form = CreateProductReview(request.form)
@@ -23,13 +21,13 @@ def createProductReview():
                 product_reviews_dict = {}
                 if 'Product_Reviews' in db:
                     product_reviews_dict = db['Product_Reviews']
-                product_review = productReview(create_product_review_form.product_review_id,
+                product_review = productReview(create_product_review_form.product_id,
                                                create_product_review_form.product_rating.data,
                                                create_product_review_form.product_comment.data,
                                                create_product_review_form.product_image.data,
                                                create_product_review_form.product_video.data)
 
-                product_reviews_dict[product_review.get_product_review_id()] = product_review
+                product_reviews_dict[product_review.get_product_id()] = product_review
                 db['Product_Reviews'] = product_reviews_dict
         except IOError:
             print("Error in retrieving Product Reviews from Product_Reviews.db.")
@@ -37,26 +35,23 @@ def createProductReview():
     else:
         return render_template('reviews/createProductReview.html', form=create_product_review_form)
 
-
 @review.route('/productReviews')
 def productReviews():
     product_reviews_list = []
     try:
         product_reviews_dict = {}
-        with shelve.open('DB/reviews/productReviews.db', 'r') as db:
+        with shelve.open('DB/reviews/productReviews/productReview.db', 'r') as db:
             if 'Product_Reviews' in db:
                 product_reviews_dict = db['Product_Reviews']
             for key in product_reviews_dict:
                 product_review = product_reviews_dict.get(key)
                 product_reviews_list.append(product_review)
     except IOError as ex:
-        print(f"Error in retrieving product reviews from Product_Reviews.db - {ex}")
+        print(f"Error in retrieving customers from customer.db - {ex}")
     except Exception as ex:
-        print(f"Unknown error in retrieving product reviews from Product_Reviews.db - {ex}")
+        print(f"Unknown error in retrieving customers from customer.db - {ex}")
 
-    return render_template('reviews/productReviews.html', count=len(product_reviews_list),
-                           product_reviews_list=product_reviews_list)
-
+    return render_template('reviews/productReviews.html', count=len(product_reviews_list), product_reviews_list=product_reviews_list)
 
 @review.route('/createServiceReview', methods=['GET', 'POST'])
 def createServiceReview():

@@ -4,7 +4,7 @@ from models.reviews.productReview import productReview
 
 
 class CreateProductReview(Form):
-    product_review_id = IntegerField('Product ID', [validators.DataRequired()])
+    product_id = IntegerField('Product ID', [validators.DataRequired()])
 
     product_rating = IntegerField('Product Rating', [validators.DataRequired()])
 

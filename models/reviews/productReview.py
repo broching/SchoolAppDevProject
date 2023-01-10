@@ -1,17 +1,17 @@
 class productReview:
 
-    def __init__(self, product_review_id, product_rating, product_comment, product_image, product_video):
-        self.__product_review_id = product_review_id
+    def __init__(self, product_id, product_rating, product_comment, product_image, product_video):
+        self.__product_id = product_id
         self.__product_rating = product_rating
         self.__product_comment = product_comment
         self.__product_image = product_image
         self.__product_video = product_video
 
-    def get_product_review_id(self):
-        return self.__product_review_id
+    def get_product_id(self):
+        return self.__product_id
 
-    def set_product_review_id(self, product_review_id):
-        self.__product_review_id = product_review_id
+    def set_product_id(self, product_id):
+        self.__product_id = product_id
 
     def get_product_rating(self):
         return self.__product_rating
