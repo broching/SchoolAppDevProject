@@ -1,19 +1,17 @@
 class serviceReview:
-    count_id = 0
 
-    def __init__(self, service_rating, service_comment, service_image, service_video):
-        serviceReview.count_id += 1
-        self.__service_review_id = serviceReview.count_id
+    def __init__(self, service_id, service_rating, service_comment, service_image, service_video):
+        self.__service_id = service_id
         self.__service_rating = service_rating
         self.__service_comment = service_comment
         self.__service_image = service_image
         self.__service_video = service_video
 
-    def get_service_review_id(self):
-        return self.__service_review_id
+    def get_service_id(self):
+        return self.__service_id
 
-    def set_service_review_id(self,service_review_id):
-        self.__service_review_id = service_review_id
+    def set_service_id(self,service_id):
+        self.__service_id = service_id
 
     def get_service_rating(self):
         return self.__service_rating

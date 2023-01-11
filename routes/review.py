@@ -67,32 +67,37 @@ def createServiceReview():
                 service_reviews_dict = {}
                 if 'Service_Reviews' in db:
                     service_reviews_dict = db['Service_Reviews']
-                service_review = serviceReview(create_service_review_form.service_rating.data,
+                service_review = serviceReview(create_service_review_form.service_id.data,
+                                               create_service_review_form.service_rating.data,
                                                create_service_review_form.service_comment.data,
                                                create_service_review_form.service_image.data,
                                                create_service_review_form.service_video.data)
-                service_review.set_service_review_id(service_review.get_service_review_id())
+                service_review.set_service_id(service_review.get_service_id())
 
-                service_reviews_dict[service_review.get_service_review_id()] = service_review
+                service_reviews_dict[service_review.get_service_id()] = service_review
                 db['Service_Reviews'] = service_reviews_dict
         except IOError:
             print("Error in retrieving Service Reviews from Service_Reviews.db.")
-        return redirect(url_for('review.reviewsStorage'))
+        return redirect(url_for('review.serviceReviews'))
     else:
         return render_template('reviews/createServiceReview.html', form=create_service_review_form)
 
 
-@review.route('/deleteReview/<int:id>', methods=['POST'])
-def deleteReview(review_id):
-    reviews_dict = {}
+@review.route('/serviceReviews')
+def serviceReviews():
+    service_reviews_list = []
     try:
-        with shelve.open('DB/reviews/review.db', 'w') as db:
-            if 'Reviews' in db:
-                reviews_dict = db['Reviews']
-            reviews_dict.pop(review_id)
-            db['Reviews'] = reviews_dict
-            db.close()
+        service_reviews_dict = {}
+        with shelve.open('DB/reviews/serviceReviews/serviceReview.db', 'r') as db:
+            if 'Service_Reviews' in db:
+                service_reviews_dict = db['Service_Reviews']
+            for key in service_reviews_dict:
+                service_review = service_reviews_dict.get(key)
+                service_reviews_list.append(service_review)
+    except IOError as ex:
+        print(f"Error in retrieving service reviews from service_reviews.db - {ex}")
+    except Exception as ex:
+        print(f"Unknown error in retrieving service reviews from service_reviews.db - {ex}")
 
-    except IOError:
-        print("Error in deleting reviews from Review.db")
-    return redirect(url_for('review.reviewsList'))
+    return render_template('reviews/serviceReviews.html', count=len(service_reviews_list),
+                           service_reviews_list=service_reviews_list)

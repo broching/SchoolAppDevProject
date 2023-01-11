@@ -4,6 +4,8 @@ from models.reviews.serviceReview import serviceReview
 
 
 class CreateServiceReview(Form):
+    service_id = IntegerField('Service ID', [validators.DataRequired()])
+
     service_rating = IntegerField('Service Rating', [validators.DataRequired()])
 
     service_comment = TextAreaField('Write your review here', [validators.Optional()])
