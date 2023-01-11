@@ -67,7 +67,7 @@ def createServiceReview():
                 service_reviews_dict = {}
                 if 'Service_Reviews' in db:
                     service_reviews_dict = db['Service_Reviews']
-                service_review = serviceReview(create_service_review_form.service_id.data,
+                service_review = serviceReview(create_service_review_form.service_selection.data,
                                                create_service_review_form.service_rating.data,
                                                create_service_review_form.service_comment.data,
                                                create_service_review_form.service_image.data,
