@@ -3,9 +3,12 @@ import shelve
 from flask import Blueprint, render_template, request, url_for, redirect, Flask
 from wtforms import form
 
-from models.Services import update_Service
+# from models.Services import update_Service
 from models.Services.Forms import AddNewService
 from models.Services.services import Service
+
+# from models.Services.update_Services import update_Service
+from models.Services.update_Service import update_service_form
 
 service = Blueprint('service', __name__)
 
@@ -26,9 +29,8 @@ def add_new_service():
 
 @service.route('/Services/updateServices')
 def update_service():
-    form = update_Service()
-    return render_template('Services/update_Services.html',
-                           form=form)
+    form = update_service_form()
+    return render_template('Services/updateServices.html',form=form)
 
 
 @service.route('/addNewServiceform')
@@ -40,8 +42,8 @@ def appointment():
             if 'Service' in db:
                 Service_dict = db['Service']
             for key in Service_dict:
-                product = service_dict.get(key)
-                service_list.append(product)
+                service = service_dict.get(key)
+                service_list.append(service)
     except IOError as ex:
         print(f"Error in retrieving customers from customer.db - {ex}")
     except Exception as ex:
@@ -79,3 +81,124 @@ def book_appointment():
 
     else:
         return render_template('/Services/addNewService.html', form=AddNewService)
+
+
+@service.route('/updateService')
+def updateService():
+    updateService_list = []
+    try:
+        updateService_dict = {}
+        with shelve.open('/Services/Updateservice.db', 'r') as db:
+            if 'update_Service' in db:
+                Service_dict = db['Service']
+            for key in updateService_dict:
+                update_Service = updateService_dict.get(key)
+                updateService_list.append(update_Service)
+    except IOError as ex:
+        print(f"Error in retrieving customers from updateService.db - {ex}")
+        return render_template("Services/service.html")
+    except Exception as ex:
+        print(f"Unknown error in retrieving appointment from Updateservice.db - {ex}")
+
+    return render_template('Services/service.html', count=len(updateService_dict), form=form)
+
+
+@service.route('/Services/updateService', methods=['POST'])
+def update_Service():
+    update_Service_form = update_service_form(request.form)
+    if request.method == 'POST' and update_Service_form.validate():
+        try:
+            with shelve.open('service.db', 'c') as db:
+
+                update_Service_dict = {}
+                if 'service' in db:
+                    update_Service_dict = db['Service']
+                service = Service(update_Service_form.service.data,
+                                  update_Service_form.service_id.data,
+                                  update_Service_form.hairstylist.data,
+                                  update_Service_form.appoiment_date.data,
+                                  update_Service_form.appointment_time.data,
+                                  update_Service_form.remarks.data)
+
+                service.set_service_id(service.get_service_id())
+
+                update_Service_dict[service.get_service_id()] = service
+                db['service'] = update_Service_dict
+                return ("Submission Succesful")
+        except IOError as ex:
+            print("Error in retrieving Appointment")
+            return render_template('/Services/servicebase.html', form=update_service_form)
+
+    else:
+        return render_template('/Services/addNewService.html', form=update_service_form)
+
+
+@service.route('/Services/retrieveAppointment')
+def retrieve_appt():
+    appointments_dict = {}
+    db = shelve.open('service.db', 'r')
+    appointments_dict = db['Service']
+    db.close()
+    appointment_list = []
+    for key in appointments_dict:
+        user = appointments_dict.get(key)
+        appointment_list.append(appointment)
+
+    return render_template('/Services/retrieveAppointment.html')
+
+
+#@service.route('/Services/retrieveAppointment')
+#def retrieve_appt():
+    #appointments_dict = {}
+    #db = shelve.open('service.db', 'r')
+    #appointments_dict = db['Service']
+    #db.close()
+    #appointment_list = []
+    #for key in appointments_dict:
+       # user = appointments_dict.get(key)
+        #appointment_list.append(appointment)
+
+    #return render_template('/Services/retrieveAppointment.html')
+
+
+ #@service.route('/updateProduct/<int:id>/', methods=['GET', 'POST'])
+#def updateAppointment(id):
+    #update_Appointment_form = (request.form)
+    #if request.method == 'POST' and AddNewService.validate():
+       # try:
+           # with shelve.open('service.db', 'w') as db:
+                #service_dict = {}
+               # if 'Service' in db:
+                   # service_dict = db['service']
+               # if id in service_dict:
+                    #appointment = service_dict.get(id)
+                    #appointment.set_first_Name(AddNewService.first_name.data)
+                    #appointment.set_last_Name(AddNewService.last_name.data)
+                    #appointment.set_gender(AddNewService.gender.data)
+                    #appointment.set_membership_ID(AddNewService.membership_ID.data)
+                    #appointment.set_appointment_Date(AddNewService.appointment_date.data)
+                    #appointment.set_appointment_Time(AddNewService.appointment_time.data)
+                    #db['service'] = service_dict
+
+        #except IOError as ex:
+            #print(f"Error in updating products to products.db - {ex}")
+
+        #return redirect(url_for('retrieveAppointment.html'))
+    #else:
+        #try:
+            #with shelve.open('service.db', 'w') as db:
+               # appointment_dict = {}
+                #if 'service' in db:
+                    #appointment_dict = db['appointment']
+                #if id in appointment_dict:
+                   # appointment = appointment_dict.get(id)
+                    #AddNewService.first_name.data = Service.get_first_Name()
+                    #AddNewService.last_Name.data = Service.get_last_Name()
+                    #AddNewService.gender.data = Service.get_gender()
+                    #AddNewService.membership_ID.data = Service.get_membership_ID()
+                    #AddNewService.appointment_date.data = Service.get_appointment_Date()
+                    #AddNewService.appointment_time.data = Service.get_appointment_Time()
+
+        #except IOError as ex:
+            #print(f"Error in retrieving products from products.db - {ex}.")
+        #return render_template('Services/retrieveAppointment.html', form=AddNewService)
