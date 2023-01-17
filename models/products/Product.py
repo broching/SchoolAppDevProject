@@ -65,3 +65,6 @@ class Product:
 
     def set_product_cost(self, cost):
         self.__productCost = cost
+
+    def set_product_image(self, image):
+        self.__image = image
