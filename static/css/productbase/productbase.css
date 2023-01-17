@@ -46,3 +46,32 @@
 .createprodform div{
     margin-bottom: 20px;
 }
+
+.productsrow{
+    margin: 30px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.productsrow img{
+    height: 220px;
+    width: 220px;
+    border-radius: 10px;
+}
+
+.productsrow ul{
+    list-style-type: none;
+    padding: 10px;
+}
+
+.productsrow.grid-container{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    column-gap: 10px;
+}
+
+.productsrow.grid-item{
+    background-color: beige;
+    border-radius: 10px;
+}

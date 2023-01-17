@@ -1,14 +1,33 @@
 import shelve
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, current_app
+from werkzeug.utils import secure_filename
+
 from models.products.Inventorybackend import CreateNewProduct
 from models.products.Product import Product
+from models.products.product_functions import save_image, delete_image
 
-productr = Blueprint('productr', __name__)
+import os
+
+productr = Blueprint('productr', __name__, template_folder='templates', static_folder='static')
 
 
 @productr.route('/products')
 def products():
-    return render_template('products/products.html')
+    products_list = []
+    try:
+        products_dict = {}
+        with shelve.open('DB/products/product.db', 'r') as db:
+            if 'Products' in db:
+                products_dict = db['Products']
+            for key in products_dict:
+                product = products_dict.get(key)
+                products_list.append(product)
+    except IOError as ex:
+        print(f"Error in retrieving customers from customer.db - {ex}")
+    except Exception as ex:
+        print(f"Unknown error in retrieving customers from customer.db - {ex}")
+
+    return render_template('products/products.html', count=len(products_list), products_list=products_list)
 
 
 @productr.route('/inventory')
@@ -59,6 +78,10 @@ def createProduct():
                                   create_product_form.product_description.data, create_product_form.product_cost.data,
                                   cid)
 
+                # save image
+                image_file_name = save_image(create_product_form.product_image.data)
+                product.set_product_image(image_file_name)
+
                 products_dict[product.get_product_id()] = product
                 db['Products'] = products_dict
         except IOError:
@@ -100,6 +123,10 @@ def updateProduct(id):
                     product.set_product_cost(update_product_form.product_cost.data)
                     product.set_product_description(update_product_form.product_description.data)
                     product.set_product_image(update_product_form.product_image.data)
+
+                    # save image
+
+
                     db['Products'] = products_dict
 
         except IOError as ex:

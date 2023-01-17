@@ -1,3 +1,5 @@
+import os
+from PIL import Image
 class Product:
     count_id = 0
 
@@ -68,3 +70,8 @@ class Product:
 
     def set_product_image(self, image):
         self.__image = image
+
+    def save_image(self, name):
+        img = Image.open(self.__image)
+        img.save('static/media/images/products/', "PNG")
+        self.__image = 'static/media/images/products/'+name+'.png'

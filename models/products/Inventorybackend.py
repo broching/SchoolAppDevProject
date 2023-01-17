@@ -1,9 +1,6 @@
 import shelve
 
-from wtforms import Form, StringField, TextAreaField, validators, SelectField, IntegerField, FloatField
-
-# import id value from Product class from Product.py
-from models.products.Product import Product
+from wtforms import Form, StringField, TextAreaField, validators, SelectField, IntegerField, FloatField, FileField
 
 
 class CreateNewProduct(Form):
@@ -28,4 +25,4 @@ class CreateNewProduct(Form):
 
     product_cost = FloatField('Cost', [validators.DataRequired()], default=0)
 
-    product_image = StringField('Image', [validators.DataRequired()])
+    product_image = FileField('Image', [validators.DataRequired()])
