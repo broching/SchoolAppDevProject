@@ -1,7 +1,18 @@
 import secrets
 import os
+import shelve
+
 from PIL import Image
 
+# Cart shelve (NOT FINISHED, NEED CUSTOMER ID)
+def save_to_cart():
+    try:
+        cart_dict = {}
+        with shelve.open('DB/products/cart.db', 'c') as db:
+            if 'Cart' in db:
+                cart_dict = db['Cart']
+    except IOError as ex:
+        print(f"Failed to open cart.db - {ex}")
 
 def save_image(image):
     """Saves image to static directory"""

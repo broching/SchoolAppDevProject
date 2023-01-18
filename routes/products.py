@@ -125,9 +125,11 @@ def createProduct():
                                   create_product_form.product_description.data, create_product_form.product_cost.data,
                                   cid)
 
+                print(type(create_product_form.product_image.data))
+                print(create_product_form.product_image.data)
+
                 # save image
-                image_file_name = save_image(str(create_product_form.product_image.data))
-                product.set_product_image(image_file_name)
+
 
                 products_dict[product.get_product_id()] = product
                 db['Products'] = products_dict
@@ -173,8 +175,6 @@ def updateProduct(id):
                     print(type(update_product_form.product_image.data))
 
                     # save image
-                    image_file_name = save_image(update_product_form.product_image.data)
-                    product.set_product_image(image_file_name)
 
                     db['Products'] = products_dict
 
