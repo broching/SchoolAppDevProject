@@ -13,6 +13,7 @@ app = Flask(__name__)
 
 # app config
 app.config["SECRET_KEY"] = "64169bc491f8cb891fc0417d2eb29bb5"
+app.config["PRODUCT_UPLOAD"] = 'static/media/images/product'
 
 # registered blueprints to app
 app.register_blueprint(auth)
