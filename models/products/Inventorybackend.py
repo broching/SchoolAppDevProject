@@ -1,6 +1,5 @@
-import shelve
-
-from wtforms import Form, StringField, TextAreaField, validators, SelectField, IntegerField, FloatField, FileField
+from wtforms import Form, StringField, TextAreaField, validators, SelectField, IntegerField, FloatField, FileField, \
+    DateField
 
 
 class CreateNewProduct(Form):
@@ -26,3 +25,9 @@ class CreateNewProduct(Form):
     product_cost = FloatField('Cost', [validators.DataRequired()], default=0)
 
     product_image = FileField('Image', [validators.DataRequired()])
+
+
+class PaymentForm(Form):
+    card_no = IntegerField('Card details', [validators.DataRequired()])
+
+    expiry = DateField('Expiry Date')

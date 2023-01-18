@@ -1,4 +1,6 @@
 import shelve
+
+from PIL import Image
 from flask import Blueprint, render_template, request, redirect, url_for, current_app
 from werkzeug.utils import secure_filename
 
@@ -28,6 +30,51 @@ def products():
         print(f"Unknown error in retrieving customers from customer.db - {ex}")
 
     return render_template('products/products.html', count=len(products_list), products_list=products_list)
+
+
+@productr.route('/products/<int:id>/')
+def productsSpecific(id):
+    create_product_form = CreateNewProduct(request.form)
+    if request.method == 'POST' and create_product_form.validate():
+        try:
+            with shelve.open('DB/products/product.db', 'w') as db:
+                products_dict = {}
+                if 'Products' in db:
+                    products_dict = db['Products']
+                if id in products_dict:
+                    product = products_dict.get(id)
+                    product.set_product_name(create_product_form.product_name.data)
+                    product.set_product_type(create_product_form.product_type.data)
+                    product.set_product_quantity(create_product_form.product_quantity.data)
+                    product.set_product_price(create_product_form.product_price.data)
+                    product.set_product_price_range(create_product_form.product_price_range.data)
+                    product.set_product_cost(create_product_form.product_cost.data)
+                    product.set_product_description(create_product_form.product_description.data)
+                    product.set_product_image(create_product_form.product_image.data)
+                    print(type(create_product_form.product_image.data))
+
+                    db['Products'] = products_dict
+        except IOError as ex:
+            print(f"Failed to open product.db shelve for Specific product page - {ex}")
+        except Exception as ex:
+            print(f"Failed to open product.db shelve for Specific product page (Unknown error) - {ex}")
+    else:
+        products_list = []
+        try:
+            products_dict = {}
+            with shelve.open('DB/products/product.db', 'r') as db:
+                if 'Products' in db:
+                    products_dict = db['Products']
+                for key in products_dict:
+                    product = products_dict.get(key)
+                    products_list.append(product)
+
+        except IOError as ex:
+            print(f"Error in retrieving products from product.db for Product specific page - {ex}")
+        except Exception as ex:
+            print(f"Unknown error in retrieving products from product.db for Product specific page  - {ex}")
+
+        return render_template('products/payment1.html', count=len(products_list), products_list=products_list, id=id)
 
 
 @productr.route('/inventory')
@@ -79,7 +126,7 @@ def createProduct():
                                   cid)
 
                 # save image
-                image_file_name = save_image(create_product_form.product_image.data)
+                image_file_name = save_image(str(create_product_form.product_image.data))
                 product.set_product_image(image_file_name)
 
                 products_dict[product.get_product_id()] = product
@@ -123,9 +170,11 @@ def updateProduct(id):
                     product.set_product_cost(update_product_form.product_cost.data)
                     product.set_product_description(update_product_form.product_description.data)
                     product.set_product_image(update_product_form.product_image.data)
+                    print(type(update_product_form.product_image.data))
 
                     # save image
-
+                    image_file_name = save_image(update_product_form.product_image.data)
+                    product.set_product_image(image_file_name)
 
                     db['Products'] = products_dict
 
