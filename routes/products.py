@@ -56,6 +56,24 @@ def productsSpecific(id):
 def productpayment(id):
     payment_form = PaymentForm(request.form)
     if request.method == 'POST' and payment_form.validate():
+
+        try:
+            products_dict = {}
+            with shelve.open('DB/products/product.db', 'w') as pdb:
+                if 'Products' in pdb:
+                    products_dict = pdb['Products']
+                if id in products_dict:
+                    product = products_dict.get(id)
+                    product_quantity_temp = product.get_product_quantity()
+                    product_quantity_temp -= 1
+                    print(product_quantity_temp)
+                    product.set_product_quantity(product_quantity_temp)
+                    print(product.get_product_quantity())
+                pdb['Products'] = products_dict
+
+        except IOError as ex:
+            print(f"Error in trying to open product.db in payment page - {ex}")
+
         try:
             orders_dict = {}
             with shelve.open('DB/products/order.db', 'c') as db:
@@ -90,21 +108,10 @@ def productpayment(id):
                     order = Order(orderid, product)
                     orders_dict[order.get_id()] = order
 
-                db['Orders'] = orders_dict
         except IOError as ex:
             print(f"Error in trying to open order.db in payment page - {ex}")
 
-        try:
-            products_dict = {}
-            with shelve.open('DB/products/product.db', 'w') as pdb:
-                if 'Products' in pdb:
-                    products_dict = pdb['Products']
-                product = products_dict.get(id)
-                product_quantity_temp = product.get_product_quantity()
-                product_quantity_temp -= 1
-        except IOError as ex:
-            print(f"Error in trying to open product.db in payment page - {ex}")
-        flash("Payment successful!")
+
         return redirect(url_for('productr.orders'))
 
     else:
@@ -130,21 +137,24 @@ def productpayment(id):
 
 @productr.route('/orders')
 def orders():
-    products_list = []
+    orders_list = []
+    prod_list = []
     try:
-        products_dict = {}
-        with shelve.open('DB/products/product.db', 'r') as db:
-            if 'Products' in db:
-                products_dict = db['Products']
-            for key in products_dict:
-                product = products_dict.get(key)
-                products_list.append(product)
+        orders_dict = {}
+        with shelve.open('DB/products/order.db', 'r') as db:
+            if 'Order' in db:
+                orders_list = db['Products']
+            for key in orders_list:
+                order = orders_dict.get(key)
+                orders_list.append(order)
+                print(order)
+
     except IOError as ex:
         print(f"Error in retrieving customers from customer.db - {ex}")
     except Exception as ex:
         print(f"Unknown error in retrieving customers from customer.db - {ex}")
 
-    return render_template('products/inventory.html', count=len(products_list), products_list=products_list)
+    return render_template('products/orders.html', count=len(orders_list), orders_list=orders_list)
 
 
 @productr.route('/inventory')

@@ -22,10 +22,10 @@
 
             <ul>
                 <!--Product name-->
-                <li>{{ product.get_product_name() }}</li>
+                <li class="h5" style="width: 80%; margin-left: auto; margin-right: auto;">{{ product.get_product_name() }}</li>
 
                 <!--Product price-->
-                <li>${{ product.get_product_price() }}</li>
+                <li>${{ "%.2f"|format(product.get_product_price()) }}</li>
 
                 <!--Product rating-->
                 <li>Rating: 5/5 (Temp rating)</li>

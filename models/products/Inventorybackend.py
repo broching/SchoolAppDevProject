@@ -39,14 +39,15 @@ class CreateNewProduct(Form):
 
 class PaymentForm(Form):
     card_no = IntegerField('Card details',
-                           [validators.DataRequired(), validators.length(min=16, max=16), validate_expiry])
+                           [validators.DataRequired()])
 
     expiry = DateField('Expiry Date', [validators.DataRequired()])
 
-    cvv = IntegerField('CVV', [validators.DataRequired(), validators.length(min=3, max=3)])
+    cvv = IntegerField('CVV', [validators.DataRequired()])
 
     name = StringField('Name on Card', [validators.DataRequired()])
 
     address = StringField('Billing Address', [validators.DataRequired()])
 
-    postal_code = IntegerField('Postal code', [validators.length(min=6, max=6)])
+    postal_code = IntegerField('Postal code', [validators.DataRequired()])
+
