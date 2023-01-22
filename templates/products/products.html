@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block secondarytitle %}
-<div class="m-2">
+<div class="m-2 uptitel">
     <p class="h2">Categories</p>
 </div>
 
@@ -14,32 +14,35 @@
 
     {% for product in products_list %}
     <div class="grid-item">
-        <!--Product image (Clickable link)-->
-        <a href="">
-            <img src="" alt="">
-        </a>
+        <div class="insideproductsrow">
+            <!--Product image (Clickable link)-->
+            <a href="/products/{{product.get_product_id()}}">
+                <img src="" alt="">
+            </a>
 
-        <ul>
-            <!--Product name-->
-            <li>{{ product.get_product_name() }}</li>
+            <ul>
+                <!--Product name-->
+                <li>{{ product.get_product_name() }}</li>
 
-            <!--Product price-->
-            <li>${{ product.get_product_price() }}</li>
+                <!--Product price-->
+                <li>${{ product.get_product_price() }}</li>
 
-            <!--Product rating-->
-            <li>5/5 (Temp rating)</li>
+                <!--Product rating-->
+                <li>Rating: 5/5 (Temp rating)</li>
 
-            <!--Product quantity-->
-            <li>{{ product.get_product_quantity() }}</li>
+                <!--Product quantity-->
+                <li>Quantity: {{ product.get_product_quantity() }}</li>
 
-        </ul>
+            </ul>
+        </div>
+
 
     </div>
     {% endfor %}
 
-<!--    These 2 may be removable, can use for loop and what not. see grid is already -->
-<!--    in rows of 3. https://www.w3schools.com/css/css_grid.asp -->
-<!--    Note: can write html code, then append the html code into this file-->
+    <!--    These 2 may be removable, can use for loop and what not. see grid is already -->
+    <!--    in rows of 3. https://www.w3schools.com/css/css_grid.asp -->
+    <!--    Note: can write html code, then append the html code into this file-->
 
 </div>
 <br>

@@ -3,11 +3,12 @@
 {% block content %}<h1 class="display-4">Inventory</h1>{% endblock %}
 {% block content2 %}
 <div class="m-2">
-
-    <div class="secondheader"><a href="/createProduct">Add new</a></div>
+    <div class="m-2 uptitel">
+        <p class="h2">View products</p>
+    </div>
 
     <!--    Conditions-->
-    <div>
+    <div class="uptitel">
         {% if count == 0 %}
         <p>There are no products.</p>
         {% elif count == 1 %}
@@ -16,6 +17,9 @@
         <p>There are {{ count }} products.</p>
         {% endif %}
     </div>
+
+    <!--    Add new-->
+    <div class="secondheader addnewbutn"><a href="/createProduct" class="addnewbutn">Add new</a></div>
 
     <!--    Table to display products for Staff-->
     <div class="productitems2343">

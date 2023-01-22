@@ -1,6 +1,5 @@
-import shelve
-
-from wtforms import Form, StringField, TextAreaField, validators, SelectField, IntegerField, FloatField, FileField
+from wtforms import Form, StringField, TextAreaField, validators, SelectField, IntegerField, FloatField, FileField, \
+    DateField
 
 
 class CreateNewProduct(Form):
@@ -11,7 +10,7 @@ class CreateNewProduct(Form):
                                         ('Hair', 'Hair products'), ('Shaving', 'Shaving products'),
                                         ('Others', 'Others')], default='')
 
-    product_price = FloatField('Price', [validators.DataRequired()], default='0')
+    product_price = FloatField('Price ($)', [validators.DataRequired()], default='0')
 
     product_price_range = SelectField('Price range', [validators.DataRequired()],
                                       choices=[('', 'Select'), ('0-9', '$0 to $9'), ('10-19', '$10-$19'),
@@ -23,6 +22,12 @@ class CreateNewProduct(Form):
     product_description = TextAreaField('Description', [validators.Length(max=200), validators.Optional()])
     # description data is not required. 'validators.Optional'
 
-    product_cost = FloatField('Cost', [validators.DataRequired()], default=0)
+    product_cost = FloatField('Cost ($)', [validators.DataRequired()], default=0)
 
-    product_image = FileField('Image', [validators.DataRequired()])
+    product_image = StringField('Image', [validators.DataRequired()])
+
+
+class PaymentForm(Form):
+    card_no = IntegerField('Card details', [validators.DataRequired()])
+
+    expiry = DateField('Expiry Date')
