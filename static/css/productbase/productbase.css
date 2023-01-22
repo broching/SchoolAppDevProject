@@ -130,6 +130,7 @@ body {
 /*Second header alignment*/
 .uptitel {
     text-align: center;
+    margin: 20px;
 }
 
 /*Add new button styling*/

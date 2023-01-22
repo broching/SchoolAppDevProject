@@ -1,6 +1,6 @@
 {% extends "productbase.html" %}
 {% block title %}Inventory{% endblock %}
-{% block content %}<h1 class="display-4">Inventory</h1>{% endblock %}
+{% block content %}<h1 class="display-4 uptitel">Inventory</h1>{% endblock %}
 {% block content2 %}
 <div class="m-2">
     <div class="m-2 uptitel">
@@ -45,8 +45,8 @@
                 <td style="width: 100px; height: 100px; padding: 5px">{{ product.get_product_image() }}</td>
                 <td>{{ product.get_product_id() }}</td>
                 <td>{{ product.get_product_name() }}</td>
-                <td>${{ product.get_product_price() }}</td>
-                <td>${{ product.get_product_cost() }}</td>
+                <td>${{ "%.2f"|format(product.get_product_price()) }}</td>
+                <td>${{ "%.2f"|format(product.get_product_cost()) }}</td>
                 <td>{{ product.get_product_quantity() }}</td>
                 <td>{{ product.get_product_description() }}</td>
                 <td><a href="/updateProduct/{{product.get_product_id()}}" class="btn btn-warning">Update</a></td>
