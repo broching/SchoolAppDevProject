@@ -3,14 +3,13 @@ from PIL import Image
 class Product:
     count_id = 0
 
-    def __init__(self, name, productType, quantity, image, price, priceRange, description, cost, id):
+    def __init__(self, name, productType, quantity, image, price, description, cost, id):
         Product.count_id += 1
         self.__productName = name
         self.__id = id
         self.__quantity = quantity
         self.__image = image
         self.__price = price
-        self.__priceRange = priceRange
         self.__description = description
         self.__productType = productType
         self.__productCost = cost
@@ -70,8 +69,3 @@ class Product:
 
     def set_product_image(self, image):
         self.__image = image
-
-    def save_image(self, name):
-        img = Image.open(self.__image)
-        img.save('static/media/images/products/', "PNG")
-        self.__image = 'static/media/images/products/'+name+'.png'

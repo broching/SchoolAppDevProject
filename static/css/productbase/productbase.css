@@ -145,7 +145,8 @@ body {
     border-radius: 10px;
     text-align: center;
 }
-.addnewbutn:hover{
+
+.addnewbutn:hover {
     color: black;
     background-color: #ffcf32;
     font-weight: normal;
@@ -159,4 +160,34 @@ body {
     margin-right: 5px;
     padding: 15px;
     font-size: 17px;
+}
+
+.productSpecificForProduct.psfpimg img {
+    height: 220px;
+    width: 220px;
+}
+
+/*Payment page*/
+/*Payment page display product*/
+.paymentDisplayProduct {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 30px;
+}
+
+.paymentDisplayProduct img {
+    width: 200px;
+    height: 200px;
+}
+
+.paymentDisplayProduct div {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.paymentDisplayProduct ul {
+    list-style-type: none;
 }

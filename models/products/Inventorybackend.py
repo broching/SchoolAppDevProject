@@ -1,5 +1,16 @@
 from wtforms import Form, StringField, TextAreaField, validators, SelectField, IntegerField, FloatField, FileField, \
-    DateField
+    DateField, MultipleFileField
+from datetime import datetime
+
+
+def validate():
+    if not validators.DataRequired():
+        raise "Please enter required data."
+
+
+def validate_expiry(form, field):
+    if field.data < datetime.now():
+        raise validators.ValidationError("Your card has expired")
 
 
 class CreateNewProduct(Form):
@@ -12,11 +23,6 @@ class CreateNewProduct(Form):
 
     product_price = FloatField('Price ($)', [validators.DataRequired()], default='0')
 
-    product_price_range = SelectField('Price range', [validators.DataRequired()],
-                                      choices=[('', 'Select'), ('0-9', '$0 to $9'), ('10-19', '$10-$19'),
-                                               ('20-29', '$20-$29'), ('30-39', '$30-$39'), ('40-49', '$40-$49'),
-                                               ('50-59', '$50-$59'), ('above60', '$60 and above')], default='')
-
     product_quantity = IntegerField('Quantity', [validators.DataRequired()])
 
     product_description = TextAreaField('Description', [validators.Length(max=200), validators.Optional()])
@@ -26,8 +32,21 @@ class CreateNewProduct(Form):
 
     product_image = StringField('Image', [validators.DataRequired()])
 
+    images = MultipleFileField("Product image", [
+        # validators.DataRequired(message="Image is required")
+    ])
+
 
 class PaymentForm(Form):
-    card_no = IntegerField('Card details', [validators.DataRequired()])
+    card_no = IntegerField('Card details',
+                           [validators.DataRequired(), validators.length(min=16, max=16), validate_expiry])
 
-    expiry = DateField('Expiry Date')
+    expiry = DateField('Expiry Date', [validators.DataRequired()])
+
+    cvv = IntegerField('CVV', [validators.DataRequired(), validators.length(min=3, max=3)])
+
+    name = StringField('Name on Card', [validators.DataRequired()])
+
+    address = StringField('Billing Address', [validators.DataRequired()])
+
+    postal_code = IntegerField('Postal code', [validators.length(min=6, max=6)])

@@ -42,7 +42,7 @@
 
         <div class="pbtnset">
             <!--        submit-->
-            <input type="submit" value="Buy" class="btn btn-primary btnpbtnse"/>
+            <a href="{{url_for('productr.productpayment', id=product.get_product_id())}}" class="btn btn-primary btnpbtnse">Buy</a>
         </div>
 
         <!--        add to cart-->

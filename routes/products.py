@@ -1,10 +1,10 @@
 import shelve
 
 from PIL import Image
-from flask import Blueprint, render_template, request, redirect, url_for, current_app
+from flask import flash, Blueprint, render_template, request, redirect, url_for, current_app
 from werkzeug.utils import secure_filename
 
-from models.products.Inventorybackend import CreateNewProduct
+from models.products.Inventorybackend import CreateNewProduct, PaymentForm
 from models.products.Product import Product
 from models.products.product_functions import save_image, delete_image
 
@@ -34,47 +34,117 @@ def products():
 
 @productr.route('/products/<int:id>/')
 def productsSpecific(id):
-    create_product_form = CreateNewProduct(request.form)
-    if request.method == 'POST' and create_product_form.validate():
-        try:
-            with shelve.open('DB/products/product.db', 'w') as db:
-                products_dict = {}
-                if 'Products' in db:
-                    products_dict = db['Products']
-                if id in products_dict:
-                    product = products_dict.get(id)
-                    product.set_product_name(create_product_form.product_name.data)
-                    product.set_product_type(create_product_form.product_type.data)
-                    product.set_product_quantity(create_product_form.product_quantity.data)
-                    product.set_product_price(create_product_form.product_price.data)
-                    product.set_product_price_range(create_product_form.product_price_range.data)
-                    product.set_product_cost(create_product_form.product_cost.data)
-                    product.set_product_description(create_product_form.product_description.data)
-                    product.set_product_image(create_product_form.product_image.data)
-                    print(type(create_product_form.product_image.data))
+    products_list = []
+    try:
+        products_dict = {}
+        with shelve.open('DB/products/product.db', 'r') as db:
+            if 'Products' in db:
+                products_dict = db['Products']
+            for key in products_dict:
+                product = products_dict.get(key)
+                products_list.append(product)
 
-                    db['Products'] = products_dict
+    except IOError as ex:
+        print(f"Error in retrieving products from product.db for Product specific page - {ex}")
+    except Exception as ex:
+        print(f"Unknown error in retrieving products from product.db for Product specific page  - {ex}")
+
+    return render_template('products/payment1.html', count=len(products_list), products_list=products_list, id=id)
+
+
+@productr.route('/products/<int:id>/paymentspecific', methods=['GET', 'POST'])
+def productpayment(id):
+    payment_form = PaymentForm(request.form)
+    if request.method == 'POST' and payment_form.validate():
+        try:
+            orders_dict = {}
+            with shelve.open('DB/products/order.db', 'c') as db:
+                if 'Orders' in db:
+                    orders_dict = db['Orders']
+
+                with shelve.open("DB/products/ordercount.db", writeback=True) as ocounter:
+                    if "coupon" not in ocounter:
+                        orderid = 1
+                    else:
+                        orderid = ocounter["coupon"]
+                    ocounter["coupon"] = orderid
+                    print(ocounter["coupon"])
+
+                    class Order:
+                        def __init__(self, id, item):
+                            self.id = id
+                            self.item = item
+
+                        def get_id(self):
+                            return self.id
+
+                        def get_item(self):
+                            return self.item
+
+                products_dict = {}
+                with shelve.open('DB/products/product.db', 'w') as prdb:
+                    if 'Products' in prdb:
+                        products_dict = prdb['Products']
+                    product = products_dict.get(id)
+
+                    order = Order(orderid, product)
+                    orders_dict[order.get_id()] = order
+
+                db['Orders'] = orders_dict
         except IOError as ex:
-            print(f"Failed to open product.db shelve for Specific product page - {ex}")
-        except Exception as ex:
-            print(f"Failed to open product.db shelve for Specific product page (Unknown error) - {ex}")
-    else:
-        products_list = []
+            print(f"Error in trying to open order.db in payment page - {ex}")
+
         try:
             products_dict = {}
-            with shelve.open('DB/products/product.db', 'r') as db:
-                if 'Products' in db:
-                    products_dict = db['Products']
-                for key in products_dict:
-                    product = products_dict.get(key)
-                    products_list.append(product)
-
+            with shelve.open('DB/products/product.db', 'w') as pdb:
+                if 'Products' in pdb:
+                    products_dict = pdb['Products']
+                product = products_dict.get(id)
+                product_quantity_temp = product.get_product_quantity()
+                product_quantity_temp -= 1
         except IOError as ex:
-            print(f"Error in retrieving products from product.db for Product specific page - {ex}")
-        except Exception as ex:
-            print(f"Unknown error in retrieving products from product.db for Product specific page  - {ex}")
+            print(f"Error in trying to open product.db in payment page - {ex}")
+        flash("Payment successful!")
+        return redirect(url_for('productr.orders'))
 
-        return render_template('products/payment1.html', count=len(products_list), products_list=products_list, id=id)
+    else:
+
+        products_list = []
+    try:
+        products_dict = {}
+        with shelve.open('DB/products/product.db', 'r') as db:
+            if 'Products' in db:
+                products_dict = db['Products']
+            for key in products_dict:
+                product = products_dict.get(key)
+                products_list.append(product)
+            print(products_list)
+    except IOError as ex:
+        print(f"Error in retrieving products from product.db for Product specific page - {ex}")
+    except Exception as ex:
+        print(f"Unknown error in retrieving products from product.db for Product specific page  - {ex}")
+
+    return render_template('products/payment2.html', count=len(products_list), products_list=products_list, id=id,
+                           form=payment_form)
+
+
+@productr.route('/orders')
+def orders():
+    products_list = []
+    try:
+        products_dict = {}
+        with shelve.open('DB/products/product.db', 'r') as db:
+            if 'Products' in db:
+                products_dict = db['Products']
+            for key in products_dict:
+                product = products_dict.get(key)
+                products_list.append(product)
+    except IOError as ex:
+        print(f"Error in retrieving customers from customer.db - {ex}")
+    except Exception as ex:
+        print(f"Unknown error in retrieving customers from customer.db - {ex}")
+
+    return render_template('products/inventory.html', count=len(products_list), products_list=products_list)
 
 
 @productr.route('/inventory')
@@ -121,15 +191,14 @@ def createProduct():
                 product = Product(create_product_form.product_name.data, create_product_form.product_type.data,
                                   create_product_form.product_quantity.data,
                                   create_product_form.product_image.data,
-                                  create_product_form.product_price.data, create_product_form.product_price_range.data,
-                                  create_product_form.product_description.data, create_product_form.product_cost.data,
+                                  create_product_form.product_price.data, create_product_form.product_description.data,
+                                  create_product_form.product_cost.data,
                                   cid)
 
                 print(type(create_product_form.product_image.data))
                 print(create_product_form.product_image.data)
 
                 # save image
-
 
                 products_dict[product.get_product_id()] = product
                 db['Products'] = products_dict
@@ -168,7 +237,6 @@ def updateProduct(id):
                     product.set_product_type(update_product_form.product_type.data)
                     product.set_product_quantity(update_product_form.product_quantity.data)
                     product.set_product_price(update_product_form.product_price.data)
-                    product.set_product_price_range(update_product_form.product_price_range.data)
                     product.set_product_cost(update_product_form.product_cost.data)
                     product.set_product_description(update_product_form.product_description.data)
                     product.set_product_image(update_product_form.product_image.data)
@@ -194,7 +262,6 @@ def updateProduct(id):
                     update_product_form.product_type.data = product.get_product_type()
                     update_product_form.product_quantity.data = product.get_product_quantity()
                     update_product_form.product_price.data = product.get_product_price()
-                    update_product_form.product_price_range.data = product.get_product_price_range()
                     update_product_form.product_description.data = product.get_product_description()
                     update_product_form.product_cost.data = product.get_product_cost()
                     update_product_form.product_image.data = product.get_product_image()
