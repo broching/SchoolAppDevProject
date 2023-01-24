@@ -35,6 +35,7 @@ def products():
 @productr.route('/products/<int:id>/')
 def productsSpecific(id):
     products_list = []
+    hi = 1
     try:
         products_dict = {}
         with shelve.open('DB/products/product.db', 'c') as db:
