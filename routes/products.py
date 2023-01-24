@@ -18,7 +18,7 @@ def products():
     products_list = []
     try:
         products_dict = {}
-        with shelve.open('DB/products/product.db', 'r') as db:
+        with shelve.open('DB/products/product.db', 'c') as db:
             if 'Products' in db:
                 products_dict = db['Products']
             for key in products_dict:
@@ -37,7 +37,7 @@ def productsSpecific(id):
     products_list = []
     try:
         products_dict = {}
-        with shelve.open('DB/products/product.db', 'r') as db:
+        with shelve.open('DB/products/product.db', 'c') as db:
             if 'Products' in db:
                 products_dict = db['Products']
             for key in products_dict:
@@ -178,6 +178,7 @@ def inventory():
 
 @productr.route('/createProduct', methods=['GET', 'POST'])
 def createProduct():
+    cid = 0
     create_product_form = CreateNewProduct(request.form)
     if request.method == 'POST' and create_product_form.validate():
         try:
@@ -217,7 +218,7 @@ def createProduct():
         return redirect(url_for('productr.inventory'))
     else:
         try:
-            with shelve.open("DB/products/counter.db", writeback=True) as counter:
+            with shelve.open("DB/products/counter.db", "c", writeback=True) as counter:
                 if "coupon" not in counter:
                     cid = 1
                 else:
