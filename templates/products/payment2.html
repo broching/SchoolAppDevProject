@@ -29,7 +29,7 @@
             <li class="psfpli2">{{ product.get_product_name() }}</li>
 
             <!--Product price-->
-            <li class="psfpli2">${{ product.get_product_price() }}</li>
+            <li class="psfpli2">${{ "%.2f"|format(product.get_product_price()) }}</li>
 
             <!--Product quantity-->
             <li class="psfpli">Quantity: {{ product.get_product_quantity() }}</li>

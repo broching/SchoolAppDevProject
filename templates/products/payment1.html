@@ -27,7 +27,7 @@
             <li class="psfpli2">{{ product.get_product_name() }}</li>
 
             <!--Product price-->
-            <li class="psfpli2">${{ product.get_product_price() }}</li>
+            <li class="psfpli2">${{ "%.2f"|format(product.get_product_price()) }}</li>
 
             <!--Product rating-->
             <li class="psfpli2">5/5 (Temp rating)</li>
