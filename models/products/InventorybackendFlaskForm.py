@@ -38,3 +38,4 @@ class PaymentForm(FlaskForm):
     name = StringField('Name on Card', [DataRequired()])
     address = StringField('Billing Address', [DataRequired()])
     postal_code = IntegerField('Postal code', [DataRequired()])
+    submit2 = SubmitField('Submit')

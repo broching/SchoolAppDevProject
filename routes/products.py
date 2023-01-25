@@ -52,8 +52,8 @@ def productsSpecific(id):
 
 @productr.route('/products/<int:id>/paymentspecific', methods=['GET', 'POST'])
 def productpayment(id):
-    payment_form = PaymentForm(request.form)
-    if request.method == 'POST' and payment_form.validate():
+    payment_form = PaymentForm()
+    if request.method == 'POST' and payment_form.submit2.data:
 
         try:
             products_dict = {}
