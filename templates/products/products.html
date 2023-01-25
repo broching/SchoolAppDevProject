@@ -17,7 +17,7 @@
         <div class="insideproductsrow">
             <!--Product image (Clickable link)-->
             <a href="/products/{{product.get_product_id()}}">
-                <img src="" alt="">
+                <img src="../../static/media/images/product/{{ product.get_product_image() }}" alt="Image of product with ID: {{ product.get_product_id() }}">
             </a>
 
             <ul>

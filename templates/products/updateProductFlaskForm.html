@@ -1,0 +1,45 @@
+{% extends "productbase.html" %}
+{% block title %}Create Inventory{% endblock %}
+{% block content %}<h1 class="display-4 uptitel">Inventory</h1>{% endblock %}
+{% block content2 %}
+<h1 class="h2 m-3 uptitel">Create Product</h1>
+<div class="formdiv1">
+    <form method="POST" enctype='multipart/form-data' class="m-3 createprodform">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.product_name.label }} {{ form.product_name(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.product_type.label }} {{ form.product_type(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.product_price.label }} {{ form.product_price(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.product_cost.label }} {{ form.product_cost(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.product_quantity.label }} {{ form.product_quantity(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.product_description.label }} {{ form.product_description(class="form-control") }}
+        </div>
+        <div>
+            ID<br>{{ prdid }}
+        </div>
+        <div class="form-group">
+            {{ form.product_image.label }}
+            {% for product in products_list if product.get_product_id() == id %}
+            <img src="../../static/media/images/product/{{ product.get_product_image() }}"
+                 alt="Image of product with ID: {{ product.get_product_id() }}" style="height: 150px; width: 150px; border-radius: 20px; margin: 30px;">
+
+<!--        Hiden image field-->
+            <input type="hidden" name="current_image" value="{{ product.get_product_image() }}">
+            {% endfor %}
+            {{ form.product_image(class="form-control") }}
+        </div>
+        {{ form.submit1(class="btn btn-primary", value="Update Product", style="float: right; margin-top: 10px;
+        margin-bottom: 20px;") }}
+    </form>
+</div>
+{% endblock %}

@@ -1,14 +1,12 @@
 import shelve
 
-from PIL import Image
 from flask import flash, Blueprint, render_template, request, redirect, url_for, current_app
-from werkzeug.utils import secure_filename
+from werkzeug.datastructures import FileStorage
 
-from models.products.Inventorybackend import CreateNewProduct, PaymentForm
-from models.products.Product import Product
+from models.products.InventorybackendFlaskForm import CreateNewProduct, PaymentForm, UpdateNewProduct
 from models.products.product_functions import save_image, delete_image
 
-import os
+from models.products.Product import Product
 
 productr = Blueprint('productr', __name__, template_folder='templates', static_folder='static')
 
@@ -111,7 +109,6 @@ def productpayment(id):
         except IOError as ex:
             print(f"Error in trying to open order.db in payment page - {ex}")
 
-
         return redirect(url_for('productr.orders'))
 
     else:
@@ -169,18 +166,74 @@ def inventory():
                 product = products_dict.get(key)
                 products_list.append(product)
     except IOError as ex:
-        print(f"Error in retrieving customers from customer.db - {ex}")
+        print(f"Error in retrieving products from product.db (inventory route)- {ex}")
     except Exception as ex:
         print(f"Unknown error in retrieving customers from customer.db - {ex}")
 
     return render_template('products/inventory.html', count=len(products_list), products_list=products_list)
 
 
+# @productr.route('/createProduct', methods=['GET', 'POST'])
+# def createProduct():
+#     cid = 0
+#     create_product_form = CreateNewProduct(request.form)
+#     if request.method == 'POST' and create_product_form.validate():
+#         try:
+#             with shelve.open("DB/products/counter.db", writeback=True) as counter:
+#                 if "coupon" not in counter:
+#                     cid = 1
+#                 else:
+#                     cid = counter["coupon"]
+#                 counter["coupon"] = cid
+#                 print(counter["coupon"])
+#         except IOError as ex:
+#             print(f"Error in opening counter.db - {ex}")
+#         except Exception as ex:
+#             print(f"Unknown error occured while trying to open counter.db - {ex}")
+#
+#         try:
+#             with shelve.open('DB/products/product.db', 'c') as db:
+#                 products_dict = {}
+#                 if 'Products' in db:
+#                     products_dict = db['Products']
+#                 product = Product(create_product_form.product_name.data, create_product_form.product_type.data,
+#                                   create_product_form.product_quantity.data,
+#                                   create_product_form.product_image.data,
+#                                   create_product_form.product_price.data, create_product_form.product_description.data,
+#                                   create_product_form.product_cost.data,
+#                                   cid)
+#
+#                 print(type(create_product_form.product_image.data))
+#                 print(create_product_form.product_image.data)
+#
+#                 # save image
+#
+#                 products_dict[product.get_product_id()] = product
+#                 db['Products'] = products_dict
+#         except IOError:
+#             print("Error in retrieving Products from Product.db.")
+#         return redirect(url_for('productr.inventory'))
+#     else:
+#         try:
+#             with shelve.open("DB/products/counter.db", "c", writeback=True) as counter:
+#                 if "coupon" not in counter:
+#                     cid = 1
+#                 else:
+#                     cid = counter["coupon"] + 1
+#                 counter["coupon"] = cid
+#                 print(counter["coupon"])
+#         except IOError as ex:
+#             print(f"Error in opening counter.db - {ex}")
+#         except Exception as ex:
+#             print(f"Unknown error occured while trying to open counter.db - {ex}")
+#
+#         return render_template('products/createProduct.html', form=create_product_form, prdid=cid)
+
 @productr.route('/createProduct', methods=['GET', 'POST'])
 def createProduct():
     cid = 0
-    create_product_form = CreateNewProduct(request.form)
-    if request.method == 'POST' and create_product_form.validate():
+    create_product_form = CreateNewProduct()
+    if request.method == 'POST' and create_product_form.submit1.data:
         try:
             with shelve.open("DB/products/counter.db", writeback=True) as counter:
                 if "coupon" not in counter:
@@ -207,9 +260,11 @@ def createProduct():
                                   cid)
 
                 print(type(create_product_form.product_image.data))
-                print(create_product_form.product_image.data)
 
                 # save image
+                if create_product_form.product_image.data:
+                    image_file_name = save_image(create_product_form.product_image.data)
+                    product.set_product_image(image_file_name)
 
                 products_dict[product.get_product_id()] = product
                 db['Products'] = products_dict
@@ -230,13 +285,13 @@ def createProduct():
         except Exception as ex:
             print(f"Unknown error occured while trying to open counter.db - {ex}")
 
-        return render_template('products/createProduct.html', form=create_product_form, prdid=cid)
+        return render_template('products/createProductFlaskForm.html', form=create_product_form, prdid=cid)
 
 
 @productr.route('/updateProduct/<int:id>/', methods=['GET', 'POST'])
 def updateProduct(id):
-    update_product_form = CreateNewProduct(request.form)
-    if request.method == 'POST' and update_product_form.validate():
+    update_product_form = UpdateNewProduct()
+    if request.method == 'POST' and update_product_form.submit1.data:
         try:
             with shelve.open('DB/products/product.db', 'w') as db:
                 products_dict = {}
@@ -254,6 +309,11 @@ def updateProduct(id):
                     print(type(update_product_form.product_image.data))
 
                     # save image
+                    if not update_product_form.product_image.data:
+                        image_file_name = request.form['current_image']
+                    else:
+                        image_file_name = save_image(update_product_form.product_image.data)
+                    product.set_product_image(image_file_name)
 
                     db['Products'] = products_dict
 
@@ -262,11 +322,17 @@ def updateProduct(id):
 
         return redirect(url_for('productr.inventory'))
     else:
+        products_list = []
         try:
             with shelve.open('DB/products/product.db', 'w') as db:
                 products_dict = {}
                 if 'Products' in db:
                     products_dict = db['Products']
+                #     Getting products and putting them in list for jinjja html to process it later on
+                for key in products_dict:
+                    product = products_dict.get(key)
+                    products_list.append(product)
+
                 if id in products_dict:
                     product = products_dict.get(id)
                     update_product_form.product_name.data = product.get_product_name()
@@ -275,13 +341,14 @@ def updateProduct(id):
                     update_product_form.product_price.data = product.get_product_price()
                     update_product_form.product_description.data = product.get_product_description()
                     update_product_form.product_cost.data = product.get_product_cost()
-                    update_product_form.product_image.data = product.get_product_image()
+                    cid = product.get_product_id()
+
 
         except IOError as ex:
-            print(f"Error in retrieving products from products.db - {ex}.")
+            print(f"Error in retrieving products from products.db (GET in update products) - {ex}.")
 
-        cid = product.get_product_id()
-        return render_template('products/updateProduct.html', form=update_product_form, prdid=cid)
+        return render_template('products/updateProductFlaskForm.html', form=update_product_form, prdid=cid,
+                               count=len(products_list), id=id, products_list=products_list)
 
 
 @productr.route('/deleteProduct/<int:id>', methods=['POST'])

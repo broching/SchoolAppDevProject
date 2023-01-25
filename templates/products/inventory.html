@@ -42,7 +42,8 @@
             <tbody>
             {% for product in products_list %}
             <tr>
-                <td style="width: 100px; height: 100px; padding: 5px">{{ product.get_product_image() }}</td>
+                <td style="width: 100px; height: 100px; padding: 5px"><img src="../../static/media/images/product/{{ product.get_product_image() }}"
+                 alt="Image of product with ID: {{ product.get_product_id() }}" style="height: 90px; width: 90px; border-radius: 5px;"></td>
                 <td>{{ product.get_product_id() }}</td>
                 <td>{{ product.get_product_name() }}</td>
                 <td>${{ "%.2f"|format(product.get_product_price()) }}</td>

@@ -1,6 +1,7 @@
 from wtforms import Form, StringField, TextAreaField, validators, SelectField, IntegerField, FloatField, FileField, \
     DateField, MultipleFileField
 from datetime import datetime
+from flask_wtf import FlaskForm
 
 
 def validate():
@@ -32,7 +33,7 @@ class CreateNewProduct(Form):
 
     product_image = StringField('Image', [validators.DataRequired()])
 
-    images = MultipleFileField("Product image", [
+    images = FileField("Product image", [
         # validators.DataRequired(message="Image is required")
     ])
 
@@ -50,4 +51,3 @@ class PaymentForm(Form):
     address = StringField('Billing Address', [validators.DataRequired()])
 
     postal_code = IntegerField('Postal code', [validators.DataRequired()])
-
