@@ -1,0 +1,54 @@
+{% extends "productbase.html" %}
+{% block title %}Inventory{% endblock %}
+{% block content %}<h1 class="display-4 uptitel">Orders</h1>{% endblock %}
+{% block content2 %}
+<div class="m-2">
+    <div class="m-2 uptitel">
+        <p class="h2">View orders</p>
+    </div>
+
+    <!--    Conditions-->
+    <div class="uptitel">
+        {% if count == 0 %}
+        <p>There are no orders.</p>
+        {% elif count == 1 %}
+        <p>There is 1 order.</p>
+        {% else %}
+        <p>There are {{ count }} orders.</p>
+        {% endif %}
+    </div>
+
+
+    <!--    Table to display products for Staff-->
+    <div class="productitems2343">
+        <table class="table table-striped">
+
+            <thead>
+            <tr class="tarow1first">
+                <th style="width: 100px;">Image</th>
+                <th style="width: 80px;">ID</th>
+                <th>Item</th>
+                <th style="width: 80px;">Price</th>
+                <th style="width: 50px"></th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for product in orders_list %}
+            <tr>
+                <td style="width: 100px; height: 100px; padding: 5px">{{ product.get_product_image() }}</td>
+                <td>{{ order.get_id() }}</td>
+                <td>{{ order.get_item }}</td>
+                    <form action="{{url_for('productr.deleteProduct', id=product.get_product_id())}}" method="POST">
+                        <input type="submit" value="X" class="btn btn-danger">
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+{% endblock %}

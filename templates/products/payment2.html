@@ -1,0 +1,78 @@
+{% extends "productbase.html" %}
+{% block title %}Products{% endblock %}
+{% from "includes/_formHelper.html" import render_field %}
+
+{% block content %}
+<h1 class="display-4 uptitel">Products</h1>
+{% endblock %}
+
+{% block secondarytitle %}
+<div class="m-2 uptitel">
+    <p class="h2">Categories</p>
+</div>
+<div class="grid-container">
+    <div class="grid-item">
+
+    </div>
+</div>
+
+<div class="grid-container paymentDisplayProduct">
+
+    {% for product in products_list if product.get_product_id() == id %}
+    <!--    display product information in payment page-->
+    <div class="grid-item">
+        <br>
+        <img src="../../static/media/images/product/{{ product.get_product_image() }}" alt="Image of product with ID: {{ product.get_product_id() }}">
+        <br><br>
+        <ul>
+            <!--Product name-->
+            <li class="psfpli2">{{ product.get_product_name() }}</li>
+
+            <!--Product price-->
+            <li class="psfpli2">${{ "%.2f"|format(product.get_product_price()) }}</li>
+
+            <!--Product quantity-->
+            <li class="psfpli">Quantity: {{ product.get_product_quantity() }}</li>
+
+        </ul>
+    </div>
+
+    {% endfor %}
+
+    <!--    payment form-->
+    <div class="formdiv1">
+        <form method="POST" action="" enctype='multipart/form-data' class="m-3 createprodform">
+            <p class="h2">Payment Details</p><br>
+            <div class="form-group">
+                {{ form.card_no.label }} {{ form.card_no(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.expiry.label }} {{ form.expiry(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.cvv.label }} {{ form.cvv(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.name.label }} {{ form.name(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.address.label }} {{ form.address(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.postal_code.label }} {{ form.postal_code(class="form-control") }}
+            </div>
+            {{ form.submit2(class="btn btn-primary", value="Pay", style="float: right; margin-top: 10px;
+        margin-bottom: 20px;") }}
+        </form>
+    </div>
+
+    <!--    These 2 may be removable, can use for loop and what not. see grid is already -->
+    <!--    in rows of 3. https://www.w3schools.com/css/css_grid.asp -->
+    <!--    Note: can write html code, then append the html code into this file-->
+
+</div>
+
+<br>
+
+
+{% endblock %}

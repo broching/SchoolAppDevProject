@@ -2,7 +2,7 @@
 {% block title %}Products{% endblock %}
 
 {% block content %}
-<h1 class="display-4">Products</h1>
+<h1 class="display-4 uptitel">Products</h1>
 {% endblock %}
 
 {% block secondarytitle %}
@@ -16,7 +16,7 @@
     <div class="grid-item">
         <!--Product image (Clickable link)-->
 
-        <img src="" alt="">
+        <img src="../../static/media/images/product/{{ product.get_product_image() }}" alt="Image of product with ID: {{ product.get_product_id() }}">
 
 
     </div>
@@ -27,7 +27,7 @@
             <li class="psfpli2">{{ product.get_product_name() }}</li>
 
             <!--Product price-->
-            <li class="psfpli2">${{ product.get_product_price() }}</li>
+            <li class="psfpli2">${{ "%.2f"|format(product.get_product_price()) }}</li>
 
             <!--Product rating-->
             <li class="psfpli2">5/5 (Temp rating)</li>
@@ -42,7 +42,7 @@
 
         <div class="pbtnset">
             <!--        submit-->
-            <input type="submit" value="Buy" class="btn btn-primary btnpbtnse"/>
+            <a href="{{url_for('productr.productpayment', id=product.get_product_id())}}" class="btn btn-primary btnpbtnse">Buy</a>
         </div>
 
         <!--        add to cart-->

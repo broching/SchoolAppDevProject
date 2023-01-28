@@ -2,7 +2,7 @@
 {% block title %}Products{% endblock %}
 
 {% block content %}
-<h1 class="display-4">Products</h1>
+<h1 class="display-4 uptitel">Products</h1>
 {% endblock %}
 
 {% block secondarytitle %}
@@ -17,15 +17,15 @@
         <div class="insideproductsrow">
             <!--Product image (Clickable link)-->
             <a href="/products/{{product.get_product_id()}}">
-                <img src="" alt="">
+                <img src="../../static/media/images/product/{{ product.get_product_image() }}" alt="Image of product with ID: {{ product.get_product_id() }}">
             </a>
 
             <ul>
                 <!--Product name-->
-                <li>{{ product.get_product_name() }}</li>
+                <li class="h5" style="width: 80%; margin-left: auto; margin-right: auto;">{{ product.get_product_name() }}</li>
 
                 <!--Product price-->
-                <li>${{ product.get_product_price() }}</li>
+                <li>${{ "%.2f"|format(product.get_product_price()) }}</li>
 
                 <!--Product rating-->
                 <li>Rating: 5/5 (Temp rating)</li>
