@@ -28,9 +28,11 @@ app.permanent_session_lifetime = timedelta(days=15)
 
 
 # starting route / home route
+@app.route('/home')
 @app.route('/')
 def home():
     return render_template('home/home.html')
+
 
 if __name__ == "__main__":
     app.run(debug=True)

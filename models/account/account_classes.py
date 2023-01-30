@@ -95,12 +95,19 @@ class Customer(Account):
         self.__booked_services = None
         self.__payment_details = None
         self.__customizations = None
+        self.__billing_history = None
 
     def get_cart(self):
         return self.__cart
 
     def set_cart(self, cart):
         self.__cart = cart
+
+    def get_payment_details(self):
+        return self.__payment_details
+
+    def set_payment_details(self, payment_details):
+        self.__payment_details = payment_details
 
     def get_booked_services(self):
         return self.__booked_services

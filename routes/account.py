@@ -10,6 +10,8 @@ from models.auth.auth_functions import get_customers, store_customer, delete_cus
 
 from models.account.account_functions import save_image, delete_image
 
+from models.auth.payment_classes import CreditCard
+
 account = Blueprint('account', __name__)
 
 
@@ -149,6 +151,14 @@ def customer_delete():
                                update_security_form=update_security_form, delete_account_form=delete_account_form)
     else:
         return restricted_customer_error()
+
+
+@account.route('/CustomerBilling')
+def customer_billing():
+    if customer_login_required():
+        return render_template('account/customer_billing.html')
+    else:
+        return restricted_staff_error()
 
 
 @account.route('/StaffProfile')
