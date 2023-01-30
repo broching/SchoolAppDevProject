@@ -58,6 +58,21 @@ def productReviews():
                            product_reviews_list=product_reviews_list)
 
 
+@review.route('/deleteProductReview/<int:id>', methods=['POST'])
+def deleteProductReview(id):
+    product_reviews_dict = {}
+    try:
+        with shelve.open('DB/reviews/productReviews/product.db', 'w') as db:
+            if 'Product_Reviews' in db:
+                product_reviews_dict = db['Product_Reviews']
+            product_reviews_dict.pop(id)  # Step 1: Updates are handled using dictionaries first.
+            db['Product_Reviews'] = product_reviews_dict
+
+    except IOError as ex:
+        print(f"Error in retrieving product reviews from productReviews.db - {ex}")
+    return redirect(url_for('review.productReviews'))
+
+
 @review.route('/createServiceReview', methods=['GET', 'POST'])
 def createServiceReview():
     create_service_review_form = CreateServiceReview(request.form)
@@ -101,18 +116,3 @@ def serviceReviews():
 
     return render_template('reviews/serviceReviews.html', count=len(service_reviews_list),
                            service_reviews_list=service_reviews_list)
-
-
-@review.route('/deleteProductReview/<int:id>', methods=['POST'])
-def deleteProductReview(id):
-    product_reviews_dict = {}
-    try:
-        with shelve.open('DB/reviews/productReviews/product.db', 'w') as db:
-            if 'Product_Reviews' in db:
-                product_reviews_dict = db['Product_Reviews']
-            product_reviews_dict.pop(id)  # Step 1: Updates are handled using dictionaries first.
-            db['Product_Reviews'] = product_reviews_dict
-
-    except IOError as ex:
-        print(f"Error in retrieving product reviews from productReviews.db - {ex}")
-    return redirect(url_for('review.productReviews'))
