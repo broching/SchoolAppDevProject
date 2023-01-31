@@ -1,4 +1,4 @@
-from wtforms import Form, StringField, SelectField, TextAreaField, validators
+from wtforms import Form, StringField, SelectField, TextAreaField, validators, DateField
 
 
 class AddNewService(Form):
@@ -10,7 +10,9 @@ class AddNewService(Form):
                          default='')
 
     membership = StringField('Membership ID', [validators.Length(min=1, max=150), validators.DataRequired()])
-    appointment_date = StringField('Appointment Date', [validators.Length(min=8, max=8), validators.DataRequired()])
+    appointment_date = DateField('Appointment Date', format='%Y=%m-%d')
     appointment_time = StringField('Appointment Time', [validators.length(min=5, max=5), validators.DataRequired()])
 
     remarks = TextAreaField('Remarks', [validators.Optional()])
+
+
