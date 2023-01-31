@@ -1,0 +1,42 @@
+/*Link to roboto font*/
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,500;1,100&display=swap');
+
+/*CSS Variables*/
+:root {
+    --font-roboto: 'Roboto', sans-serif;
+}
+
+body {
+    font-family: var(--font-roboto);
+    font-weight: 300;
+    background-image: url('/static/media/images/home/salonhomepageblur.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.holder1 {
+    margin: 20px;
+    color: white;
+}
+
+.welcome1 {
+    text-align: center;
+    font-size: 7rem;
+    font-weight: lighter;
+}
+
+.holder1 img{
+    width: 95%;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.con1div.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 40px;
+}

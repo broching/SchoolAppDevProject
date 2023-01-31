@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SelectField, IntegerField, FloatField, FileField, DateField, SubmitField
 from wtforms.validators import DataRequired, Length, Optional
+from wtforms import validators
 from datetime import datetime
 
 
@@ -31,8 +32,9 @@ class UpdateNewProduct(FlaskForm):
     product_image = FileField("Product image", validators=[Optional()])
     submit1 = SubmitField('Submit')
 
+
 class PaymentForm(FlaskForm):
-    card_no = IntegerField('Card details', [DataRequired()])
+    card_no = IntegerField('Card details', [Length(min=16, max=16), DataRequired()])
     expiry = DateField('Expiry Date', [DataRequired()])
     cvv = IntegerField('CVV', [DataRequired()])
     name = StringField('Name on Card', [DataRequired()])
