@@ -18,7 +18,7 @@ def createProductReview():
     create_product_review_form = CreateProductReview(request.form)
     if request.method == 'POST' and create_product_review_form.validate():
         try:
-            with shelve.open('DB/reviews/productReviews/product.db', 'c') as db:
+            with shelve.open('DB/reviews/productReviews/productReview.db', 'c') as db:
                 product_reviews_dict = {}
                 if 'Product_Reviews' in db:
                     product_reviews_dict = db['Product_Reviews']
@@ -32,7 +32,7 @@ def createProductReview():
                 product_reviews_dict[product_review.get_product_id()] = product_review
                 db['Product_Reviews'] = product_reviews_dict
         except IOError:
-            print("Error in retrieving Products from Product.db.")
+            print("Error in retrieving Product Reviews from Product_Reviews.db.")
         return redirect(url_for('review.productReviews'))
     else:
         return render_template('reviews/createProductReview.html', form=create_product_review_form)
@@ -43,7 +43,7 @@ def productReviews():
     product_reviews_list = []
     try:
         product_reviews_dict = {}
-        with shelve.open('DB/reviews/productReviews/product.db', 'r') as db:
+        with shelve.open('DB/reviews/productReviews/productReview.db', 'r') as db:
             if 'Product_Reviews' in db:
                 product_reviews_dict = db['Product_Reviews']
             for key in product_reviews_dict:
@@ -62,7 +62,7 @@ def productReviews():
 def deleteProductReview(id):
     product_reviews_dict = {}
     try:
-        with shelve.open('DB/reviews/productReviews/product.db', 'w') as db:
+        with shelve.open('DB/reviews/productReviews/productReview.db', 'w') as db:
             if 'Product_Reviews' in db:
                 product_reviews_dict = db['Product_Reviews']
             product_reviews_dict.pop(id)  # Step 1: Updates are handled using dictionaries first.
@@ -116,3 +116,17 @@ def serviceReviews():
 
     return render_template('reviews/serviceReviews.html', count=len(service_reviews_list),
                            service_reviews_list=service_reviews_list)
+
+@review.route('/deleteServiceReview/<int:id>', methods=['POST'])
+def deleteServiceReview(id):
+    service_reviews_dict = {}
+    try:
+        with shelve.open('DB/reviews/serviceReviews/serviceReview.db', 'w') as db:
+            if 'Service_Reviews' in db:
+                service_reviews_dict = db['Service_Reviews']
+            service_reviews_dict.pop(id)  # Step 1: Updates are handled using dictionaries first.
+            db['Service_Reviews'] = service_reviews_dict
+
+    except IOError as ex:
+        print(f"Error in retrieving service reviews from serviceReviews.db - {ex}")
+    return redirect(url_for('review.serviceReviews'))
