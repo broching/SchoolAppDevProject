@@ -23,7 +23,7 @@
 
             <thead>
             <tr class="tarow1first">
-                <th>Product ID</th>
+                <th>Product</th>
                 <th style="width: 300px;">Image</th>
                 <th style="width: 300px;">Video</th>
                 <th style="width: 100px;">Rating</th>
@@ -35,12 +35,10 @@
             {% for product_review in product_reviews_list %}
             <tr>
                 <td style="width: 100px; height: 100px; padding: 5px">{{ product_review.get_product_image() }}</td>
-                <td>{{ product_review.get_product_id() }}</td>
-                <td>{{ product_review.get_product_image() }}</td>
                 <td>{{ product_review.get_product_video() }}</td>
                 <td>{{ product_review.get_product_rating() }}</td>
                 <td>{{ product_review.get_product_comment() }}</td>
-                 <td>
+                <td>
                     <form action="{{url_for('review.deleteProductReview', id=product_review.get_product_id())}}" method="POST">
                         <input type="submit" value="X" class="btn btn-danger">
                     </form>

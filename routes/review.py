@@ -22,8 +22,7 @@ def createProductReview():
                 product_reviews_dict = {}
                 if 'Product_Reviews' in db:
                     product_reviews_dict = db['Product_Reviews']
-                product_review = productReview(create_product_review_form.product_id.data,
-                                               create_product_review_form.product_rating.data,
+                product_review = productReview(create_product_review_form.product_rating.data,
                                                create_product_review_form.product_comment.data,
                                                create_product_review_form.product_image.data,
                                                create_product_review_form.product_video.data)
@@ -116,6 +115,7 @@ def serviceReviews():
 
     return render_template('reviews/serviceReviews.html', count=len(service_reviews_list),
                            service_reviews_list=service_reviews_list)
+
 
 @review.route('/deleteServiceReview/<int:id>', methods=['POST'])
 def deleteServiceReview(id):
