@@ -4,7 +4,9 @@ from models.reviews.productReview import productReview
 
 
 class CreateProductReview(Form):
-    product_rating = IntegerField('Product Rating', [validators.DataRequired()])
+    product_rating = SelectField('Product Rating', [validators.DataRequired()],
+                                 choices=[('', 'Rate Product from 1 (Lowest) to 5 (Highest)'), ('1', '1'), ('2', '2'),
+                                          ('3', '3'), ('4', '4'), ('5', '5')], default='')
 
     product_comment = TextAreaField('Write your review here', [validators.Optional()])
 
