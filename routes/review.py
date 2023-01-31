@@ -71,6 +71,10 @@ def deleteProductReview(id):
         print(f"Error in retrieving product reviews from productReviews.db - {ex}")
     return redirect(url_for('review.productReviews'))
 
+@review.route('/productRating')
+def productRating():
+    return render_template('reviews/productRating.html')
+
 
 @review.route('/createServiceReview', methods=['GET', 'POST'])
 def createServiceReview():
