@@ -27,7 +27,7 @@
         <div>
             ID<br>{{ prdid }}
         </div>
-        <div class="form-group">
+        <div class="form-group changecolorwhite">
             {{ form.product_image.label }}
             {% for product in products_list if product.get_product_id() == id %}
             <img src="../../static/media/images/product/{{ product.get_product_image() }}"
