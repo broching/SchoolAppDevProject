@@ -1,6 +1,6 @@
 import shelve
 
-from flask import Blueprint, render_template, request, url_for, redirect, Flask
+from flask import Blueprint, render_template, request, url_for, redirect, Flask, session
 from wtforms import form
 
 # from models.Services import update_Service
@@ -78,6 +78,21 @@ def book_appointment():
         return render_template('/Services/addNewService.html', form=AddNewService)
 
 
+@service.route('/Services/addNewServiceform', methods=['POST', 'GET'])  # Datepicker(appointmentbooking)
+def index():
+    form = AddNewService()
+    if form.validate_on_submit():
+        session['appointment_date'] = form.appointment_date.data
+        return redirect('/Services/retrieveAppointment.html')
+    return render_template('/Services/addNewService.html', form=AddNewService)
+
+
+@service.route('/date', methods=['GET', 'POST'])
+def date():
+    appointment_date = session['appointment_date']
+    return render_template('date.html')
+
+
 @service.route('/Services/updateServices', methods=['POST', 'GET'])
 def update_service():
     form = update_service_form()
@@ -141,29 +156,27 @@ def update_Service():
         return render_template('/Services/addNewService.html', form=update_service_form)
 
 
-@service.route('/Services/retrieveAppointment')
-def retrieve_appt():
-    appointments_list = []
-    db = shelve.open('service.db', 'r')
-    appointments_dict = db['Service']
-    db.close()
-    appointment_list = []
-    for key in appointments_dict:
-        user = appointments_dict.get(key)
-        appointment_list.append(appointment)
+@service.route('/Services/updateServices.html', methods=['GET', 'POST']) #Datepicker-update service
+def add_appt_date():
+    form=update_service_form
+    if form.validate_on_submit():
+        session['add_appointment_date']=form.appointment_date.data
+        return redirect('/Services/updateService.html')
+    return render_template('/Services/servicebase.html',form=update_service_form)
+@service.route('/date',methods=['GET','POST'])
+def appointmentDate():
+    appointment_Date=session['appointment_date']
+    return render_template('/Services/retrieveAppoinment.html')
 
-    return render_template('/Services/retrieveAppointment.html')
 
-# @service.route('/Services/retrieveAppointment')
-# def retrieve_appt():
-# appointments_dict = {}
-# db = shelve.open('service.db', 'r')
-# appointments_dict = db['Service']
-# db.close()
-# appointment_list = []
-# for key in appointments_dict:
-# user = appointments_dict.get(key)
-# appointment_list.append(appointment)
+
+
+
+
+
+
+
+
 
 # return render_template('/Services/retrieveAppointment.html')
 
