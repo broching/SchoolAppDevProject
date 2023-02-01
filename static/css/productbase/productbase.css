@@ -192,3 +192,24 @@ body {
 .paymentDisplayProduct ul {
     list-style-type: none;
 }
+
+table {
+    background-color: #fff9e4;
+}
+
+form {
+    border-radius: 10px;
+}
+
+.changecolorwhite {
+    background-color: white;
+    color: black;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.insideproductsrow img, .productSpecificForProduct img, .paymentDisplayProduct img {
+    background-color: white;
+    padding: 5px;
+    border-radius: 5px;
+}

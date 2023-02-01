@@ -1,12 +1,13 @@
-from wtforms import Form, StringField, TextAreaField, validators, SelectField, IntegerField, FloatField, FileField
+from wtforms import Form, StringField, TextAreaField, validators, SelectField, IntegerField, FloatField, FileField, \
+    RadioField
 
 from models.reviews.productReview import productReview
 
 
 class CreateProductReview(Form):
-    product_id = IntegerField('Product ID', [validators.DataRequired()])
-
-    product_rating = IntegerField('Product Rating', [validators.DataRequired()])
+    product_rating = RadioField('Product Rating', [validators.DataRequired()],
+                                 choices=[('1', '1'), ('2', '2'),
+                                          ('3', '3'), ('4', '4'), ('5', '5')], default='')
 
     product_comment = TextAreaField('Write your review here', [validators.Optional()])
 

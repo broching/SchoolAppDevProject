@@ -7,6 +7,8 @@ class CreateServiceReview(Form):
     service_selection = SelectField('Service', [validators.DataRequired()],
                                choices=[('', 'Select'), ('Service 1', 'Service 1'), ('Service 2', 'Service 2'),
                                         ('Service 3', 'Service 3')], default='')
+
+
     service_rating = IntegerField('Service Rating', [validators.DataRequired()])
 
     service_comment = TextAreaField('Write your review here', [validators.Optional()])

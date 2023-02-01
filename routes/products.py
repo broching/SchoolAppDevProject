@@ -4,6 +4,7 @@ from flask import flash, Blueprint, render_template, request, redirect, url_for,
 from werkzeug.datastructures import FileStorage
 
 from models.products.InventorybackendFlaskForm import CreateNewProduct, PaymentForm, UpdateNewProduct
+from models.products.Order import Order
 from models.products.product_functions import save_image, delete_image
 
 from models.products.Product import Product
@@ -69,46 +70,24 @@ def productpayment(id):
                     print(product.get_product_quantity())
                 pdb['Products'] = products_dict
 
-        except IOError as ex:
-            print(f"Error in trying to open product.db in payment page - {ex}")
+                orders_dict = {}
+                with shelve.open('DB/products/order.db', 'c') as db:
+                    if 'Orders' in db:
+                        orders_dict = db['Orders']
 
-        try:
-            orders_dict = {}
-            with shelve.open('DB/products/order.db', 'c') as db:
-                if 'Orders' in db:
-                    orders_dict = db['Orders']
+                    with shelve.open("DB/products/ordercount.db", writeback=True) as ocounter:
+                        if "coupon" not in ocounter:
+                            orderid = 1
+                        else:
+                            orderid = ocounter["coupon"]
+                        ocounter["coupon"] = orderid
+                        print(ocounter["coupon"])
 
-                with shelve.open("DB/products/ordercount.db", writeback=True) as ocounter:
-                    if "coupon" not in ocounter:
-                        orderid = 1
-                    else:
-                        orderid = ocounter["coupon"]
-                    ocounter["coupon"] = orderid
-                    print(ocounter["coupon"])
-
-                    class Order:
-                        def __init__(self, id, item):
-                            self.id = id
-                            self.item = item
-
-                        def get_id(self):
-                            return self.id
-
-                        def get_item(self):
-                            return self.item
-
-                products_dict = {}
-                with shelve.open('DB/products/product.db', 'w') as prdb:
-                    if 'Products' in prdb:
-                        products_dict = prdb['Products']
-                    product = products_dict.get(id)
-
-                    order = Order(orderid, product)
-                    orders_dict[order.get_id()] = order
+                        order = Order(orderid, product)
+                        orders_dict[order.get_id()] = order
 
         except IOError as ex:
-            print(f"Error in trying to open order.db in payment page - {ex}")
-
+            print(f"Error in trying to open product.db in payment page (Order and payment page) - {ex}")
         return redirect(url_for('productr.orders'))
 
     else:
@@ -135,12 +114,11 @@ def productpayment(id):
 @productr.route('/orders')
 def orders():
     orders_list = []
-    prod_list = []
     try:
         orders_dict = {}
         with shelve.open('DB/products/order.db', 'r') as db:
-            if 'Order' in db:
-                orders_list = db['Products']
+            if 'Orders' in db:
+                orders_list = db['Orders']
             for key in orders_list:
                 order = orders_dict.get(key)
                 orders_list.append(order)

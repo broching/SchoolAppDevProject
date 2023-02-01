@@ -18,7 +18,8 @@
             {{ render_field(form.appointment_date, class="form-control") }}
         </div>
     <div class="form-group">
-            {{ render_field(form.appointment_time, class="form-control") }}
+            {{form.csrt_token}}
+            {{render_field(form.appointment_date, class="datepicker") }}
         </div>
 
     </div>

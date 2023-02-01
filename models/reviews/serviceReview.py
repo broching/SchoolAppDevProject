@@ -3,8 +3,8 @@ class serviceReview:
 
     def __init__(self, service_selection, service_rating, service_comment, service_image, service_video):
         serviceReview.count_id += 1
-        self.__service_selection = service_selection
         self.__service_id = serviceReview.count_id
+        self.__service_selection = service_selection
         self.__service_rating = service_rating
         self.__service_comment = service_comment
         self.__service_image = service_image

@@ -1,7 +1,14 @@
-class productReview:
+from datetime import datetime
 
-    def __init__(self, product_id, product_rating, product_comment, product_image, product_video):
-        self.__product_id = product_id
+
+class productReview:
+    unique_id = datetime.now()
+    unique_id = int(unique_id.strftime('%Y%m%d%H%M%S'))
+    count_id = 0
+
+    def __init__(self, product_rating, product_comment, product_image, product_video):
+        productReview.count_id += 1
+        self.__product_id = productReview.unique_id
         self.__product_rating = product_rating
         self.__product_comment = product_comment
         self.__product_image = product_image
