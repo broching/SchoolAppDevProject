@@ -23,18 +23,27 @@ class Avatar:
         base_image.save("static/media/images/avatar_assets/images/"+name+".png", "PNG")
         self.image = "static/media/images/avatar_assets/images/"+name+".png"
 
+    def next_hairstyle(self):
+        hairstyle_dir = os.listdir(hairstyle_path)
+        hairstyle_assets = [hairstyle_path + "/" + hairstyle for hairstyle in hairstyle_dir]
+        index = hairstyle_assets.index(self.hairstyle)
+        if index == len(hairstyle_assets) - 1:
+            self.hairstyle = hairstyle_assets[0]
+        else:
+            self.hairstyle = hairstyle_assets[index + 1]
+        print(len(hairstyle_assets), index)
 
-hairstyle_dir = os.listdir("static/media/images/avatar_assets/hairstyles")
-hairstyle_assets = ["static/media/images/avatar_assets/hairstyles/"+hairstyle for hairstyle in hairstyle_dir]
 
+hairstyle_path = "static/media/images/avatar_assets/hairstyles"
+hairstyle_dir = os.listdir(hairstyle_path)
+hairstyle_assets = [hairstyle_path+"/"+hairstyle for hairstyle in hairstyle_dir]
 
 faceshape_dir = os.listdir("static/media/images/avatar_assets/faceshape")
 faceshape_assets = ["static/media/images/avatar_assets/faceshape/"+faceshape for faceshape in faceshape_dir]
 
-
 eyes_dir = os.listdir("static/media/images/avatar_assets/eyes")
 eyes_assets = ["static/media/images/avatar_assets/eyes/"+eyes for eyes in eyes_dir]
 
-
 lips_dir = os.listdir("static/media/images/avatar_assets/lips")
 lips_assets = ["static/media/images/avatar_assets/lips/"+lips for lips in lips_dir]
+

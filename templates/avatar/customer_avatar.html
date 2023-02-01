@@ -19,20 +19,26 @@ Avatar Customisation Page
 <div class="container">
     <div class="row">
         <div class="col-sm">
-            -
+            {% for avatar in avatar_list %}
+               <img src="{{ avatar.image }}" width="300" height="400">
+                <form method="POST">
+                    <input type="submit" name="delete" value="delete">
+                </form>
+            {% endfor %}
         </div>
+
         <div class="col-sm">
-            -
-        </div>
-        <div class="col-sm">
-            -
+            <form method="POST">
+                <input type="submit" name="next hairstyle" value="next hairstyle">
+            </form>
+            <form method="POST">
+                <input type="submit" name="save" value="save">
+            </form>
         </div>
         <div class="col-lg">
             <div>
+                <h1>Preview: </h1>
                 <img src="{{ avatar.image }}" alt="image">
-                <form method="POST">
-                    <input type="submit">
-                </form>
             </div>
         </div>
     </div>
