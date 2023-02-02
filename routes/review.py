@@ -5,6 +5,9 @@ from models.reviews.serviceReview import serviceReview
 from models.reviews.createProductReview import CreateProductReview
 from models.reviews.createServiceReview import CreateServiceReview
 
+from models.reviews.product_review_functions import save_image
+
+
 review = Blueprint('review', __name__)
 
 
@@ -16,7 +19,7 @@ def reviews():
 @review.route('/createProductReview', methods=['GET', 'POST'])
 def createProductReview():
     create_product_review_form = CreateProductReview(request.form)
-    if request.method == 'POST' and create_product_review_form.validate():
+    if request.method == 'POST' and create_product_review_form.submit_p.data:
         try:
             with shelve.open('DB/reviews/productReviews/productReview.db', 'c') as db:
                 product_reviews_dict = {}
@@ -27,6 +30,14 @@ def createProductReview():
                                                create_product_review_form.product_image.data,
                                                create_product_review_form.product_video.data)
                 product_review.set_product_id(product_review.get_product_id())
+
+                print(type(create_product_review_form.product_image.data))
+
+
+                # save image
+                if create_product_review_form.product_image.data:
+                    image_file_name = save_image(create_product_review_form.product_image.data)
+                    product_review.set_product_image(image_file_name)
 
                 product_reviews_dict[product_review.get_product_id()] = product_review
                 db['Product_Reviews'] = product_reviews_dict
