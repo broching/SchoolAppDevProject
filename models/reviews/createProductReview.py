@@ -4,16 +4,17 @@ from wtforms import Form, StringField, TextAreaField, validators, SelectField, I
 
 from models.reviews.productReview import productReview
 
+def validate():
+    if not validators.DataRequired():
+        raise "Please enter required data."
 
-class CreateProductReview(FlaskForm):
+class CreateProductReview(Form):
     product_rating = RadioField('Product Rating', [validators.DataRequired()],
                                 choices=[('1', '1'), ('2', '2'),
                                          ('3', '3'), ('4', '4'), ('5', '5')], default='')
 
-    product_comment = TextAreaField('Write your review here', [validators.Optional()])
+    product_comment = TextAreaField('Write your review here', [validators.DataRequired()])
 
-    product_image = FileField('Upload your image', [validators.Optional()])
+    product_image = FileField('Upload your image', [validators.DataRequired()])
 
     product_video = FileField('Upload your video', [validators.Optional()])
-
-    submit_p = SubmitField('Submit')

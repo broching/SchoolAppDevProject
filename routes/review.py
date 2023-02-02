@@ -19,7 +19,7 @@ def reviews():
 @review.route('/createProductReview', methods=['GET', 'POST'])
 def createProductReview():
     create_product_review_form = CreateProductReview(request.form)
-    if request.method == 'POST' and create_product_review_form.submit_p.data:
+    if request.method == 'POST' and create_product_review_form.validate():
         try:
             with shelve.open('DB/reviews/productReviews/productReview.db', 'c') as db:
                 product_reviews_dict = {}
