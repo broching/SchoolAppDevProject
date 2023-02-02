@@ -31,7 +31,8 @@ class Avatar:
             self.hairstyle = hairstyle_assets[0]
         else:
             self.hairstyle = hairstyle_assets[index + 1]
-        print(len(hairstyle_assets), index)
+
+
 
 
 hairstyle_path = "static/media/images/avatar_assets/hairstyles"
