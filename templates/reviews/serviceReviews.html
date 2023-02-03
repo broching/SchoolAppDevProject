@@ -22,25 +22,30 @@
         <table class="table table-striped">
 
             <thead>
-            <tr class="tarow1first">
-                <th>Service</th>
-                <th style="width: 300px;">Image</th>
-                <th style="width: 300px;">Video</th>
-                <th style="width: 100px;">Rating</th>
-                <th style="width: 400px;">Comment</th>
+             <tr class="tarow1first">
+                <th style="font-size: 150%;">Service Ratings</th>
             </tr>
             </thead>
 
             <tbody>
             {% for service_review in service_reviews_list %}
             <tr>
-                <td>{{ service_review.get_service_selection() }}</td>
-                <td style="width: 100px; height: 100px; padding: 5px"><img
-                        src="../../static/media/images/reviews/service_reviews/{{ service_review.get_service_image() }}"
-                        style="height: 90px; width: 90px; border-radius: 5px;"></td>
-                <td>{{ service_review.get_service_video() }}</td>
-                <td>{{ service_review.get_service_rating() }}</td>
-                <td>{{ service_review.get_service_comment() }}</td>
+                <td>
+                    <p><b>Service Selected: </b>{{ service_review.get_service_selection() }}</p> <br>
+                    <p><b>Rating: </b> {{ service_review.get_service_rating() }} </p> <br>
+                    <p><b>Image </b> <br>
+
+                    {{ service_review.get_service_image() }}
+
+                    <p style="width: 100px; height: 100px; padding: 5px"><img
+                            src="../../static/media/images/reviews/service_reviews/{{ service_review.get_service_image() }}"
+                            style="height: 90px; width: 90px; border-radius: 5px;"></p>
+                    <p><b>Video </b> {{ service_review.get_service_video() }} </p> <br>
+                     <p><b>Comment </b> {{ service_review.get_service_comment() }} </p> <br>
+                    <p><b>Unique ID </b> {{ service_review.get_service_id() }} </p> <br>
+
+
+                </td>
                 <td>
                     <form action="{{url_for('review.deleteServiceReview', id=service_review.get_service_id())}}"
                           method="POST">

@@ -1,7 +1,7 @@
 class serviceReview:
     count_id = 0
 
-    def __init__(self, service_selection, service_rating, service_comment, service_image, service_video):
+    def __init__(self, service_selection, service_rating, service_image, service_video, service_comment ):
         serviceReview.count_id += 1
         self.__service_id = serviceReview.count_id
         self.__service_selection = service_selection

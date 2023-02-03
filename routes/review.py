@@ -7,8 +7,8 @@ from models.reviews.createServiceReview import CreateServiceReview
 
 from models.reviews.product_review_functions import save_image
 
-
 review = Blueprint('review', __name__)
+
 
 @review.route('/createProductReview', methods=['GET', 'POST'])
 def createProductReview():
@@ -26,7 +26,6 @@ def createProductReview():
                 product_review.set_product_id(product_review.get_product_id())
 
                 print(type(create_product_review_form.product_image.data))
-
 
                 # save image
                 if create_product_review_form.product_image.data:
@@ -61,7 +60,6 @@ def productReviews():
     return render_template('reviews/productReviews.html', count=len(product_reviews_list),
                            product_reviews_list=product_reviews_list)
 
-
 @review.route('/deleteProductReview/<int:id>', methods=['POST'])
 def deleteProductReview(id):
     product_reviews_dict = {}
@@ -75,6 +73,7 @@ def deleteProductReview(id):
     except IOError as ex:
         print(f"Error in retrieving product reviews from productReviews.db - {ex}")
     return redirect(url_for('review.productReviews'))
+
 
 @review.route('/productRating')
 def productRating():
@@ -91,16 +90,11 @@ def createServiceReview():
                 if 'Service_Reviews' in db:
                     service_reviews_dict = db['Service_Reviews']
                 service_review = serviceReview(create_service_review_form.service_selection.data,
+                                               create_service_review_form.service_rating.data,
                                                create_service_review_form.service_image.data,
                                                create_service_review_form.service_video.data,
-                                               create_service_review_form.service_rating.data,
                                                create_service_review_form.service_comment.data)
                 service_review.set_service_id(service_review.get_service_id())
-
-                # save image
-                if create_service_review_form.service_image.data:
-                    image_file_name = save_image(create_service_review_form.service_image.data)
-                    service_review.set_service_image(image_file_name)
 
                 service_reviews_dict[service_review.get_service_id()] = service_review
                 db['Service_Reviews'] = service_reviews_dict
