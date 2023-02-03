@@ -4,9 +4,6 @@ from wtforms import Form, StringField, TextAreaField, validators, SelectField, I
 
 from models.reviews.productReview import productReview
 
-def validate():
-    if not validators.DataRequired():
-        raise "Please enter required data."
 
 class CreateProductReview(Form):
     product_rating = RadioField('Product Rating', [validators.DataRequired()],
@@ -18,3 +15,7 @@ class CreateProductReview(Form):
     product_image = FileField('Upload your image', [validators.DataRequired()])
 
     product_video = FileField('Upload your video', [validators.Optional()])
+
+    image = FileField("Product image", [
+        # validators.DataRequired(message="Image is required")
+    ])

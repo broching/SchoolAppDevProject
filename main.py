@@ -15,6 +15,8 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = "64169bc491f8cb891fc0417d2eb29bb5"
 app.config["PRODUCT_UPLOAD"] = 'static/media/images/product'
 app.config["PRODUCTREVIEW_UPLOAD"] = 'static/media/images/reviews/product_reviews'
+app.config["SERVICEREVIEW_UPLOAD"] = 'static/media/images/reviews/service_reviews'
+
 
 
 # registered blueprints to app
