@@ -21,9 +21,6 @@ Avatar Customisation Page
         <div class="col-sm">
             {% for avatar in avatar_list %}
                <img src="{{ avatar.image }}" width="300" height="400">
-                <form method="POST">
-                    <input type="submit" name="delete" value="delete">
-                </form>
             {% endfor %}
         </div>
 
