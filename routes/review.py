@@ -25,7 +25,7 @@ def createProductReview():
                                                create_product_review_form.product_video.data)
                 product_review.set_product_id(product_review.get_product_id())
 
-                print(type(create_product_review_form.product_image.data))
+                # print(type(create_product_review_form.product_image.data))
 
                 # save image
                 if create_product_review_form.product_image.data:
