@@ -1,5 +1,5 @@
 import shelve, os
-from flask import Blueprint, render_template, request, session
+from flask import Blueprint, render_template, request, session, redirect, url_for
 from models.avatar.Avatar import *
 
 avatar_blueprint = Blueprint('avatar', __name__)
@@ -15,8 +15,10 @@ def avatar():
     if "customer" in session:
         user_id = session["customer"].get("_Account__user_id")
         user_id = str(user_id)
+    elif "staff" in session:
+        return redirect(url_for('avatar.avatarStaff'))
     else:
-        pass
+        return redirect(url_for('auth.customer_login'))
 
     try:
         with shelve.open("DB/avatar_temporary/avatar_lists", "c") as db:
@@ -51,19 +53,18 @@ def avatar():
 
     return render_template('avatar/customer_avatar.html', preview=preview, avatar_list=avatar_list)
 
-# @avatar_blueprint.route("/avatarStaff", methods=['GET', 'POST'])
-# def avatarStaff():
-#     hairstyle_dir = os.listdir(hairstyle_path)
-#     hairstyle_assets = [hairstyle_path + "/" + hairstyles for hairstyles in hairstyle_dir]
-#     total_assets = [hairstyle_assets, faceshape_assets, eyes_assets, lips_assets]
-#     assets = total_assets
-#     return render_template('avatar/staff_avatar.html', assets=assets, enumerate=enumerate)
-#
-#
-# @avatar_blueprint.route('/success', methods = ['POST'])
-# def success():
-#     if request.method == 'POST':
-#         f = request.files['file']
-#         f.save("static/media/images/avatar_assets/hairstyles/"+f.filename)
-#         return render_template("avatar/acknowledgement.html", name=f.filename)
+@avatar_blueprint.route("/avatarStaff", methods=['GET', 'POST'])
+def avatarStaff():
+    hairstyle_dir = os.listdir(hairstyle_path)
+    hairstyle_assets = [hairstyle_path + "/" + hairstyles for hairstyles in hairstyle_dir]
+    total_assets = [hairstyle_assets, faceshape_assets, eyes_assets, lips_assets]
+    assets = total_assets
+    return render_template('avatar/staff_avatar.html', assets=assets, enumerate=enumerate)
 
+
+@avatar_blueprint.route('/success', methods = ['POST'])
+def success():
+    if request.method == 'POST':
+        f = request.files['file']
+        f.save("static/media/images/avatar_assets/hairstyles/"+f.filename)
+        return render_template("avatar/acknowledgement.html", name=f.filename)
