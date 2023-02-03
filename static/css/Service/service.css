@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,500;1,100&display=swap');
+
+/*CSS Variables*/
+:root {
+    --font-roboto: 'Roboto', sans-serif;
+}
+
+.h2{
+    text-align: center;
+}
+
+.h1{
+    text-align:center;
+}
+
+.container{
+    text-align:center;
+
+}
+
+.insideservicerow{
+    text-align:center;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.grid-container_services_home{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 40px;
+}
+.form{
+    border-radius:10px;
+}
+
+

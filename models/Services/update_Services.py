@@ -10,8 +10,6 @@ class update_Service:
     def get_service(self):
         return self.__service
 
-    def get_service_id(self):
-        return self.__service_id
 
     def get_hairstylist(self):
         return self.__hairstylist

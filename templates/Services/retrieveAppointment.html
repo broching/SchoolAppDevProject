@@ -15,27 +15,22 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Gender</th>
-            <th>Membership_ID</th>
+            <th>service</th>
+            <th>hairstylist</th>
             <th>Appointment Date</th>
             <th>Appointment Time</th>
-            <th>Remarks</th>
             <th></th>
             <th></th>
         </tr>
         </thead>
         <tbody>
-        {% for service in apppointment_list %}
+        {% for service in apppt_list %}
         <tr>
-            <td>{{ service.get_first_Name() }}</td>
-            <td>{{ service.get_last_name() }}</td>
-            <td>{{ service.get_gender() }}</td><br>
-            <td>{{ service.get_membership_ID() }}</td>
+            <td>{{ service.get_service()}}</td>
+            <td>{{ service.get_hairstylist()}}</td>
             <td>{{service.get_appointment_date()}}</td>
             <td>{{service.get_appointment_time()}}</td>
-            <td><a href="/addNewServiceform{{Service.get_membership_ID}}" class="btn btn-warning">Update</a></td>
+            <td><a href="/addNewServiceform{{Service.get_hairstylist}}" class="btn btn-warning">Update</a></td>
             <td>
                 <form action="" method="POST">
                     <input type="submit" value="Delete" class="btn btn-danger">

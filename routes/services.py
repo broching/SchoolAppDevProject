@@ -1,5 +1,7 @@
+import os
 import shelve
 
+import flask
 from flask import Blueprint, render_template, request, url_for, redirect, Flask, session
 from wtforms import form
 
@@ -21,12 +23,34 @@ def services():
     return render_template('services/services.html')
 
 
+@service.route('/Services/haircut.html')
+def haircut():
+    return render_template('Services/haircut.html')
+
+
+@service.route('/Services/hairwash.html')
+def hairwash():
+    return render_template('Services/hairwash.html')
+
+
+@service.route('/Services/hairstyling.html')
+def hairstyling():
+    return render_template('Services/hairstyling.html')
+
+
+@service.route('/Services/hairdye.html')
+def hairdyeing():
+    return render_template('Services/hairdye.html')
+
+
 @service.route('/Services/addNewServiceform')
 def add_new_service():
     form = AddNewService()
     return render_template('Services/addNewServiceform.html',
                            form=form)
 
+
+# routes for appointment booking
 
 @service.route('/addNewServiceform')
 def appointment():
@@ -93,90 +117,88 @@ def date():
     return render_template('date.html')
 
 
-@service.route('/Services/updateServices', methods=['POST', 'GET'])
-def update_service():
-    form = update_service_form()
-    print("1")
-    update_Service_form = update_service_form(request.form)
-    if request.method == 'POST' and update_Service_form.validate():
-        print("Test")
+# Route for update service forms
+@service.route('/Services/updateServices', methods=['GET', 'POST'])
+def add_new():
+    add_new_form=update_service_form(request.form)
+    if request.method=='POST' and add_new_form.validate():
+        appt_dict={}
+        db=shelve.open('service.db','c')
         try:
-            with shelve.open('service.db', 'c') as db:
-
-                update_Service_dict = {}
-
-                return ("Uppdate Succesful")
-        except IOError as ex:
-            print("Error in retrieving Appointment")
-
-    try:
-        updateService_dict = {}
-        with shelve.open('/Services/Updateservice.db', 'r') as db:
-            if 'update_Service' in db:
-                Service_dict = db['Service']
-            for key in updateService_dict:
-                update_Service = updateService_dict.get(key)
-                updateService_list.append(update_Service)
-    except IOError as ex:
-        print(f"Error in retrieving customers from updateService.db - {ex}")
-        return render_template("/Services/service.html")
-    except Exception as ex:
-        print(f"Unknown error in retrieving appointment from Updateservice.db - {ex}")
-        return render_template('Services/updateServices.html', form=form)
+            appt_dict=db['hairstylist']
+        except:
+            print("Error in retrieving appointment records from service.db")
+        service=Service.Service(add_new_form.service.data,
+                                add_new_form.hairstylist.data,
+                                add_new_form.appointment_time.data,
+                                add_new_form.appointment_date.data
+                                )
+        appt_dict[service.get_hairstylist()]=service
+        db['hairstylist']=appt_dict
+        db.close()
+        return redirect('/Services/retrieveAppointment.html')
+    return render_template('/Services/updateServices.html',form=add_new_form)
 
 
-@service.route('/Services/updateService', methods=['POST', 'GET'])
-def update_Service():
-    print("1")
-    update_Service_form = update_service_form(request.form)
-    if request.method == 'POST' and update_Service_form.validate():
-        try:
-            with shelve.open('service.db', 'c') as db:
 
-                update_Service_dict = {}
-                if 'service' in db:
-                    update_Service_dict = db['Service']
-                service = Service(update_Service_form.service.data,
-                                  update_Service_form.service_id.data,
-                                  update_Service_form.hairstylist.data,
-                                  update_Service_form.appointment_date.data,
-                                  update_Service_form.appointment_time.data,
-                                  update_Service_form.remarks.data)
+@service.route("/Services/retrieveAppointment")
+def retrieve_appt():
+    appt_dict = {}
+    db = shelve.open("service.db", 'r')
+    appt_dict = db['key']
+    db.close()
 
-                service.set_service_id(service.get_service_id())
-
-                update_Service_dict[service.get_service_id()] = update_service
-                db['service'] = update_Service_dict
-                return ("Submission Succesful")
-        except IOError as ex:
-            print("Error in retrieving Appointment")
-            return render_template('/Services/servicebase.html', form=update_service_form)
-
-    else:
-        return render_template('/Services/addNewService.html', form=update_service_form)
+    appt_list = []
+    for key in appt_dict:
+        appt = appt_dict.get(key)
+        appt_list.append(appt)
+    return render_template('/Services/retrieveAppointment.html', count=len(appt_list), appt_list=appt_list)
 
 
-@service.route('/Services/updateServices.html', methods=['GET', 'POST']) #Datepicker-update service
+# @service.route('/Services/updateService', methods=['POST', 'GET'])
+# def update_Service():
+#     print("1")
+#     update_Service_form = update_service_form(request.form)
+#     if request.method == 'POST' and update_Service_form.validate():
+#         try:
+#             with shelve.open('service.db', 'c') as db:
+#
+#                 update_Service_dict = {}
+#                 if 'service' in db:
+#                     update_Service_dict = db['Service']
+#                 service = Service(update_Service_form.service.data,
+#                                   update_Service_form.service_id.data,
+#                                   update_Service_form.hairstylist.data,
+#                                   update_Service_form.appointment_date.data,
+#                                   update_Service_form.appointment_time.data,
+#                                   update_Service_form.remarks.data)
+#
+#                 service.set_service_id(service.get_service_id())
+#
+#                 update_Service_dict[service.get_service_id()] = update_service
+#                 db['service'] = update_Service_dict
+#                 return ("Submission Succesful")
+#         except IOError as ex:
+#             print("Error in retrieving Appointment")
+#             return render_template('/Services/servicebase.html', form=update_service_form)
+#
+#     else:
+#         return render_template('/Services/addNewService.html', form=update_service_form)
+
+
+@service.route('/Services/updateServices.html', methods=['GET', 'POST'])  # Datepicker-update service
 def add_appt_date():
-    form=update_service_form
+    form = update_service_form
     if form.validate_on_submit():
-        session['add_appointment_date']=form.appointment_date.data
+        session['add_appointment_date'] = form.appointment_date.data
         return redirect('/Services/updateService.html')
-    return render_template('/Services/servicebase.html',form=update_service_form)
-@service.route('/date',methods=['GET','POST'])
+    return render_template('/Services/servicebase.html', form=update_service_form)
+
+
+@service.route('/date', methods=['GET', 'POST'])
 def appointmentDate():
-    appointment_Date=session['appointment_date']
+    appointment_Date = session['appointment_date']
     return render_template('/Services/retrieveAppoinment.html')
-
-
-
-
-
-
-
-
-
-
 
 # return render_template('/Services/retrieveAppointment.html')
 
