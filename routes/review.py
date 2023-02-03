@@ -10,12 +10,6 @@ from models.reviews.product_review_functions import save_image
 
 review = Blueprint('review', __name__)
 
-
-@review.route('/reviews')
-def reviews():
-    return render_template('reviews/reviews.html')
-
-
 @review.route('/createProductReview', methods=['GET', 'POST'])
 def createProductReview():
     create_product_review_form = CreateProductReview(request.form)
@@ -97,11 +91,16 @@ def createServiceReview():
                 if 'Service_Reviews' in db:
                     service_reviews_dict = db['Service_Reviews']
                 service_review = serviceReview(create_service_review_form.service_selection.data,
-                                               create_service_review_form.service_rating.data,
-                                               create_service_review_form.service_comment.data,
                                                create_service_review_form.service_image.data,
-                                               create_service_review_form.service_video.data)
+                                               create_service_review_form.service_video.data,
+                                               create_service_review_form.service_rating.data,
+                                               create_service_review_form.service_comment.data)
                 service_review.set_service_id(service_review.get_service_id())
+
+                # save image
+                if create_service_review_form.service_image.data:
+                    image_file_name = save_image(create_service_review_form.service_image.data)
+                    service_review.set_service_image(image_file_name)
 
                 service_reviews_dict[service_review.get_service_id()] = service_review
                 db['Service_Reviews'] = service_reviews_dict

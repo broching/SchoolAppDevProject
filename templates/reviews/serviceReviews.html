@@ -34,18 +34,19 @@
             <tbody>
             {% for service_review in service_reviews_list %}
             <tr>
-                <td style="width: 100px; height: 100px; padding: 5px">{{ service_review.get_service_image() }}</td>
                 <td>{{ service_review.get_service_selection() }}</td>
-                <td>{{ service_review.get_service_image() }}</td>
+                <td style="width: 100px; height: 100px; padding: 5px"><img
+                        src="../../static/media/images/reviews/service_reviews/{{ service_review.get_service_image() }}"
+                        style="height: 90px; width: 90px; border-radius: 5px;"></td>
                 <td>{{ service_review.get_service_video() }}</td>
                 <td>{{ service_review.get_service_rating() }}</td>
                 <td>{{ service_review.get_service_comment() }}</td>
                 <td>
-                    <form action="{{url_for('review.deleteServiceReview', id=service_review.get_service_id())}}" method="POST">
+                    <form action="{{url_for('review.deleteServiceReview', id=service_review.get_service_id())}}"
+                          method="POST">
                         <input type="submit" value="X" class="btn btn-danger">
                     </form>
                 </td>
-
 
 
             </tr>
