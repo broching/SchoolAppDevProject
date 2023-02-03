@@ -25,12 +25,7 @@ def createProductReview():
                                                create_product_review_form.product_video.data)
                 product_review.set_product_id(product_review.get_product_id())
 
-                # print(type(create_product_review_form.product_image.data))
 
-                # save image
-                if create_product_review_form.product_image.data:
-                    image_file_name = save_image(create_product_review_form.product_image.data)
-                    product_review.set_product_image(image_file_name)
 
                 product_reviews_dict[product_review.get_product_id()] = product_review
                 db['Product_Reviews'] = product_reviews_dict
