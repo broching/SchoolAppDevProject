@@ -15,7 +15,6 @@ def avatar():
     if "customer" in session:
         user_id = session["customer"].get("_Account__user_id")
         user_id = str(user_id)
-        print(user_id)
     else:
         pass
 
@@ -27,16 +26,17 @@ def avatar():
                     os.makedirs(path)
 
                 db[user_id] = [stock, []]
-                print("not in db")
             else:
-                print("in db")
+                pass
 
             preview, avatar_list = db[user_id][0], db[user_id][1]
 
             if request.method == "POST":
-                if 'next hairstyle' in request.form:
-                    preview.next_hairstyle()
-                    preview.save_avatar(user_id+"/preview")
+                if 'next' in request.form:
+                    attr = (request.form["next"])
+
+                    preview.next(attr)
+                    preview.save_avatar(user_id + "/preview")
                     db[user_id] = [preview, avatar_list]
 
                 elif 'save' in request.form:
@@ -54,7 +54,7 @@ def avatar():
 # @avatar_blueprint.route("/avatarStaff", methods=['GET', 'POST'])
 # def avatarStaff():
 #     hairstyle_dir = os.listdir(hairstyle_path)
-#     hairstyle_assets = [hairstyle_path + "/" + hairstyle for hairstyle in hairstyle_dir]
+#     hairstyle_assets = [hairstyle_path + "/" + hairstyles for hairstyles in hairstyle_dir]
 #     total_assets = [hairstyle_assets, faceshape_assets, eyes_assets, lips_assets]
 #     assets = total_assets
 #     return render_template('avatar/staff_avatar.html', assets=assets, enumerate=enumerate)

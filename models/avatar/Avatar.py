@@ -2,8 +2,8 @@ import os
 from PIL import Image
 
 class Avatar:
-    def __init__(self, hairstyle, faceshape, eyes, lips, image):
-        self.hairstyle = hairstyle
+    def __init__(self, hairstyles, faceshape, eyes, lips, image):
+        self.hairstyles = hairstyles
         self.faceshape = faceshape
         self.eyes = eyes
         self.lips = lips
@@ -13,7 +13,7 @@ class Avatar:
         base_image = Image.open(self.faceshape)
         img2 = Image.open(self.eyes)
         img3 = Image.open(self.lips)
-        img4 = Image.open(self.hairstyle)
+        img4 = Image.open(self.hairstyles)
 
         img = [img2, img3, img4]
 
@@ -23,28 +23,39 @@ class Avatar:
         base_image.save("static/media/images/avatar_assets/images/"+name+".png", "PNG")
         self.image = "static/media/images/avatar_assets/images/"+name+".png"
 
-    def next_hairstyle(self):
-        hairstyle_dir = os.listdir(hairstyle_path)
-        hairstyle_assets = [hairstyle_path + "/" + hairstyle for hairstyle in hairstyle_dir]
-        index = hairstyle_assets.index(self.hairstyle)
-        if index == len(hairstyle_assets) - 1:
-            self.hairstyle = hairstyle_assets[0]
+    # def next_hairstyle(self):
+    #     hairstyle_dir = os.listdir(hairstyle_path)
+    #     hairstyle_assets = [hairstyle_path + "/" + hairstyle for hairstyle in hairstyle_dir]
+    #     index = hairstyle_assets.index(self.hairstyles)
+    #     if index == len(hairstyle_assets) - 1:
+    #         self.hairstyles = hairstyle_assets[0]
+    #     else:
+    #         self.hairstyles = hairstyle_assets[index + 1]
+
+    def next(self, attr):
+        path = "static/media/images/avatar_assets/"+attr
+        asset_dir = os.listdir(path)
+        assets = [path+"/"+asset for asset in asset_dir]
+
+        index = assets.index(getattr(self, attr))
+        if index == len(assets) - 1:
+            setattr(self, attr, assets[0])
         else:
-            self.hairstyle = hairstyle_assets[index + 1]
-
-
-
+            setattr(self, attr, assets[index + 1])
 
 hairstyle_path = "static/media/images/avatar_assets/hairstyles"
 hairstyle_dir = os.listdir(hairstyle_path)
 hairstyle_assets = [hairstyle_path+"/"+hairstyle for hairstyle in hairstyle_dir]
 
-faceshape_dir = os.listdir("static/media/images/avatar_assets/faceshape")
-faceshape_assets = ["static/media/images/avatar_assets/faceshape/"+faceshape for faceshape in faceshape_dir]
+faceshape_path = "static/media/images/avatar_assets/faceshape"
+faceshape_dir = os.listdir(faceshape_path)
+faceshape_assets = [faceshape_path+"/"+faceshape for faceshape in faceshape_dir]
 
-eyes_dir = os.listdir("static/media/images/avatar_assets/eyes")
-eyes_assets = ["static/media/images/avatar_assets/eyes/"+eyes for eyes in eyes_dir]
+eyes_path = "static/media/images/avatar_assets/eyes"
+eyes_dir = os.listdir(eyes_path)
+eyes_assets = [eyes_path+"/"+eyes for eyes in eyes_dir]
 
-lips_dir = os.listdir("static/media/images/avatar_assets/lips")
-lips_assets = ["static/media/images/avatar_assets/lips/"+lips for lips in lips_dir]
+lips_path = "static/media/images/avatar_assets/lips"
+lips_dir = os.listdir(lips_path)
+lips_assets = [lips_path+"/"+lips for lips in lips_dir]
 
