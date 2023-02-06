@@ -97,6 +97,8 @@ def get_customers(relative_path_to_db):
         print(f"Error occurred as {ex}")
     for customer in transfer_dict.values():
         customer_list.append(customer)
+    print(transfer_dict.values())
+    print(customer_list)
     return customer_list
 
 
@@ -111,6 +113,7 @@ def store_customer(customer_object, relative_path_to_db):
         else:
             db['customer'] = transfer_dict
         transfer_dict[customer_object.get_user_id()] = customer_object
+        print('The transfer dict after storing:', transfer_dict)
         db['customer'] = transfer_dict
         db.close()
     except IOError:
@@ -166,3 +169,26 @@ def is_valid_card_number(card_input):
     total = sum(card_input)
 
     return total % 10 == 0
+
+
+def store_credit_card(credit_card_object, relative_path_to_db):
+    """Stores credit card object inside the credit card database"""
+    try:
+        transfer_dict = {}
+        db = shelve.open(f"{relative_path_to_db}/credit_cards/credit_card", 'c')
+        if "credit_card" in db:
+            transfer_dict = db['credit_card']
+            print('The transfer dict before storing:', transfer_dict)
+        else:
+            db['credit_card'] = transfer_dict
+        transfer_dict[credit_card_object.get_card_id()] = credit_card_object
+        print(credit_card_object.get_card_id())
+        print(credit_card_object)
+        print(transfer_dict)
+        db['credit_card'] = transfer_dict
+        print(db['credit_card'])
+        db.close()
+    except IOError:
+        print("Error occurred while trying to open the shelve file")
+    except Exception as ex:
+        print(f"Error occurred as {ex}")

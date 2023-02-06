@@ -5,172 +5,124 @@ Customer Payment
 {% endblock title %}
 
 {% block content %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
 <link rel="stylesheet" href="../../static/css/account/customer_payment.css">
 
-<div class="wrapper" id="app">
-    <div class="card-form">
-      <div class="card-list">
-        <div class="card-item" v-bind:class="{ '-active' : isCardFlipped }">
-          <div class="card-item__side -front">
-            <div class="card-item__focus" v-bind:class="{'-active' : focusElementStyle }" v-bind:style="focusElementStyle" ref="focusElement"></div>
-            <div class="card-item__cover">
-              <img
-              v-bind:src="'https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/' + currentCardBackground + '.jpeg'" class="card-item__bg">
-            </div>
+<div class="container">
 
-            <div class="card-item__wrapper">
-              <div class="card-item__top">
-                <img src="https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/chip.png" class="card-item__chip">
-                <div class="card-item__type">
-                  <transition name="slide-fade-up">
-                    <img v-bind:src="'https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/' + getCardType + '.png'" v-if="getCardType" v-bind:key="getCardType" alt="" class="card-item__typeImg">
-                  </transition>
+    <div class="card-container">
+
+        <div class="front">
+            <div class="image">
+                <img src="../../static/media/images/credit_card_images/chip.png" alt="">
+                <img src="../../static/media/images/credit_card_images/visa.png" alt="">
+            </div>
+            <div class="card-number-box">################</div>
+            <div class="flexbox">
+                <div class="box">
+                    <span>card holder</span>
+                    <div class="card-holder-name">full name</div>
                 </div>
-              </div>
-              <label for="cardNumber" class="card-item__number" ref="cardNumber">
-                <template v-if="getCardType === 'amex'">
-                 <span v-for="(n, $index) in amexCardMask" :key="$index">
-                  <transition name="slide-fade-up">
-                    <div
-                      class="card-item__numberItem"
-                      v-if="$index > 4 && $index < 14 && cardNumber.length > $index && n.trim() !== ''"
-                    >*</div>
-                    <div class="card-item__numberItem"
-                      :class="{ '-active' : n.trim() === '' }"
-                      :key="$index" v-else-if="cardNumber.length > $index">
+                <div class="box">
+                    <span>expires</span>
+                    <div class="expiration">
+                        <span class="exp-month">mm/</span>
+                        <span class="exp-year">yy</span>
                     </div>
-                    <div
-                      class="card-item__numberItem"
-                      :class="{ '-active' : n.trim() === '' }"
-                      v-else
-                      :key="$index + 1"
-                    >{{n}}</div>
-                  </transition>
-                </span>
-                </template>
-
-                <template v-else>
-                  <span v-for="(n, $index) in otherCardMask" :key="$index">
-                    <transition name="slide-fade-up">
-                      <div
-                        class="card-item__numberItem"
-                        v-if="$index > 4 && $index < 15 && cardNumber.length > $index && n.trim() !== ''"
-                      >*</div>
-                      <div class="card-item__numberItem"
-                        :class="{ '-active' : n.trim() === '' }"
-                        :key="$index" v-else-if="cardNumber.length > $index">
-                      </div>
-                      <div
-                        class="card-item__numberItem"
-                        :class="{ '-active' : n.trim() === '' }"
-                        v-else
-                        :key="$index + 1"
-                      >{{n}}</div>
-                    </transition>
-                  </span>
-                </template>
-              </label>
-              <div class="card-item__content">
-                <label for="cardName" class="card-item__info" ref="cardName">
-                  <div class="card-item__holder">Card Holder</div>
-                  <transition name="slide-fade-up">
-                    <div class="card-item__name" v-if="cardName.length" key="1">
-                      <transition-group name="slide-fade-right">
-                        <span class="card-item__nameItem" v-for="(n, $index) in cardName.replace(/\s\s+/g, ' ')" v-if="$index === $index" v-bind:key="$index + 1">{{n}}</span>
-                      </transition-group>
-                    </div>
-                    <div class="card-item__name" v-else key="2">Full Name</div>
-                  </transition>
-                </label>
-                <div class="card-item__date" ref="cardDate">
-                  <label for="cardMonth" class="card-item__dateTitle">Expires</label>
-                  <label for="cardMonth" class="card-item__dateItem">
-                    <transition name="slide-fade-up">
-                      <span v-if="cardMonth" v-bind:key="cardMonth">{{cardMonth}}</span>
-                      <span v-else key="2">MM</span>
-                    </transition>
-                  </label>
-
-                  <label for="cardYear" class="card-item__dateItem">
-                    <transition name="slide-fade-up">
-                      <span v-if="cardYear" v-bind:key="cardYear"></span>
-                      <span v-else key="2">YY</span>
-                    </transition>
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="card-item__side -back">
-            <div class="card-item__cover">
-              <img
-              v-bind:src="'https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/' + currentCardBackground + '.jpeg'" class="card-item__bg">
-            </div>
-            <div class="card-item__band"></div>
-            <div class="card-item__cvv">
-                <div class="card-item__cvvTitle">CVV</div>
-                <div class="card-item__cvvBand">
-                  <span v-for="(n, $index) in cardCvv" :key="$index">
-                    *
-                  </span>
-
-              </div>
-                <div class="card-item__type">
-                    <img v-bind:src="'https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/' + getCardType + '.png'" v-if="getCardType" class="card-item__typeImg">
                 </div>
             </div>
-          </div>
         </div>
-      </div>
 
-      <form action="" method="post">
-        {{ form.hidden_tag() }}
-              <div class="card-form__inner">
-        <div class="card-input">
-          <label for="cardNumber" class="card-input__label">Card Number</label>
-          {{ form.card_number(id="cardNumber", class="card-input__input", autocomplete="off") }}
-          {% if error_messages['card_number'] %}
-            <p class="text-danger mb-1 pb-lg-1">{{error_messages['card_number']}}</p>
-          {% endif %}
-        </div>
-        <div class="card-input">
-          <label for="cardName" class="card-input__label">Card Holder</label>
-          {{ form.card_holder(id="cardHolder", class="card-input__input", autocomplete="off") }}
-          {% if error_messages['card_holder'] %}
-            <p class="text-danger mb-1 pb-lg-1">{{error_messages['card_holder']}}</p>
-          {% endif %}
-        </div>
-        <div class="card-form__row">
-          <div class="card-form__col">
-            <div class="card-form__group">
-              <label for="cardMonth" class="card-input__label">Expiration Date</label>
-
-              {{ form.expiration_month(id="cardMonth", class="card-input__input", option_attr={"division-0": {"disabled": ""} }) }}
-
-              {{ form.expiration_year(id="cardYear", class="card-input__input") }}
+        <div class="back">
+            <div class="stripe"></div>
+            <div class="box">
+                <span>cvv</span>
+                <div class="cvv-box"></div>
+                <img src="image/visa.png" alt="">
             </div>
-          </div>
-          <div class="card-form__col -cvv">
-            <div class="card-input" >
-              <label for="cardCvv" class="card-input__label">CVV</label>
-            {{ form.cvv(id="cvv", class="card-input__input", autocomplete='off', maxlength='4')}}
-            {% if error_messages['cvv'] %}
-            <p class="text-danger mb-1 pb-lg-1">{{error_messages['cvv']}}</p>
-            {% endif %}
-            </div>
-          </div>
         </div>
 
-        {{ form.submit(id="submit", class="card-form__button") }}
-      </div>
-      </form>
     </div>
 
+    <form action="{{url_for('account.customer_payment')}}" method="post">
+      {{ profile_credit_card_form.hidden_tag() }}
+        <div class="inputBox">
+            <span>card number</span>
+            {{ profile_credit_card_form.card_number(type='text', class="card-number-input", maxlength="16") }}
+            {% if error_messages['card_number'] %}
+            <p class="text-danger mb-1 pb-lg-1">{{error_messages['card_number']}}</p>
+            {% endif %}
+        </div>
+        <div class="inputBox">
+            <span>card holder</span>
+            {{ profile_credit_card_form.card_holder(type='text', class="card-holder-input", maxlength="30") }}
+            {% if error_messages['card_holder'] %}
+            <p class="text-danger mb-1 pb-lg-1">{{error_messages['card_holder']}}</p>
+            {% endif %}
+        </div>
+        <div class="flexbox">
+            <div class="inputBox">
+                <span>expiration mm</span>
+                {{ profile_credit_card_form.expiration_month(class="month-input") }}
+            </div>
+            <div class="inputBox">
+                <span>expiration yy</span>
+                {{ profile_credit_card_form.expiration_year(class="year-input") }}
+            </div>
+            <div class="inputBox">
+                <span>cvv</span>
+                {{ profile_credit_card_form.cvv(class="cvv-input") }}
+            </div>
+        </div>
+        {{ profile_credit_card_form.submit(class='submit-btn') }}
+    </form>
 
-  </div>
-<!-- partial -->
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js'></script>
-<script src='https://unpkg.com/vue-the-mask@0.11.1/dist/vue-the-mask.js'></script>
-<script src="../../static/js/account/customer_payment.js"></script>
+</div>
+
+
+
+
+
+
+<script>
+
+document.querySelector('.card-number-input').oninput = () =>{
+    document.querySelector('.card-number-box').innerText = document.querySelector('.card-number-input').value;
+}
+
+document.querySelector('.card-holder-input').oninput = () =>{
+    document.querySelector('.card-holder-name').innerText = document.querySelector('.card-holder-input').value;
+}
+
+document.querySelector('.month-input').oninput = () =>{
+    document.querySelector('.exp-month').innerText = document.querySelector('.month-input').value + '/';
+}
+
+document.querySelector('.year-input').oninput = () =>{
+    document.querySelector('.exp-year').innerText = document.querySelector('.year-input').value;
+}
+
+document.querySelector('.cvv-input').onmouseenter = () =>{
+    document.querySelector('.front').style.transform = 'perspective(1000px) rotateY(-180deg)';
+    document.querySelector('.back').style.transform = 'perspective(1000px) rotateY(0deg)';
+}
+
+document.querySelector('.cvv-input').onmouseleave = () =>{
+    document.querySelector('.front').style.transform = 'perspective(1000px) rotateY(0deg)';
+    document.querySelector('.back').style.transform = 'perspective(1000px) rotateY(180deg)';
+}
+
+document.querySelector('.cvv-input').oninput = () =>{
+    document.querySelector('.cvv-box').innerText = document.querySelector('.cvv-input').value;
+}
+
+</script>
+
+
+
+
+
+
+
+
+
 {% endblock content %}
