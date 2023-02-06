@@ -3,13 +3,11 @@ from bcrypt import hashpw, gensalt
 
 
 class Account:
-    time = datetime.now()
-    time = int(round(time.timestamp()))
-    user_count = 0
 
     def __init__(self, username, email, password_hash):
-        Account.user_count += 1
-        self.__user_id = Account.time
+        time = datetime.now()
+        time = int(round(time.timestamp()))
+        self.__user_id = time
         self.__username = username
         self.__email = email
         self.__password_hash = hashpw(password_hash.encode(), gensalt())
@@ -90,12 +88,12 @@ class Customer(Account):
         Customer.customer_count += 1
         self.__account_type = "customer"
         self.__user_id = "C" + str(self.get_user_id())
-        self.__cart = None
-        self.__wish_list = None
-        self.__booked_services = None
-        self.__payment_details = None
-        self.__customizations = None
-        self.__billing_history = None
+        self.__cart = []
+        self.__wish_list = []
+        self.__booked_services = []
+        self.__payment_details = []
+        self.__customizations = []
+        self.__billing_history = []
 
     def get_cart(self):
         return self.__cart

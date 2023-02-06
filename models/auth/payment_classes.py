@@ -1,16 +1,9 @@
 class CreditCard:
-    def __init__(self, card_type, card_number, card_name, card_cvv, card_expiry):
-        self.__card_type = card_type
+    def __init__(self, card_number, card_name, card_cvv, card_expiry):
         self.__card_number = card_number
         self.__card_name = card_name
         self.__card_cvv = card_cvv
         self.__card_expiry = card_expiry
-
-    def get_card_type(self):
-        return self.__card_type
-
-    def set_card_type(self, card_type):
-        self.__card_type = card_type
 
     def get_card_number(self):
         return self.__card_number

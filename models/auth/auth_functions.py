@@ -107,6 +107,7 @@ def store_customer(customer_object, relative_path_to_db):
         db = shelve.open(f"{relative_path_to_db}/account/customer/customer", 'c')
         if "customer" in db:
             transfer_dict = db['customer']
+            print('The transfer dict before storing:', transfer_dict)
         else:
             db['customer'] = transfer_dict
         transfer_dict[customer_object.get_user_id()] = customer_object
@@ -151,3 +152,17 @@ def customer_login_authentication(username_email, password, relative_path_to_db)
 def account_to_dictionary_converter(account_object):
     account_dict = vars(account_object)
     return account_dict
+
+
+def is_valid_card_number(card_input):
+    card_input = card_input[::- 1]
+    card_input = [int(x) for x in card_input]
+    for i in range(1, len(card_input), 2):
+        card_input[i] *= 2
+
+        if card_input[i] > 9:
+            card_input[i] = card_input[i] % 10 + 1
+
+    total = sum(card_input)
+
+    return total % 10 == 0

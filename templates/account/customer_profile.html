@@ -45,51 +45,50 @@
                                 <!-- Form Group (username)-->
                                 <div class="mb-3">
                                     {{ update_profile_form.username.label(class="small mb-1") }}
-                                    {{ update_profile_form.username(class="form-control" ,
-                                    value=session['customer']['_Account__username'], placeholder='Enter your username')}}
+                                    {{ update_profile_form.username(class="form-control" ,placeholder='Enter your username')}}
+                                    {% if error_messages['username'] %}
+                                        <p class="text-danger mb-1 pb-lg-1">{{error_messages['username']}}</p>
+                                    {% endif %}
                                 </div>
                                 <!-- Form Row-->
                                 <div class="row gx-3 mb-3">
                                     <!-- Form Group (first name)-->
                                     <div class="col-md-6">
-                                        {{ update_profile_form.first_name.label(class="small mb-1") }} {% if not
-                                        session['customer']['_Account__first_name'] %} {{
-                                        update_profile_form.first_name(class="form-control", placeholder='Enter your First name')}}
-                                        {% else %}
-                                        {{ update_profile_form.first_name(class="form-control",
-                                        value=session['customer']['_Account__first_name'])}} {% endif %}
+                                        {{ update_profile_form.first_name.label(class="small mb-1") }}
+                                        {{ update_profile_form.first_name(class="form-control", placeholder='Enter your First name')}}
                                     </div>
                                     <!-- Form Group (last name)-->
                                     <div class="col-md-6">
-                                        {{ update_profile_form.last_name.label(class="small mb-1") }} {% if not
-                                        session['customer']['_Account__last_name'] %} {{
-                                        update_profile_form.last_name(class="form-control", placeholder='Enter your Last name')}} {% else %} {{ update_profile_form.last_name(class="form-control",
-                                        value=session['customer']['_Account__last_name'])}} {% endif %}
+                                        {{ update_profile_form.last_name.label(class="small mb-1") }}
+                                        {{ update_profile_form.last_name(class="form-control", placeholder='Enter your Last name')}}
                                     </div>
                                 </div>
                                 <!-- Form Group (email address)-->
                                 <div class="mb-3">
                                     {{ update_profile_form.email.label(class="small mb-1") }}
-                                    {{ update_profile_form.email(class="form-control",
-                                    value=session['customer']['_Account__email'], placeholder='Enter your email')}}
+                                    {{ update_profile_form.email(class="form-control", placeholder='Enter your email')}}
+                                    {% if error_messages['email'] %}
+                                        <p class="text-danger mb-1 pb-lg-1">{{error_messages['email']}}</p>
+                                    {% endif %}
                                 </div>
                                 <!-- Form Row-->
                                 <div class="row gx-3 mb-3">
                                     <!-- Form Group (phone number)-->
                                     <div class="col-md-6">
-                                        {{ update_profile_form.phone_number.label(class="small mb-1") }} {% if not
-                                        session['customer']['_Account__number'] %} {{
-                                        update_profile_form.phone_number(class="form-control")}} {% else %} {{
-                                        update_profile_form.phone_number(class="form-control",
-                                        value=session['customer']['_Account__number'])}} {% endif %}
+                                        {{ update_profile_form.phone_number.label(class="small mb-1") }}
+                                        {{ update_profile_form.phone_number(class="form-control")}}
+                                        {% if error_messages['number'] %}
+                                            <p class="text-danger mb-1 pb-lg-1">{{error_messages['number']}}</p>
+                                        {% endif %}
                                     </div>
                                     <!-- Form Group (birthday)-->
                                     <div class="col-md-6">
-                                        {{ update_profile_form.birthday.label(class="small mb-1") }} {% if not
-                                        session['customer']['_Account__birthday'] %} {{
-                                        update_profile_form.birthday(class="form-control", value='mm-dd-yy')}} {% else
-                                        %} {{ update_profile_form.birthday(class="form-control",
-                                        value=session['customer']['_Account__birthday'])}} {% endif %}
+                                    {{ update_profile_form.birthday.label(class="small mb-1") }}
+                                    {% if not session['customer']['_Account__birthday'] %}
+                                    {{ update_profile_form.birthday(class="form-control", value='mm-dd-yy')}}
+                                    {% else%}
+                                    {{ update_profile_form.birthday(class="form-control", value=session['customer']['_Account__birthday'])}}
+                                    {% endif %}
                                     </div>
                                 </div>
                                 <!-- Save changes button-->
@@ -110,16 +109,25 @@
                                 <div class="mb-3">
                                     {{ update_security_form.current_password.label(class="small mb-1") }}
                                     {{ update_security_form.current_password(class="form-control", placeholder='Current password') }}
+                                    {% if error_messages['current_password'] %}
+                                        <p class="text-danger mb-1 pb-lg-1">{{error_messages['current_password']}}</p>
+                                    {% endif %}
                                 </div>
                                 <!-- Form Group (new password)-->
                                 <div class="mb-3">
                                     {{ update_security_form.password1.label(class="small mb-1") }}
                                     {{ update_security_form.password1(class="form-control", placeholder='Enter new password') }}
+                                    {% if error_messages['password'] %}
+                                        <p class="text-danger mb-1 pb-lg-1">{{error_messages['password']}}</p>
+                                    {% endif %}
                                 </div>
                                 <!-- Form Group (confirm password)-->
                                 <div class="mb-3">
                                     {{ update_security_form.password2.label(class="small mb-1") }}
                                     {{ update_security_form.password2(class="form-control", placeholder='Confirm new password') }}
+                                    {% if error_messages['password'] %}
+                                        <p class="text-danger mb-1 pb-lg-1">{{error_messages['password']}}</p>
+                                    {% endif %}
                                 </div>
                                 {{ update_security_form.submit2(class="btn btn-primary") }}
                             </form>

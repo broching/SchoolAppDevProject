@@ -20,7 +20,9 @@ Customer Billing
         <!-- Payment methods card-->
         <div class="card card-header-actions mb-4">
             <div class="card-header"> Payment Methods
-                <button class="btn btn-sm btn-primary" type="button">Add Payment Method</button>
+                <button class="btn btn-sm btn-primary" type="button">
+                    <a class = 'text-light' href=" {{ url_for('account.customer_payment') }} ">Add Payment Method</a>
+                </button>
             </div>
             <div class="card-body px-0">
                 {% if session['customer']['_Customer__payment_details'] %}

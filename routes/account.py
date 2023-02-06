@@ -5,10 +5,12 @@ from models.auth.auth_functions import customer_login_required, restricted_custo
 
 from models.account.account_forms import UpdateProfileForm, UpdateSecurityForm, DeleteAccountForm
 
-from models.auth.auth_functions import get_customers, store_customer, delete_customer, account_to_dictionary_converter, \
-    validate_password, validate_number, validate_email, validate_username
+from models.auth.auth_functions import get_customers, store_customer, delete_customer, account_to_dictionary_converter,\
+    validate_password, validate_number, validate_email, validate_username, is_valid_card_number
 
 from models.account.account_functions import save_image, delete_image
+
+from models.auth.payment_forms import ProfileCreditCardForm
 
 from models.auth.payment_classes import CreditCard
 
@@ -34,12 +36,15 @@ def staff_dashboard():
 @account.route('/customerProfile', methods=["POST", "GET"])
 def customer_profile():
     # Code for the update profile page
-    error_messages = []
+    error_messages = {}
     update_profile_form = UpdateProfileForm()
     update_security_form = UpdateSecurityForm()
     delete_account_form = DeleteAccountForm()
     customer_list = get_customers('DB')
     current_customer_id = session['customer']['_Account__user_id']
+
+    #  If User is submitting form
+
     if request.method == 'POST' and update_profile_form.submit1.data:
         for customer in customer_list:
             if customer.get_user_id() == current_customer_id:
@@ -49,18 +54,18 @@ def customer_profile():
                                      exceptions=session['customer']['_Account__username']):
                     customer.set_username(update_profile_form.username.data)
                 else:
-                    error_messages.append("The username is already taken")
+                    error_messages['username'] = "The username is already taken"
                 if validate_email(update_profile_form.email.data, 'DB',
                                   exceptions=session['customer']['_Account__email']):
                     customer.set_email(update_profile_form.email.data)
                 else:
-                    error_messages.append("The email is already taken")
+                    error_messages['email'] = "The email is already taken"
                 if update_profile_form.phone_number.data:
                     if validate_number(update_profile_form.phone_number.data, 'DB',
                                        exceptions=session['customer']['_Account__number']):
                         customer.set_number(update_profile_form.phone_number.data)
                     else:
-                        error_messages.append("The phone number is already taken")
+                        error_messages['number'] = "The phone number is already taken"
                 if update_profile_form.birthday.data:
                     customer.set_birthday(update_profile_form.birthday.data.strftime('%Y-%m-%d'))
                 if update_profile_form.image.data:
@@ -74,16 +79,22 @@ def customer_profile():
                 customer_dict = account_to_dictionary_converter(customer)
                 session['customer'] = customer_dict
                 # flash and redirect
-                if error_messages:
-                    for error in error_messages:
-                        flash(error, category='danger')
-                else:
+                if not error_messages:
                     flash('Account Successfully changed', category='success')
                     return redirect(url_for('account.customer_dashboard'))
+            # If request method is get, load customer data to the update form fields
+    if request.method == 'GET':
+        update_profile_form.username.data = session['customer']['_Account__username']
+        update_profile_form.first_name.data = session['customer']['_Account__first_name']
+        update_profile_form.last_name.data = session['customer']['_Account__last_name']
+        update_profile_form.email.data = session['customer']['_Account__email']
+        update_profile_form.phone_number.data = session['customer']['_Account__number']
+
     # Check if user is logged in and renders template
     if customer_login_required():
         return render_template('account/customer_profile.html', update_profile_form=update_profile_form,
-                               update_security_form=update_security_form, delete_account_form=delete_account_form)
+                               update_security_form=update_security_form, delete_account_form=delete_account_form,
+                               error_messages=error_messages)
     else:
         return restricted_customer_error()
 
@@ -91,12 +102,16 @@ def customer_profile():
 @account.route('/customerSecurity', methods=["POST", "GET"])
 def customer_security():
     # Code for the update security page
-    error_messages = []
+
+    error_messages = {}
     update_profile_form = UpdateProfileForm()
     update_security_form = UpdateSecurityForm()
     delete_account_form = DeleteAccountForm()
     customer_list = get_customers('DB')
     current_customer_id = session['customer']['_Account__user_id']
+
+    #  If User is submitting form
+
     if request.method == 'POST' and update_security_form.submit2.data:
         for customer in customer_list:
             if customer.get_user_id() == current_customer_id:
@@ -110,20 +125,18 @@ def customer_security():
                         customer_dict = account_to_dictionary_converter(customer)
                         session['customer'] = customer_dict
                     else:
-                        error_messages.append('Passwords do not match')
+                        error_messages['password'] = 'Passwords do not match'
                 else:
-                    error_messages.append('Current password is wrong')
+                    error_messages['current_password'] = 'Current password is wrong'
                 # flash and redirect
-                if error_messages:
-                    for error in error_messages:
-                        flash(error, category='danger')
-                else:
+                if not error_messages:
                     flash('Account Successfully changed', category='success')
                     return redirect(url_for('account.customer_dashboard'))
     # Check if user is logged in and renders template
     if customer_login_required():
         return render_template('account/customer_profile.html', update_profile_form=update_profile_form,
-                               update_security_form=update_security_form, delete_account_form=delete_account_form)
+                               update_security_form=update_security_form, delete_account_form=delete_account_form,
+                               error_messages=error_messages)
     else:
         return restricted_customer_error()
 
@@ -141,7 +154,6 @@ def customer_delete():
             if customer.get_user_id() == current_customer_id:
                 delete_image(session['customer']['_Account__user_image'])
                 delete_customer(customer, 'DB')
-                print(True)
                 session.pop('customer', None)
                 flash("Account successfully deleted", category='info')
                 return redirect(url_for('home'))
@@ -159,6 +171,41 @@ def customer_billing():
         return render_template('account/customer_billing.html')
     else:
         return restricted_staff_error()
+
+
+@account.route('/CustomerPayment', methods=['POST', 'GET'])
+def customer_payment():
+
+    customer_list = get_customers('DB')
+    current_customer_id = session['customer']['_Account__user_id']
+
+    error_messages = {}
+    profile_credit_card_form = ProfileCreditCardForm()
+    if request.method == "POST":
+        if not is_valid_card_number(str(profile_credit_card_form.card_number.data)):
+            error_messages['card_number'] = 'Please enter a valid card number'
+        if not profile_credit_card_form.card_holder.data.isalpha():
+            error_messages['card_holder'] = 'Please enter a valid name'
+        if len(str(profile_credit_card_form.cvv.data)) != 3 and len(str(profile_credit_card_form.cvv.data)) != 4:
+            error_messages['cvv'] = 'Invalid CVV'
+        card_expiry = str(profile_credit_card_form.expiration_month) + str(profile_credit_card_form.expiration_year)
+        if error_messages == {}:
+            credit_card = CreditCard(profile_credit_card_form.card_number.data,
+                                     profile_credit_card_form.card_holder.data, profile_credit_card_form.cvv,
+                                     card_expiry)
+            print(customer_list)
+            for customer in customer_list:
+                if customer.get_user_id() == current_customer_id:
+                    customer_credit_cards = customer.get_payment_details()
+                    customer_credit_cards.append(credit_card)
+                    customer.set_payment_details(customer_credit_cards)
+                    delete_customer(customer, 'DB')
+                    store_customer(customer, 'DB')
+                    flash('Credit Card Successfully added', category='success')
+                    return redirect(url_for('home'))
+
+    return render_template('account/customer_payment.html', form=profile_credit_card_form,
+                           error_messages=error_messages)
 
 
 @account.route('/StaffProfile')

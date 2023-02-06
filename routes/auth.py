@@ -8,26 +8,23 @@ auth = Blueprint('auth', __name__)
 
 @auth.route('/CustomerRegister', methods=["POST", "GET"])
 def customer_register():
-    error_messages = []
+    error_messages = {}
     register_form = RegisterForm()
     if not validate_username(register_form.username.data, relative_path_to_db='DB'):
-        error_messages.append("Username is already taken, please use another one")
+        error_messages['username'] = "Username is already taken, please use another one"
     if not validate_email(register_form.email.data, relative_path_to_db='DB'):
-        error_messages.append("Email is already linked to an account, please use another one")
+        error_messages['email'] = "Email is already linked to an account, please use another one"
+    if register_form.password1.data != register_form.password2.data:
+        error_messages['password'] = "Passwords do not match"
     if request.method == "POST" and register_form.validate():
         if validate_username(register_form.username.data, relative_path_to_db='DB') and validate_email(
                 register_form.email.data, relative_path_to_db='DB'):
             customer = Customer(register_form.username.data, register_form.email.data, register_form.password1.data)
             store_customer(customer_object=customer, relative_path_to_db='DB')
+            print('Customer of username is stored:', customer.get_username())
             flash("You have successfully created a new account", category='success')
             return redirect(url_for('home'))
-    else:
-        for errors in register_form.errors.values():
-            error_messages.append(errors[0])
-    if error_messages:
-        for message in error_messages:
-            flash(message, category='danger')
-    return render_template('auth/register.html', form=register_form)
+    return render_template('auth/register.html', form=register_form, error_messages=error_messages)
 
 
 @auth.route('/CustomerLogin', methods=["POST", "GET"])

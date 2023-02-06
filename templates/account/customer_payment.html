@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Customer Payment
+{% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+<link rel="stylesheet" href="../../static/css/account/customer_payment.css">
+
+<div class="wrapper" id="app">
+    <div class="card-form">
+      <div class="card-list">
+        <div class="card-item" v-bind:class="{ '-active' : isCardFlipped }">
+          <div class="card-item__side -front">
+            <div class="card-item__focus" v-bind:class="{'-active' : focusElementStyle }" v-bind:style="focusElementStyle" ref="focusElement"></div>
+            <div class="card-item__cover">
+              <img
+              v-bind:src="'https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/' + currentCardBackground + '.jpeg'" class="card-item__bg">
+            </div>
+
+            <div class="card-item__wrapper">
+              <div class="card-item__top">
+                <img src="https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/chip.png" class="card-item__chip">
+                <div class="card-item__type">
+                  <transition name="slide-fade-up">
+                    <img v-bind:src="'https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/' + getCardType + '.png'" v-if="getCardType" v-bind:key="getCardType" alt="" class="card-item__typeImg">
+                  </transition>
+                </div>
+              </div>
+              <label for="cardNumber" class="card-item__number" ref="cardNumber">
+                <template v-if="getCardType === 'amex'">
+                 <span v-for="(n, $index) in amexCardMask" :key="$index">
+                  <transition name="slide-fade-up">
+                    <div
+                      class="card-item__numberItem"
+                      v-if="$index > 4 && $index < 14 && cardNumber.length > $index && n.trim() !== ''"
+                    >*</div>
+                    <div class="card-item__numberItem"
+                      :class="{ '-active' : n.trim() === '' }"
+                      :key="$index" v-else-if="cardNumber.length > $index">
+                    </div>
+                    <div
+                      class="card-item__numberItem"
+                      :class="{ '-active' : n.trim() === '' }"
+                      v-else
+                      :key="$index + 1"
+                    >{{n}}</div>
+                  </transition>
+                </span>
+                </template>
+
+                <template v-else>
+                  <span v-for="(n, $index) in otherCardMask" :key="$index">
+                    <transition name="slide-fade-up">
+                      <div
+                        class="card-item__numberItem"
+                        v-if="$index > 4 && $index < 15 && cardNumber.length > $index && n.trim() !== ''"
+                      >*</div>
+                      <div class="card-item__numberItem"
+                        :class="{ '-active' : n.trim() === '' }"
+                        :key="$index" v-else-if="cardNumber.length > $index">
+                      </div>
+                      <div
+                        class="card-item__numberItem"
+                        :class="{ '-active' : n.trim() === '' }"
+                        v-else
+                        :key="$index + 1"
+                      >{{n}}</div>
+                    </transition>
+                  </span>
+                </template>
+              </label>
+              <div class="card-item__content">
+                <label for="cardName" class="card-item__info" ref="cardName">
+                  <div class="card-item__holder">Card Holder</div>
+                  <transition name="slide-fade-up">
+                    <div class="card-item__name" v-if="cardName.length" key="1">
+                      <transition-group name="slide-fade-right">
+                        <span class="card-item__nameItem" v-for="(n, $index) in cardName.replace(/\s\s+/g, ' ')" v-if="$index === $index" v-bind:key="$index + 1">{{n}}</span>
+                      </transition-group>
+                    </div>
+                    <div class="card-item__name" v-else key="2">Full Name</div>
+                  </transition>
+                </label>
+                <div class="card-item__date" ref="cardDate">
+                  <label for="cardMonth" class="card-item__dateTitle">Expires</label>
+                  <label for="cardMonth" class="card-item__dateItem">
+                    <transition name="slide-fade-up">
+                      <span v-if="cardMonth" v-bind:key="cardMonth">{{cardMonth}}</span>
+                      <span v-else key="2">MM</span>
+                    </transition>
+                  </label>
+
+                  <label for="cardYear" class="card-item__dateItem">
+                    <transition name="slide-fade-up">
+                      <span v-if="cardYear" v-bind:key="cardYear"></span>
+                      <span v-else key="2">YY</span>
+                    </transition>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-item__side -back">
+            <div class="card-item__cover">
+              <img
+              v-bind:src="'https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/' + currentCardBackground + '.jpeg'" class="card-item__bg">
+            </div>
+            <div class="card-item__band"></div>
+            <div class="card-item__cvv">
+                <div class="card-item__cvvTitle">CVV</div>
+                <div class="card-item__cvvBand">
+                  <span v-for="(n, $index) in cardCvv" :key="$index">
+                    *
+                  </span>
+
+              </div>
+                <div class="card-item__type">
+                    <img v-bind:src="'https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/' + getCardType + '.png'" v-if="getCardType" class="card-item__typeImg">
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <form action="" method="post">
+        {{ form.hidden_tag() }}
+              <div class="card-form__inner">
+        <div class="card-input">
+          <label for="cardNumber" class="card-input__label">Card Number</label>
+          {{ form.card_number(id="cardNumber", class="card-input__input", autocomplete="off") }}
+          {% if error_messages['card_number'] %}
+            <p class="text-danger mb-1 pb-lg-1">{{error_messages['card_number']}}</p>
+          {% endif %}
+        </div>
+        <div class="card-input">
+          <label for="cardName" class="card-input__label">Card Holder</label>
+          {{ form.card_holder(id="cardHolder", class="card-input__input", autocomplete="off") }}
+          {% if error_messages['card_holder'] %}
+            <p class="text-danger mb-1 pb-lg-1">{{error_messages['card_holder']}}</p>
+          {% endif %}
+        </div>
+        <div class="card-form__row">
+          <div class="card-form__col">
+            <div class="card-form__group">
+              <label for="cardMonth" class="card-input__label">Expiration Date</label>
+
+              {{ form.expiration_month(id="cardMonth", class="card-input__input", option_attr={"division-0": {"disabled": ""} }) }}
+
+              {{ form.expiration_year(id="cardYear", class="card-input__input") }}
+            </div>
+          </div>
+          <div class="card-form__col -cvv">
+            <div class="card-input" >
+              <label for="cardCvv" class="card-input__label">CVV</label>
+            {{ form.cvv(id="cvv", class="card-input__input", autocomplete='off', maxlength='4')}}
+            {% if error_messages['cvv'] %}
+            <p class="text-danger mb-1 pb-lg-1">{{error_messages['cvv']}}</p>
+            {% endif %}
+            </div>
+          </div>
+        </div>
+
+        {{ form.submit(id="submit", class="card-form__button") }}
+      </div>
+      </form>
+    </div>
+
+
+  </div>
+<!-- partial -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js'></script>
+<script src='https://unpkg.com/vue-the-mask@0.11.1/dist/vue-the-mask.js'></script>
+<script src="../../static/js/account/customer_payment.js"></script>
+{% endblock content %}
