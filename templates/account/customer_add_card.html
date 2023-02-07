@@ -14,7 +14,6 @@ Customer Payment
         <div class="front">
             <div class="image">
                 <img src="../../static/media/images/credit_card_images/chip.png" alt="">
-                <img src="../../static/media/images/credit_card_images/visa.png" alt="">
             </div>
             <div class="card-number-box">################</div>
             <div class="flexbox">
@@ -43,8 +42,13 @@ Customer Payment
 
     </div>
 
-    <form action="{{url_for('account.customer_payment')}}" method="post">
+    <form action="{{url_for('account.customer_add_card')}}" method="post">
       {{ profile_credit_card_form.hidden_tag() }}
+
+        <div class="inputBox">
+            <span><b>Add Your Card</b></span>
+        </div>
+
         <div class="inputBox">
             <span>card number</span>
             {{ profile_credit_card_form.card_number(type='text', class="card-number-input", maxlength="16") }}
@@ -71,9 +75,12 @@ Customer Payment
             <div class="inputBox">
                 <span>cvv</span>
                 {{ profile_credit_card_form.cvv(class="cvv-input") }}
+                     {% if error_messages['cvv'] %}
+                    <p class="text-danger mb-1 pb-lg-1">{{error_messages['cvv']}}</p>
+                    {% endif %}
             </div>
         </div>
-        {{ profile_credit_card_form.submit(class='submit-btn') }}
+        {{ profile_credit_card_form.submit(class='submit-btn', value="ADD CARD") }}
     </form>
 
 </div>

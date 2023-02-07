@@ -1,20 +1,15 @@
+import secrets
+
 from flask import Blueprint, render_template, request, session, flash, redirect, url_for
 
+from models.account.account_forms import UpdateProfileForm, UpdateSecurityForm, DeleteAccountForm
+from models.account.account_functions import save_image, delete_image
 from models.auth.auth_functions import customer_login_required, restricted_customer_error, staff_login_required, \
     restricted_staff_error
-
-from models.account.account_forms import UpdateProfileForm, UpdateSecurityForm, DeleteAccountForm
-
 from models.auth.auth_functions import get_customers, store_customer, delete_customer, account_to_dictionary_converter, \
-    validate_password, validate_number, validate_email, validate_username, is_valid_card_number, store_credit_card
-
-from models.account.account_functions import save_image, delete_image
-
-from models.auth.payment_forms import ProfileCreditCardForm
-
+    validate_password, validate_number, validate_email, validate_username, is_valid_card_number
 from models.auth.payment_classes import CreditCard
-
-import secrets
+from models.auth.payment_forms import ProfileCreditCardForm, DeleteCreditCardForm, MakeCardDefaultForm
 
 account = Blueprint('account', __name__)
 
@@ -75,7 +70,6 @@ def customer_profile():
                     image_file_name = save_image(update_profile_form.image.data)
                     customer.set_user_image(image_file_name)
                 #     Store in DB
-                delete_customer(customer, 'DB')
                 store_customer(customer, 'DB')
                 # Update session with new info
                 customer_dict = account_to_dictionary_converter(customer)
@@ -167,54 +161,223 @@ def customer_delete():
         return restricted_customer_error()
 
 
-@account.route('/CustomerBilling')
+@account.route('/CustomerBilling//')
 def customer_billing():
+    delete_card_form = DeleteCreditCardForm()
+    default_card_form = MakeCardDefaultForm()
+    current_customer_id = session['customer']['_Account__user_id']
+    customer_list = get_customers('DB')
+    credit_card_list = session['customer']['_Customer__payment_details']
+    if request.method == "GET":
+        if len(credit_card_list) == 1:
+            target_card = credit_card_list[0]
+            card_default = True
+            card_cvv = target_card['_CreditCard__card_cvv']
+            card_expiry = target_card['_CreditCard__card_expiry']
+            card_id = target_card['_CreditCard__card_id']
+            card_name = target_card['_CreditCard__card_name']
+            card_number = target_card['_CreditCard__card_number']
+            new_card = CreditCard(card_id, card_number, card_name, card_cvv, card_expiry, card_default=card_default)
+            for customer in customer_list:
+                if customer.get_user_id() == current_customer_id:
+                    credit_card_list[0] = account_to_dictionary_converter(new_card)
+                    customer.set_payment_details(credit_card_list)
+                    store_customer(customer, "DB")
+
+                    customer_dict = account_to_dictionary_converter(customer)
+                    session['customer'] = customer_dict
+
     if customer_login_required():
-        return render_template('account/customer_billing.html')
+        return render_template('account/customer_billing.html', credit_card_list=credit_card_list,
+                               delete_card_form=delete_card_form, default_card_form=default_card_form)
     else:
         return restricted_staff_error()
 
 
-@account.route('/CustomerPayment', methods=['POST', 'GET'])
-def customer_payment():
+@account.route('/AddCard', methods=['POST', 'GET'])
+def customer_add_card():
     customer_list = get_customers('DB')
     current_customer_id = session['customer']['_Account__user_id']
 
     error_messages = {}
     profile_credit_card_form = ProfileCreditCardForm()
     if request.method == "POST" and profile_credit_card_form.submit.data:
-        print(profile_credit_card_form.card_number.data)
-        print(profile_credit_card_form.card_holder.data)
-        print(profile_credit_card_form.cvv.data)
-        print(profile_credit_card_form.expiration_year.data)
-        print(profile_credit_card_form.expiration_month.data)
-        if not is_valid_card_number(str(profile_credit_card_form.card_number.data)):
-            error_messages['card_number'] = 'Please enter a valid card number'
-        if not profile_credit_card_form.card_holder.data.isalpha():
+        if not str(profile_credit_card_form.card_number.data).isdigit():
+            error_messages['card_number'] = 'Please enter a numeric card number'
+        else:
+            if not is_valid_card_number(str(profile_credit_card_form.card_number.data)):
+                error_messages['card_number'] = 'Please enter a valid card number'
+        if not profile_credit_card_form.card_holder.data.replace(' ', "").isalpha():
             error_messages['card_holder'] = 'Please enter a valid name'
-        if len(str(profile_credit_card_form.cvv.data)) != 3 and len(str(profile_credit_card_form.cvv.data)) != 4:
+        if len(str(profile_credit_card_form.cvv.data)) != 3 and str(profile_credit_card_form.cvv.data).isdigit():
             error_messages['cvv'] = 'Invalid CVV'
-        card_expiry = str(profile_credit_card_form.expiration_month) + str(profile_credit_card_form.expiration_year)
+        card_expiry = str(profile_credit_card_form.expiration_month.data) + str(
+            profile_credit_card_form.expiration_year.data)
         if error_messages == {}:
             credit_card = CreditCard(secrets.token_hex(15), profile_credit_card_form.card_number.data,
-                                     profile_credit_card_form.card_holder.data, profile_credit_card_form.cvv,
+                                     profile_credit_card_form.card_holder.data, profile_credit_card_form.cvv.data,
                                      card_expiry)
             for customer in customer_list:
                 if customer.get_user_id() == current_customer_id:
                     customer_credit_cards = customer.get_payment_details()
-                    customer_credit_cards.append(credit_card.__dict__)
+                    customer_credit_cards.append(account_to_dictionary_converter(credit_card))
                     customer.set_payment_details(customer_credit_cards)
-
-                    store_customer(customer, 'DB')
+                    store_customer(customer, "DB")
 
                     customer_dict = account_to_dictionary_converter(customer)
                     session['customer'] = customer_dict
+                    print('sesson dict')
+                    print(session['customer'])
 
                     flash('Credit Card Successfully added', category='success')
                     return redirect(url_for('home'))
 
-    return render_template('account/customer_payment.html', profile_credit_card_form=profile_credit_card_form,
+    return render_template('account/customer_add_card.html', profile_credit_card_form=profile_credit_card_form,
                            error_messages=error_messages)
+
+
+@account.route('/EditCard/<card_id>', methods=['POST', 'GET'])
+def customer_edit_card(card_id):
+    current_customer_id = session['customer']['_Account__user_id']
+    customer_list = get_customers('DB')
+    error_messages = {}
+    profile_credit_card_form = ProfileCreditCardForm()
+    if request.method == "POST" and profile_credit_card_form.submit.data:
+        if not str(profile_credit_card_form.card_number.data).isdigit():
+            error_messages['card_number'] = 'Please enter a numeric card number'
+        else:
+            if not is_valid_card_number(str(profile_credit_card_form.card_number.data)):
+                error_messages['card_number'] = 'Please enter a valid card number'
+        if not profile_credit_card_form.card_holder.data.replace(' ', "").isalpha():
+            error_messages['card_holder'] = 'Please enter a valid name'
+        if len(str(profile_credit_card_form.cvv.data)) != 3 and str(profile_credit_card_form.cvv.data).isdigit():
+            error_messages['cvv'] = 'Invalid CVV'
+        card_expiry = str(profile_credit_card_form.expiration_month.data) + str(
+            profile_credit_card_form.expiration_year.data)
+        if error_messages == {}:
+            credit_card = CreditCard(secrets.token_hex(15), profile_credit_card_form.card_number.data,
+                                     profile_credit_card_form.card_holder.data, profile_credit_card_form.cvv.data,
+                                     card_expiry)
+            for customer in customer_list:
+                if customer.get_user_id() == current_customer_id:
+                    credit_card_list = customer.get_payment_details()
+                    for card in credit_card_list:
+                        customer_card_id = card['_CreditCard__card_id']
+                        if customer_card_id == card_id:
+                            index = credit_card_list.index(card)
+                            credit_card_list[index] = account_to_dictionary_converter(credit_card)
+                            customer.set_payment_details(credit_card_list)
+                            store_customer(customer, "DB")
+
+                            customer_dict = account_to_dictionary_converter(customer)
+                            session['customer'] = customer_dict
+
+                            flash('Credit Card Successfully Changed', category='success')
+                            return redirect(url_for('home'))
+    if request.method == 'GET':
+        for customer in customer_list:
+            if customer.get_user_id() == current_customer_id:
+                credit_card_list = customer.get_payment_details()
+                for card in credit_card_list:
+                    customer_card_id = card['_CreditCard__card_id']
+                    if customer_card_id == card_id:
+                        profile_credit_card_form.card_number.data = card['_CreditCard__card_number']
+                        profile_credit_card_form.card_holder.data = card['_CreditCard__card_name']
+                        expiration_month = card['_CreditCard__card_expiry'][0] + \
+                                           card['_CreditCard__card_expiry'][1]
+                        expiration_year = card['_CreditCard__card_expiry'][2] + \
+                                          card['_CreditCard__card_expiry'][3]
+                        profile_credit_card_form.expiration_month.data = expiration_month
+                        profile_credit_card_form.expiration_month.data = expiration_year
+                        profile_credit_card_form.cvv.data = card['_CreditCard__card_cvv']
+
+    return render_template('account/customer_edit_card.html', profile_credit_card_form=profile_credit_card_form,
+                           error_messages=error_messages)
+
+
+@account.route('/DeleteCard/<card_id>', methods=['POST', 'GET'])
+def customer_delete_card(card_id):
+    current_customer_id = session['customer']['_Account__user_id']
+    customer_list = get_customers('DB')
+    delete_card_form = DeleteCreditCardForm()
+    if request.method == "POST" and delete_card_form.submit.data:
+        for customer in customer_list:
+            if customer.get_user_id() == current_customer_id:
+                credit_card_list = customer.get_payment_details()
+                for card in credit_card_list:
+                    customer_card_id = card['_CreditCard__card_id']
+                    if customer_card_id == card_id:
+                        index = credit_card_list.index(card)
+                        del credit_card_list[index]
+                        customer.set_payment_details(credit_card_list)
+                        store_customer(customer, "DB")
+
+                        customer_dict = account_to_dictionary_converter(customer)
+                        session['customer'] = customer_dict
+
+                        flash('Credit Card Successfully Deleted', category='success')
+                        return redirect(url_for('account.customer_billing'))
+
+    return render_template('account/customer_billing.html', delete_card_form=delete_card_form)
+
+
+@account.route('/DefaultCard/<card_id>', methods=['POST', 'GET'])
+def customer_default_card(card_id):
+    current_customer_id = session['customer']['_Account__user_id']
+    customer_list = get_customers('DB')
+    default_card_form = MakeCardDefaultForm()
+    if request.method == "POST" and default_card_form.submit.data:
+
+        for customer in customer_list:
+            if customer.get_user_id() == current_customer_id:
+                new_credit_card_list = []
+                credit_card_list = customer.get_payment_details()
+                for card in credit_card_list:
+                    credit_card_id = card['_CreditCard__card_id']
+                    card_number = card['_CreditCard__card_number']
+                    card_name = card['_CreditCard__card_name']
+                    card_cvv = card['_CreditCard__card_cvv']
+                    card_expiry = card['_CreditCard__card_expiry']
+                    card_default = False
+                    new_card = CreditCard(credit_card_id, card_number, card_name, card_cvv, card_expiry, card_default)
+                    new_credit_card_list.append(account_to_dictionary_converter(new_card))
+
+                    customer.set_payment_details(new_credit_card_list)
+                    store_customer(customer, "DB")
+
+                    customer_dict = account_to_dictionary_converter(customer)
+                    session['customer'] = customer_dict
+
+        for customer in customer_list:
+            if customer.get_user_id() == current_customer_id:
+                new_credit_card_list = []
+                credit_card_list = customer.get_payment_details()
+                for card in credit_card_list:
+                    if card['_CreditCard__card_id'] == card_id:
+                        credit_card_id = card['_CreditCard__card_id']
+                        card_number = card['_CreditCard__card_number']
+                        card_name = card['_CreditCard__card_name']
+                        card_cvv = card['_CreditCard__card_cvv']
+                        card_expiry = card['_CreditCard__card_expiry']
+                        card_default = True
+                        new_card = CreditCard(credit_card_id, card_number, card_name, card_cvv, card_expiry, card_default)
+
+                        index = credit_card_list.index(card)
+                        new_credit_card_list = credit_card_list
+                        new_credit_card_list[index] = account_to_dictionary_converter(new_card)
+                        customer.set_payment_details(new_credit_card_list)
+                        store_customer(customer, "DB")
+
+                        customer_dict = account_to_dictionary_converter(customer)
+                        session['customer'] = customer_dict
+
+                        flash(f'Credit Card {card_name} has been set to Default', category='success')
+                        return redirect(url_for('account.customer_billing'))
+
+                print(new_credit_card_list)
+
+    return render_template('account/customer_billing.html', default_card_form=default_card_form,
+                           )
 
 
 @account.route('/StaffProfile')

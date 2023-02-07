@@ -8,10 +8,12 @@
     text-decoration: none;
     text-transform: uppercase;
 }
+body {
+    background: #eee;
+    }
 
 .container{
     min-height: 100vh;
-    background: #eee;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -58,7 +60,7 @@
 
 .container form .submit-btn{
     width: 100%;
-    background:linear-gradient(45deg, blueviolet, deeppink);
+    background: black;
     margin-top: 20px;
     padding: 10px;
     font-size: 20px;
@@ -85,7 +87,7 @@
     height: 100%;
     width: 100%;
     top: 0; left: 0;
-    background:linear-gradient(45deg, blueviolet, deeppink);
+    background:linear-gradient(45deg, #424040, #836971);
     border-radius: 5px;
     backface-visibility: hidden;
     box-shadow: 0 15px 25px rgba(0,0,0,.2);
@@ -129,7 +131,7 @@
     top:0; left: 0;
     height: 100%;
     width: 100%;
-    background:linear-gradient(45deg, blueviolet, deeppink);
+    background:linear-gradient(45deg, #424040, #836971);
     border-radius: 5px;
     padding: 20px 0;
     text-align: right;
@@ -168,4 +170,22 @@
 .container .card-container .back .box img{
     margin-top: 30px;
     height: 30px;
+}
+
+@media (max-width: 630px) {
+    .container .card-container {
+        height: 250px;
+        width: 75%;
+    }
+    .container form {
+        width: 80%;
+        padding-top: 160px;
+    }
+
+    .container .card-container .front .card-number-box {
+        font-size: 15px;
+    }
+    .container form .inputBox span {
+        font-size: 10px;
+    }
 }

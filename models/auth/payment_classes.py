@@ -1,10 +1,11 @@
 class CreditCard:
-    def __init__(self, card_id, card_number, card_name, card_cvv, card_expiry):
+    def __init__(self, card_id, card_number, card_name, card_cvv, card_expiry, card_default=False):
         self.__card_id = card_id
         self.__card_number = card_number
         self.__card_name = card_name
         self.__card_cvv = card_cvv
         self.__card_expiry = card_expiry
+        self.__card_default = card_default
 
     def get_card_id(self):
         return self.__card_id
@@ -35,3 +36,9 @@ class CreditCard:
 
     def set_card_expiry(self, card_expiry):
         self.__card_expiry = card_expiry
+
+    def get_card_default(self):
+        return self.__card_default
+
+    def set_card_default(self, card_default):
+        self.__card_default = card_default

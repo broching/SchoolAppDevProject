@@ -21,23 +21,65 @@ Customer Billing
         <div class="card card-header-actions mb-4">
             <div class="card-header"> Payment Methods
                 <button class="btn btn-sm btn-primary" type="button">
-                    <a class = 'text-light' href=" {{ url_for('account.customer_payment') }} ">Add Payment Method</a>
+                    <a class = 'text-light' href=" {{ url_for('account.customer_add_card') }} ">Add Payment Method</a>
                 </button>
             </div>
             <div class="card-body px-0">
-                {% if session['customer']['_Customer__payment_details'] %}
-                {% for details in session['customer']['_Customer__payment_details'] %}
-                                <div class="d-flex align-items-center justify-content-between px-4">
+
+                {% if '_Customer__payment_details' in session['customer'] %}
+                    {% for details in session['customer']['_Customer__payment_details'] %}
+                    <div class="d-flex align-items-center justify-content-between px-4">
                     <div class="d-flex align-items-center">
-                        <i class="fab fa-cc-visa fa-2x cc-color-visa"></i>
+                        <img src="../../static/media/images/credit_card_images/card_logo.png" alt="" style="width:50px">
                         <div class="ms-4">
-                            <div class="small">Visa ending in 1234</div>
-                            <div class="text-xs text-muted">Expires 04/2024</div>
+                            <div class="small"><p>**** **** **** {{ (details['_CreditCard__card_number']|string)[12:16] }}</p></div>
+                            <div class="small"> {{ details['_CreditCard__card_name'].upper() }}</div>
+                            <br>
+                            <div class="text-xs text-muted">Expires {{ details['_CreditCard__card_expiry'][0] + details['_CreditCard__card_expiry'][1] + '/' +  details['_CreditCard__card_expiry'][2] + details['_CreditCard__card_expiry'][3]}}</div>
                         </div>
+                        <br>
+                        <br>
                     </div>
                     <div class="ms-4 small">
-                        <div class="badge bg-light text-dark me-3">Default</div>
-                        <a href="#!">Edit</a>
+                    {% if details['_CreditCard__card_default'] %}
+                        <p>already default</p>
+                        {% else %}
+                        <form method="post" action="{{url_for('account.customer_default_card', card_id=details['_CreditCard__card_id'])}}">
+                        {{ default_card_form.submit(class='text-muted me-3') }}
+                        </form>
+                        {% endif %}
+
+                        <a href="{{url_for('account.customer_edit_card', card_id=details['_CreditCard__card_id'])}}">Edit</a>
+
+                            <button type="button" class="btn btn-danger-soft text-danger" data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal"> Delete
+                            </button>
+                            <!-- Modal -->
+                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                                 aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h2 class="modal-title fs-5" id="exampleModalLabel" style="color:red;">
+                                                Confirm Delete Card</h2>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body"> Are you sure you want to delete your credit card information, this is a permanent action
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                Close
+                                            </button>
+                                            <form method="post" action="{{url_for('account.customer_delete_card', card_id=details['_CreditCard__card_id'])}}">
+                                                {{ delete_card_form.submit(class='btn btn-danger') }}
+                                            </form>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                     </div>
                 </div>
                 <hr>
@@ -45,36 +87,14 @@ Customer Billing
                 {% else %}
                 <h2>There are no cards added </h2>
                 {% endif %}
-                <!-- Payment method 1-->
-                <!-- Payment method 2-->
-                <div class="d-flex align-items-center justify-content-between px-4">
-                    <div class="d-flex align-items-center">
-                        <i class="fab fa-cc-mastercard fa-2x cc-color-mastercard"></i>
-                        <div class="ms-4">
-                            <div class="small">Mastercard ending in 5678</div>
-                            <div class="text-xs text-muted">Expires 05/2022</div>
-                        </div>
-                    </div>
-                    <div class="ms-4 small">
-                        <a class="text-muted me-3" href="#!">Make Default</a>
-                        <a href="#!">Edit</a>
-                    </div>
-                </div>
-                <hr>
-                <!-- Payment method 3-->
-                <div class="d-flex align-items-center justify-content-between px-4">
-                    <div class="d-flex align-items-center">
-                        <i class="fab fa-cc-amex fa-2x cc-color-amex"></i>
-                        <div class="ms-4">
-                            <div class="small">American Express ending in 9012</div>
-                            <div class="text-xs text-muted">Expires 01/2026</div>
-                        </div>
-                    </div>
-                    <div class="ms-4 small">
-                        <a class="text-muted me-3" href="#!">Make Default</a>
-                        <a href="#!">Edit</a>
-                    </div>
-                </div>
+
+
+
+
+
+
+
+
             </div>
         </div>
         <!-- Billing address card-->
