@@ -94,6 +94,7 @@ class Customer(Account):
         self.__payment_details = []
         self.__customizations = []
         self.__billing_history = []
+        self.__shipping_address = {}
 
     def get_cart(self):
         return self.__cart
@@ -118,6 +119,12 @@ class Customer(Account):
 
     def set_customizations(self, customizations):
         self.__customizations = customizations
+
+    def get_shipping_address(self):
+        return self.__shipping_address
+
+    def set_shipping_address(self, shipping_address):
+        self.__shipping_address = shipping_address
 
 
 class Staff(Account):

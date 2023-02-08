@@ -46,7 +46,7 @@ Customer Payment
       {{ profile_credit_card_form.hidden_tag() }}
 
         <div class="inputBox">
-            <span><b>Add Your Card</b></span>
+            <span><b>Card Details</b></span>
         </div>
 
         <div class="inputBox">
@@ -77,6 +77,34 @@ Customer Payment
                 {{ profile_credit_card_form.cvv(class="cvv-input") }}
                      {% if error_messages['cvv'] %}
                     <p class="text-danger mb-1 pb-lg-1">{{error_messages['cvv']}}</p>
+                    {% endif %}
+            </div>
+        </div>
+
+        <div class="inputBox">
+            <span><b>Billing Address</b></span>
+        </div>
+
+        <div class="inputBox">
+            <span>Street Address</span>
+            {{ profile_credit_card_form.street_address(type='text', class="card-number-input", maxlength="16") }}
+            {% if error_messages['street_address'] %}
+            <p class="text-danger mb-1 pb-lg-1">{{error_messages['street_address']}}</p>
+            {% endif %}
+        </div>
+        <div class="flexbox">
+            <div class="inputBox">
+                <span>State</span>
+                {{ profile_credit_card_form.state(class="input") }}
+                {% if error_messages['state'] %}
+                <p class="text-danger mb-1 pb-lg-1">{{error_messages['state']}}</p>
+                {% endif %}
+            </div>
+            <div class="inputBox">
+                <span>Postal Code</span>
+                {{ profile_credit_card_form.postal(class="postal-input") }}
+                     {% if error_messages['postal'] %}
+                    <p class="text-danger mb-1 pb-lg-1">{{error_messages['postal']}}</p>
                     {% endif %}
             </div>
         </div>

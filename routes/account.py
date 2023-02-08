@@ -2,7 +2,7 @@ import secrets
 
 from flask import Blueprint, render_template, request, session, flash, redirect, url_for
 
-from models.account.account_forms import UpdateProfileForm, UpdateSecurityForm, DeleteAccountForm
+from models.account.account_forms import UpdateProfileForm, UpdateSecurityForm, DeleteAccountForm, ShippingAddressForm
 from models.account.account_functions import save_image, delete_image
 from models.auth.auth_functions import customer_login_required, restricted_customer_error, staff_login_required, \
     restricted_staff_error
@@ -35,8 +35,7 @@ def customer_profile():
     # Code for the update profile page
     error_messages = {}
     update_profile_form = UpdateProfileForm()
-    update_security_form = UpdateSecurityForm()
-    delete_account_form = DeleteAccountForm()
+    update_shipping_form = ShippingAddressForm()
     customer_list = get_customers('DB')
     current_customer_id = session['customer']['_Account__user_id']
 
@@ -89,8 +88,7 @@ def customer_profile():
     # Check if user is logged in and renders template
     if customer_login_required():
         return render_template('account/customer_profile.html', update_profile_form=update_profile_form,
-                               update_security_form=update_security_form, delete_account_form=delete_account_form,
-                               error_messages=error_messages)
+                               update_shipping_form=update_shipping_form, error_messages=error_messages)
     else:
         return restricted_customer_error()
 
@@ -100,7 +98,6 @@ def customer_security():
     # Code for the update security page
 
     error_messages = {}
-    update_profile_form = UpdateProfileForm()
     update_security_form = UpdateSecurityForm()
     delete_account_form = DeleteAccountForm()
     customer_list = get_customers('DB')
@@ -130,9 +127,51 @@ def customer_security():
                     return redirect(url_for('account.customer_dashboard'))
     # Check if user is logged in and renders template
     if customer_login_required():
-        return render_template('account/customer_profile.html', update_profile_form=update_profile_form,
-                               update_security_form=update_security_form, delete_account_form=delete_account_form,
-                               error_messages=error_messages)
+        return render_template('account/customer_security.html',
+                               update_security_form=update_security_form, delete_account_form=delete_account_form, error_messages=error_messages)
+    else:
+        return restricted_customer_error()
+
+
+@account.route('/CustomerShipping', methods=['POST', 'GET'])
+def customer_shipping_address():
+    """Code for changing customer shipping address"""
+    error_messages = {}
+    update_profile_form = UpdateProfileForm()
+    update_shipping_form = ShippingAddressForm()
+    customer_list = get_customers('DB')
+    current_customer_id = session['customer']['_Account__user_id']
+    if request.method == 'POST' and update_shipping_form.submit4.data:
+        for customer in customer_list:
+            if customer.get_user_id() == current_customer_id:
+                print(update_shipping_form.state.data)
+                print(update_shipping_form.street_address.data)
+                print(update_shipping_form.postal.data)
+                if not update_shipping_form.state.data.isalpha():
+                    error_messages['state'] = 'Please enter a valid state'
+                if len(str(update_shipping_form.postal.data)) != 6:
+                    error_messages['postal'] = 'Invalid Postal code'
+                if error_messages == {}:
+                    shipping_dict = {}
+                    street_address = update_shipping_form.street_address.data
+                    state = update_shipping_form.state.data
+                    postal = update_shipping_form.postal.data
+                    shipping_dict['street_address'] = street_address
+                    shipping_dict['state'] = state
+                    shipping_dict['postal'] = postal
+                    customer.set_shipping_address(shipping_dict)
+
+                    store_customer(customer, 'DB')
+                    # Update session with new info
+                    customer_dict = account_to_dictionary_converter(customer)
+                    session['customer'] = customer_dict
+
+                    flash("Shipping address successfully Changed", category='success')
+                    return redirect(url_for('account.customer_profile'))
+
+    # Check if user is logged in and renders template
+    if customer_login_required():
+        return render_template('account/customer_profile.html', update_profile_form=update_profile_form, update_shipping_form=update_shipping_form, error_messages=error_messages)
     else:
         return restricted_customer_error()
 
@@ -140,7 +179,6 @@ def customer_security():
 @account.route('/customerDelete', methods=['POST', 'GET'])
 def customer_delete():
     """Code for deleted customer account"""
-    update_profile_form = UpdateProfileForm()
     update_security_form = UpdateSecurityForm()
     delete_account_form = DeleteAccountForm()
     customer_list = get_customers('DB')
@@ -155,8 +193,8 @@ def customer_delete():
                 return redirect(url_for('home'))
     # Check if user is logged in and renders template
     if customer_login_required():
-        return render_template('account/customer_profile.html', update_profile_form=update_profile_form,
-                               update_security_form=update_security_form, delete_account_form=delete_account_form)
+        return render_template('account/customer_profile.html',
+                               update_security_form=update_security_form, delete_account_form=delete_account_form,)
     else:
         return restricted_customer_error()
 
@@ -177,7 +215,11 @@ def customer_billing():
             card_id = target_card['_CreditCard__card_id']
             card_name = target_card['_CreditCard__card_name']
             card_number = target_card['_CreditCard__card_number']
-            new_card = CreditCard(card_id, card_number, card_name, card_cvv, card_expiry, card_default=card_default)
+            street_address = target_card['_CreditCard__street_address']
+            state = target_card['_CreditCard__state']
+            postal = target_card['_CreditCard__postal']
+            new_card = CreditCard(card_id, card_number, card_name, card_cvv, card_expiry, street_address, state,
+                                  postal, card_default=card_default)
             for customer in customer_list:
                 if customer.get_user_id() == current_customer_id:
                     credit_card_list[0] = account_to_dictionary_converter(new_card)
@@ -213,10 +255,16 @@ def customer_add_card():
             error_messages['cvv'] = 'Invalid CVV'
         card_expiry = str(profile_credit_card_form.expiration_month.data) + str(
             profile_credit_card_form.expiration_year.data)
+        if not profile_credit_card_form.state.data.isalpha():
+            error_messages['state'] = 'Please enter a valid state'
+        if len(str(profile_credit_card_form.postal.data)) != 6 and str(profile_credit_card_form.postal.data).isdigit():
+            error_messages['postal'] = 'Invalid Postal code'
         if error_messages == {}:
             credit_card = CreditCard(secrets.token_hex(15), profile_credit_card_form.card_number.data,
                                      profile_credit_card_form.card_holder.data, profile_credit_card_form.cvv.data,
-                                     card_expiry)
+                                     card_expiry, profile_credit_card_form.street_address.data,
+                                     profile_credit_card_form.state.data,
+                                     profile_credit_card_form.postal.data)
             for customer in customer_list:
                 if customer.get_user_id() == current_customer_id:
                     customer_credit_cards = customer.get_payment_details()
@@ -226,8 +274,6 @@ def customer_add_card():
 
                     customer_dict = account_to_dictionary_converter(customer)
                     session['customer'] = customer_dict
-                    print('sesson dict')
-                    print(session['customer'])
 
                     flash('Credit Card Successfully added', category='success')
                     return redirect(url_for('home'))
@@ -254,10 +300,16 @@ def customer_edit_card(card_id):
             error_messages['cvv'] = 'Invalid CVV'
         card_expiry = str(profile_credit_card_form.expiration_month.data) + str(
             profile_credit_card_form.expiration_year.data)
+        if not profile_credit_card_form.state.data.isalpha():
+            error_messages['state'] = 'Please enter a valid state'
+        if len(str(profile_credit_card_form.postal.data)) != 6 and str(profile_credit_card_form.postal.data).isdigit():
+            error_messages['postal'] = 'Invalid Postal code'
         if error_messages == {}:
             credit_card = CreditCard(secrets.token_hex(15), profile_credit_card_form.card_number.data,
                                      profile_credit_card_form.card_holder.data, profile_credit_card_form.cvv.data,
-                                     card_expiry)
+                                     card_expiry, profile_credit_card_form.street_address.data,
+                                     profile_credit_card_form.state.data,
+                                     profile_credit_card_form.postal.data)
             for customer in customer_list:
                 if customer.get_user_id() == current_customer_id:
                     credit_card_list = customer.get_payment_details()
@@ -290,6 +342,9 @@ def customer_edit_card(card_id):
                         profile_credit_card_form.expiration_month.data = expiration_month
                         profile_credit_card_form.expiration_month.data = expiration_year
                         profile_credit_card_form.cvv.data = card['_CreditCard__card_cvv']
+                        profile_credit_card_form.street_address.data = card['_CreditCard__street_address']
+                        profile_credit_card_form.state.data = card['_CreditCard__state']
+                        profile_credit_card_form.postal.data = card['_CreditCard__postal']
 
     return render_template('account/customer_edit_card.html', profile_credit_card_form=profile_credit_card_form,
                            error_messages=error_messages)
@@ -338,8 +393,12 @@ def customer_default_card(card_id):
                     card_name = card['_CreditCard__card_name']
                     card_cvv = card['_CreditCard__card_cvv']
                     card_expiry = card['_CreditCard__card_expiry']
+                    street_address = card['_CreditCard__street_address']
+                    state = card['_CreditCard__state']
+                    postal = card['_CreditCard__postal']
                     card_default = False
-                    new_card = CreditCard(credit_card_id, card_number, card_name, card_cvv, card_expiry, card_default)
+                    new_card = CreditCard(credit_card_id, card_number, card_name, card_cvv, card_expiry, street_address,
+                                          state, postal, card_default=card_default)
                     new_credit_card_list.append(account_to_dictionary_converter(new_card))
 
                     customer.set_payment_details(new_credit_card_list)
@@ -359,8 +418,12 @@ def customer_default_card(card_id):
                         card_name = card['_CreditCard__card_name']
                         card_cvv = card['_CreditCard__card_cvv']
                         card_expiry = card['_CreditCard__card_expiry']
+                        street_address = card['_CreditCard__street_address']
+                        state = card['_CreditCard__state']
+                        postal = card['_CreditCard__postal']
                         card_default = True
-                        new_card = CreditCard(credit_card_id, card_number, card_name, card_cvv, card_expiry, card_default)
+                        new_card = CreditCard(credit_card_id, card_number, card_name, card_cvv, card_expiry,
+                                              street_address, state, postal, card_default=card_default)
 
                         index = credit_card_list.index(card)
                         new_credit_card_list = credit_card_list

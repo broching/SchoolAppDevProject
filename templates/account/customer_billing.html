@@ -11,6 +11,7 @@ Customer Billing
 <div class="container-xl px-4 mt-4">
     <nav class="nav nav-borders">
         <a class="nav-link ms-0" href="{{url_for('account.customer_profile')}}" >Profile</a>
+        <a class="nav-link" href="{{url_for('account.customer_security')}}">Security</a>
         <a class="nav-link active" href="{{url_for('account.customer_billing')}}">Billing</a>
     </nav>
     <hr class="mt-0 mb-4">
@@ -87,69 +88,10 @@ Customer Billing
                 {% else %}
                 <h2>There are no cards added </h2>
                 {% endif %}
-
-
-
-
-
-
-
-
             </div>
         </div>
-        <!-- Billing address card-->
-        <div class="card mb-4">
-            <div class="card-header">Billing History</div>
-            <div class="card-body p-0">
-                <!-- Billing history table-->
-                <div class="table-responsive table-billing-history">
-                    <table class="table mb-0">
-                        <thead>
-                        <tr>
-                            <th class="border-gray-200" scope="col">Transaction ID</th>
-                            <th class="border-gray-200" scope="col">Date</th>
-                            <th class="border-gray-200" scope="col">Amount</th>
-                            <th class="border-gray-200" scope="col">Status</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>#39201</td>
-                            <td>06/15/2021</td>
-                            <td>$29.99</td>
-                            <td>
-                                <span class="badge bg-light text-dark">Pending</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>#38594</td>
-                            <td>05/15/2021</td>
-                            <td>$29.99</td>
-                            <td>
-                                <span class="badge bg-success">Paid</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>#38223</td>
-                            <td>04/15/2021</td>
-                            <td>$29.99</td>
-                            <td>
-                                <span class="badge bg-success">Paid</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>#38125</td>
-                            <td>03/15/2021</td>
-                            <td>$29.99</td>
-                            <td>
-                                <span class="badge bg-success">Paid</span>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+
+    </div>
 
         <!-- Billing history table-->
         <div class="card mb-4">

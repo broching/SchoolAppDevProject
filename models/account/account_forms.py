@@ -1,4 +1,4 @@
-from wtforms import StringField, SubmitField, EmailField, DateField, TelField, PasswordField
+from wtforms import StringField, SubmitField, EmailField, DateField, TelField, PasswordField, IntegerField
 from wtforms.validators import Email, Length, EqualTo, DataRequired
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField
@@ -22,6 +22,12 @@ class UpdateSecurityForm(FlaskForm):
     submit2 = SubmitField('Save Changes')
 
 
+class ShippingAddressForm(FlaskForm):
+    street_address = StringField(validators=[DataRequired()])
+    state = StringField(validators=[DataRequired()])
+    postal = IntegerField(validators=[DataRequired()])
+    submit4 = SubmitField('Save Changes')
+
+
 class DeleteAccountForm(FlaskForm):
     submit3 = SubmitField('Confirm Delete')
-

@@ -15,6 +15,11 @@ class ProfileCreditCardForm(FlaskForm):
                  ('29', '29'),
                  ('30', '30'), ('31', '31'), ('32', '32'), ('33', '33')], validators=[DataRequired()])
     cvv = IntegerField('cvv', validators=[DataRequired()])
+
+    street_address = StringField(validators=[DataRequired()])
+    state = StringField(validators=[DataRequired()])
+    postal = IntegerField(validators=[DataRequired()])
+
     submit = SubmitField('ADD CARD')
 
 
