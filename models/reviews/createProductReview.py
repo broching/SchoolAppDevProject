@@ -8,7 +8,7 @@ class CreateProductReview(Form):
                                 choices=[('1', '1'), ('2', '2'),
                                          ('3', '3'), ('4', '4'), ('5', '5')], default='')
 
-    product_comment = TextAreaField('Write your review here', [validators.Length(max=500), validators.DataRequired()])
+    product_comment = TextAreaField('Write your review here', [validators.Length(max=10), validators.DataRequired()])
 
     product_image = FileField('Upload your image', [validators.Optional()])
 
