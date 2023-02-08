@@ -5,7 +5,6 @@ from models.reviews.serviceReview import serviceReview
 from models.reviews.createProductReview import CreateProductReview
 from models.reviews.createServiceReview import CreateServiceReview
 
-
 review = Blueprint('review', __name__)
 
 
@@ -88,11 +87,6 @@ def createServiceReview():
                                                create_service_review_form.service_video.data,
                                                create_service_review_form.service_comment.data)
                 service_review.set_service_id(service_review.get_service_id())
-
-                # save image
-                if create_service_review_form.service_image.data:
-                    image_file_name = save_image(create_service_review_form.service_image.data)
-                    service_review.set_service_image(image_file_name)
 
                 service_reviews_dict[service_review.get_service_id()] = service_review
                 db['Service_Reviews'] = service_reviews_dict

@@ -1,9 +1,14 @@
+from datetime import datetime
+
+
 class serviceReview:
+    unique_id = datetime.now()
+    unique_id = int(unique_id.strftime('%Y%m%d%H%M%S'))
     count_id = 0
 
-    def __init__(self, service_selection, service_rating, service_image, service_video, service_comment ):
+    def __init__(self, service_selection, service_rating, service_image, service_video, service_comment):
         serviceReview.count_id += 1
-        self.__service_id = serviceReview.count_id
+        self.__service_id = serviceReview.unique_id
         self.__service_selection = service_selection
         self.__service_rating = service_rating
         self.__service_comment = service_comment
