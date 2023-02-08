@@ -1,0 +1,38 @@
+{% extends "reviews/reviewsbase.html" %}
+{% block title %}{% endblock %}
+{% block content %}<h1 class="display-4"></h1>{% endblock %}
+{% block content2 %}
+<h1 class="h2 m-3">Create Product Review</h1>
+
+<div class="formdiv1">
+    <form method="POST" enctype='multipart/form-data' class="m-3 createproductreviewform">
+        {{ form.hidden_tag() }}
+
+        <div class="form-group">
+            <!--        for removing bullet points-->
+            {%include 'reviews/productRating.html' %}
+
+            {{ form.product_rating.label }} {{ form.product_rating(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.product_comment.label }} {{ form.product_comment(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.product_image.label }} {{ form.product_image(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.product_video.label }} {{ form.product_video(class="form-control") }}
+        </div>
+
+        {{ form.submit_p(class="btn btn-primary", value="Create Product Review", style="float: right; margin-top: 10px;
+        margin-bottom: 20px;") }}
+
+    </form>
+    <a href="/productReviews">All Product Reviews</a> <br>
+    <a href="/productRating">Product Rating</a>
+
+</div>
+{% endblock %}
