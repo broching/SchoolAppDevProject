@@ -1,8 +1,10 @@
-from wtforms import Form, StringField, TextAreaField, validators, SelectField, IntegerField, FloatField, FileField, \
-    RadioField, SubmitField
+from wtforms import Form, StringField, TextAreaField, validators, SelectField, FloatField, FileField, \
+    RadioField, SubmitField, HiddenField
 
 
 class CreateProductReview(Form):
+    user_name = HiddenField('')
+
     product_rating = RadioField('Product Rating', [validators.DataRequired()],
                                 choices=[('1', '1'), ('22', '2'),
                                          ('3', '3'), ('4', '4'), ('5', '5')], default='')

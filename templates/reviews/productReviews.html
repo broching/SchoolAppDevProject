@@ -32,7 +32,7 @@
             <tr>
                 <td>
 
-                    <p><b>User:</b></p> <br>
+                    <p><b>User:</b> {{ product_review.get_user_name() }}</p>  <br>
                     <p><b>Rating: </b> {{ product_review.get_product_rating() }} </p> <br>
                     <p><b>Comment </b> {{ product_review.get_product_comment() }} </p> <br>
                     <p><b>Image </b> <br>
