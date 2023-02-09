@@ -22,14 +22,6 @@ def customer_dashboard():
         return restricted_customer_error()
 
 
-@account.route('/StaffDashboard')
-def staff_dashboard():
-    if staff_login_required():
-        return render_template('account/staff_dashboard.html')
-    else:
-        return restricted_staff_error()
-
-
 @account.route('/customerProfile', methods=["POST", "GET"])
 def customer_profile():
     # Code for the update profile page
@@ -441,6 +433,10 @@ def customer_default_card(card_id):
 
     return render_template('account/customer_billing.html', default_card_form=default_card_form,
                            )
+
+@account.route('/StaffDashboard')
+def staff_dashboard():
+    return render_template('account/staff_dashboard.html')
 
 
 @account.route('/StaffProfile')
