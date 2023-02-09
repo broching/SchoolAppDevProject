@@ -5,7 +5,6 @@ from models.reviews.serviceReview import serviceReview
 from models.reviews.createProductReview import CreateProductReview
 from models.reviews.createServiceReview import CreateServiceReview
 
-from models.reviews.product_reviews_functions import save_image
 
 review = Blueprint('review', __name__)
 

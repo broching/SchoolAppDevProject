@@ -4,7 +4,7 @@ from wtforms import Form, StringField, TextAreaField, validators, SelectField, I
 
 class CreateProductReview(Form):
     product_rating = RadioField('Product Rating', [validators.DataRequired()],
-                                choices=[('1', '1'), ('2', '2'),
+                                choices=[('1', '1'), ('22', '2'),
                                          ('3', '3'), ('4', '4'), ('5', '5')], default='')
 
     product_comment = TextAreaField('Write your review here', [validators.Length(max=200), validators.DataRequired()])

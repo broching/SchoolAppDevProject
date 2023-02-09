@@ -23,12 +23,12 @@
 
             <thead>
             <tr class="tarow1first">
-                <th style="font-size: 150%;">Product Ratings</th>
+                <th style="font-size: 150%;">All Product Reviews</th>
             </tr>
             </thead>
 
             <tbody>
-            {% for product_review in product_reviews_list %}
+            {% for product_review in product_reviews_list|reverse %}
             <tr>
                 <td>
 
