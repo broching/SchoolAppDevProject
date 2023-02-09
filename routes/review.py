@@ -38,7 +38,7 @@ def createProductReview():
             return render_template('reviews/createProductReview.html', form=create_product_review_form)
 
     else:
-        return render_template('reviews/customer_login_required.html')
+        return restricted_customer_error()
 
 
 @review.route('/productReviews')
