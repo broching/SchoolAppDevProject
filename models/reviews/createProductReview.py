@@ -5,6 +5,8 @@ from wtforms import Form, StringField, TextAreaField, validators, SelectField, F
 class CreateProductReview(Form):
     user_name = HiddenField('')
 
+    user_id = HiddenField('')
+
     product_rating = RadioField('Product Rating', [validators.DataRequired()],
                                 choices=[('1', '1'), ('22', '2'),
                                          ('3', '3'), ('4', '4'), ('5', '5')], default='')

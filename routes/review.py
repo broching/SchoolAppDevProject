@@ -1,5 +1,5 @@
 import shelve
-from flask import Blueprint, render_template, request, url_for, redirect, session
+from flask import Blueprint, render_template, request, url_for, redirect, session, flash
 
 from models.reviews.productReview import productReview
 from models.reviews.serviceReview import serviceReview
@@ -26,6 +26,7 @@ def createProductReview():
                         product_reviews_dict = db['Product_Reviews']
                     product_review = productReview(
                         create_product_review_form.user_name.data,
+                        create_product_review_form.user_id.data,
                         create_product_review_form.product_rating.data,
                         create_product_review_form.product_comment.data,
                         create_product_review_form.product_image.data,
@@ -38,7 +39,10 @@ def createProductReview():
                         username = session['customer']['_Account__username']
                         product_review.set_user_name(username)
 
-                    product_reviews_dict[product_review.get_product_id()] = product_review
+                        user_id = session['customer']['_Account__user_id']
+                        product_review.set_user_id(user_id)
+
+                    product_reviews_dict[product_review.get_user_id()] = product_review
                     db['Product_Reviews'] = product_reviews_dict
             except IOError:
                 print("Error in retrieving Product Reviews from Product_Reviews.db.")
@@ -77,13 +81,20 @@ def deleteProductReview(id):
         with shelve.open('DB/reviews/productReviews/productReview.db', 'w') as db:
             if 'Product_Reviews' in db:
                 product_reviews_dict = db['Product_Reviews']
-            product_reviews_dict.pop(id)  # Step 1: Updates are handled using dictionaries first.
-            db['Product_Reviews'] = product_reviews_dict
+
+            if customer_login_required():
+                if customer_profile():
+                    delete_id = session['customer']['_Account__user_id']
+
+                    if delete_id == id:
+                        product_reviews_dict.pop(id)  # Step 1: Updates are handled using dictionaries first.
+                        db['Product_Reviews'] = product_reviews_dict
+            else:
+                return restricted_customer_error()
 
     except IOError as ex:
         print(f"Error in retrieving product reviews from productReviews.db - {ex}")
     return redirect(url_for('review.productReviews'))
-
 
 @review.route('/productRating')
 def productRating():
