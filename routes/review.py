@@ -7,7 +7,9 @@ from models.reviews.createProductReview import CreateProductReview
 from models.reviews.createServiceReview import CreateServiceReview
 
 from models.auth.auth_functions import customer_login_required, restricted_customer_error, staff_login_required, \
-    restricted_staff_error, get_customers
+    restricted_staff_error
+
+from routes.account import customer_profile
 
 review = Blueprint('review', __name__)
 
@@ -30,6 +32,11 @@ def createProductReview():
                         create_product_review_form.product_video.data)
 
                     product_review.set_product_id(product_review.get_product_id())
+
+                    # link username to current session's username
+                    if customer_profile():
+                        username = session['customer']['_Account__username']
+                        product_review.set_user_name(username)
 
                     product_reviews_dict[product_review.get_product_id()] = product_review
                     db['Product_Reviews'] = product_reviews_dict
