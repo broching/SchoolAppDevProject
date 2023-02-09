@@ -1,35 +1,44 @@
 import shelve
-from flask import Blueprint, render_template, request, url_for, redirect
+from flask import Blueprint, render_template, request, url_for, redirect, flash
+
 from models.reviews.productReview import productReview
 from models.reviews.serviceReview import serviceReview
 from models.reviews.createProductReview import CreateProductReview
 from models.reviews.createServiceReview import CreateServiceReview
 
+from models.auth.auth_functions import customer_login_required, restricted_customer_error, staff_login_required, \
+    restricted_staff_error
+
 
 review = Blueprint('review', __name__)
 
+
 @review.route('/createProductReview', methods=['GET', 'POST'])
 def createProductReview():
-    create_product_review_form = CreateProductReview(request.form)
-    if request.method == 'POST' and create_product_review_form.validate():
-        try:
-            with shelve.open('DB/reviews/productReviews/productReview.db', 'c') as db:
-                product_reviews_dict = {}
-                if 'Product_Reviews' in db:
-                    product_reviews_dict = db['Product_Reviews']
-                product_review = productReview(create_product_review_form.product_rating.data,
-                                               create_product_review_form.product_comment.data,
-                                               create_product_review_form.product_image.data,
-                                               create_product_review_form.product_video.data)
-                product_review.set_product_id(product_review.get_product_id())
+    if customer_login_required():
+        create_product_review_form = CreateProductReview(request.form)
+        if request.method == 'POST' and create_product_review_form.validate():
+            try:
+                with shelve.open('DB/reviews/productReviews/productReview.db', 'c') as db:
+                    product_reviews_dict = {}
+                    if 'Product_Reviews' in db:
+                        product_reviews_dict = db['Product_Reviews']
+                    product_review = productReview(create_product_review_form.product_rating.data,
+                                                   create_product_review_form.product_comment.data,
+                                                   create_product_review_form.product_image.data,
+                                                   create_product_review_form.product_video.data)
+                    product_review.set_product_id(product_review.get_product_id())
 
-                product_reviews_dict[product_review.get_product_id()] = product_review
-                db['Product_Reviews'] = product_reviews_dict
-        except IOError:
-            print("Error in retrieving Product Reviews from Product_Reviews.db.")
-        return redirect(url_for('review.productReviews'))
+                    product_reviews_dict[product_review.get_product_id()] = product_review
+                    db['Product_Reviews'] = product_reviews_dict
+            except IOError:
+                print("Error in retrieving Product Reviews from Product_Reviews.db.")
+            return redirect(url_for('review.productReviews'))
+        else:
+            return render_template('reviews/createProductReview.html', form=create_product_review_form)
+
     else:
-        return render_template('reviews/createProductReview.html', form=create_product_review_form)
+        return render_template('reviews/customer_login_required.html')
 
 
 @review.route('/productReviews')
