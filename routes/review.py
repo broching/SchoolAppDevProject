@@ -87,42 +87,31 @@ def productRating():
 
 @review.route('/createServiceReview', methods=['GET', 'POST'])
 def createServiceReview():
-    if customer_login_required():
-        create_service_review_form = CreateServiceReview(request.form)
-        if request.method == 'POST' and create_service_review_form.validate():
-            try:
-                with shelve.open('DB/reviews/serviceReviews/serviceReview.db', 'c') as db:
-                    service_reviews_dict = {}
-                    if 'Service_Reviews' in db:
-                        service_reviews_dict = db['Service_Reviews']
-                    service_review = serviceReview(create_service_review_form.user_id.data,
-                                                   create_service_review_form.user_name.data,
-                                                   create_service_review_form.service_selection.data,
-                                                   create_service_review_form.stylist_selection.data,
-                                                   create_service_review_form.service_rating.data,
-                                                   create_service_review_form.service_image.data,
-                                                   create_service_review_form.service_video.data,
-                                                   create_service_review_form.service_comment.data)
+    create_service_review_form = CreateServiceReview(request.form)
+    if request.method == 'POST' and create_service_review_form.validate():
+        try:
+            with shelve.open('DB/reviews/serviceReviews/serviceReview.db', 'c') as db:
+                service_reviews_dict = {}
+                if 'Service_Reviews' in db:
+                    service_reviews_dict = db['Service_Reviews']
+                service_review = serviceReview(create_service_review_form.user_id.data,
+                                               create_service_review_form.user_name.data,
+                                               create_service_review_form.service_selection.data,
+                                               create_service_review_form.stylist_selection.data,
+                                               create_service_review_form.service_rating.data,
+                                               create_service_review_form.service_image.data,
+                                               create_service_review_form.service_video.data,
+                                               create_service_review_form.service_comment.data)
 
-                    service_review.set_service_id(service_review.get_service_id())
+                service_review.set_service_id(service_review.get_service_id())
 
-                    # link username to current session's username
-                    if customer_profile():
-                        username = session['customer']['_Account__username']
-                        service_review.set_user_name(username)
-
-                        user_id = session['customer']['_Account__user_id']
-                        service_review.set_user_id(user_id)
-
-                    service_reviews_dict[service_review.get_service_id()] = service_review
-                    db['Service_Reviews'] = service_reviews_dict
-            except IOError:
-                print("Error in retrieving Service Reviews from Service_Reviews.db.")
-            return redirect(url_for('review.serviceReviews'))
-        else:
-            return render_template('reviews/createServiceReview.html', form=create_service_review_form)
+                service_reviews_dict[service_review.get_service_id()] = service_review
+                db['Service_Reviews'] = service_reviews_dict
+        except IOError:
+            print("Error in retrieving Service Reviews from Service_Reviews.db.")
+        return redirect(url_for('review.serviceReviews'))
     else:
-        return restricted_customer_error()
+        return render_template('reviews/createServiceReview.html', form=create_service_review_form)
 
 
 @review.route('/serviceReviews')
