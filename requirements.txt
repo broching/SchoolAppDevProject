@@ -17,3 +17,5 @@ wheel==0.38.4
 WTForms==3.0.1
 
 Pillow~=9.4.0
+stripe~=5.1.1
+python-dotenv~=0.21.1
