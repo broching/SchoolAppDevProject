@@ -5,10 +5,11 @@ class productReview():
     unique_id = datetime.now()
     unique_id = int(unique_id.strftime('%Y%m%d%H%M%S'))
 
-    def __init__(self, user_name, user_id, product_rating, product_comment, product_image, product_video):
+    def __init__(self, user_name, user_id, product_selection, product_rating, product_comment, product_image, product_video):
         self.__product_id = productReview.unique_id
         self.__user_name = user_name
         self.__user_id = user_id
+        self.__product_selection = product_selection
         self.__product_rating = product_rating
         self.__product_comment = product_comment
         self.__product_image = product_image
@@ -31,6 +32,12 @@ class productReview():
 
     def set_product_id(self, product_id):
         self.__product_id = product_id
+
+    def get_product_selection(self):
+        return self.__product_selection
+
+    def set_product_selection(self, product_selection):
+        self.__product_selection = product_selection
 
     def get_product_rating(self):
         return self.__product_rating

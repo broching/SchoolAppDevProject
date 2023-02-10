@@ -1,6 +1,6 @@
 import shelve
 
-from flask import flash, Blueprint, render_template, request, redirect, url_for, current_app
+from flask import flash, Blueprint, render_template, request, redirect, url_for, current_app, abort
 from werkzeug.datastructures import FileStorage
 
 from models.products.InventorybackendFlaskForm import CreateNewProduct, PaymentForm, UpdateNewProduct
@@ -8,8 +8,14 @@ from models.products.Order import Order
 from models.products.product_functions import save_image, delete_image
 
 from models.products.Product import Product
+import stripe
+import os
+from dotenv import load_dotenv
 
 productr = Blueprint('productr', __name__, template_folder='templates', static_folder='static')
+
+load_dotenv('.env')
+stripe.api_key = os.environ['STRIPE_SECRET_KEY']
 
 
 @productr.route('/products')
@@ -49,6 +55,60 @@ def productsSpecific(id):
         print(f"Unknown error in retrieving products from product.db for Product specific page  - {ex}")
 
     return render_template('products/payment1.html', count=len(products_list), products_list=products_list, id=id)
+
+
+@productr.route('/products/order/<int:id>/')
+def productOrder(id):
+    try:
+        products_dict = {}
+        with shelve.open('DB/products/product.db', 'w') as pdb:
+            if 'Products' in pdb:
+                products_dict = pdb['Products']
+            if id in products_dict:
+                product = products_dict.get(id)
+                product_quantity_temp = product.get_product_quantity()
+                product_quantity_temp -= 1
+                print(product_quantity_temp)
+                product.set_product_quantity(product_quantity_temp)
+                print(product.get_product_quantity())
+            pdb['Products'] = products_dict
+
+            if id not in products_dict:
+                abort(404)
+
+            checkout_session = stripe.checkout.Session.create(
+                line_items=[
+                    {
+                        'price_data': {
+                            'product_data': {
+                                'name': product.get_product_name(),
+                            },
+                            'unit_amount': int(product.get_product_price() * 100),
+                            'currency': 'usd',
+                        },
+                        'quantity': 1,
+                    },
+                ],
+                payment_method_types=['card'],
+                mode='payment',
+                success_url=request.host_url + 'products/order/success',
+                cancel_url=request.host_url + 'products/order/cancel',
+            )
+
+    except IOError as ex:
+        print(f"Error in trying to open product.db in payment page (Order and payment page) - {ex}")
+
+    return redirect(checkout_session.url)
+
+
+@productr.route('/products/order/success')
+def success():
+    return render_template('products/success.html')
+
+
+@productr.route('/products/order/cancel')
+def cancel():
+    return render_template('products/cancel.html')
 
 
 @productr.route('/products/<int:id>/paymentspecific', methods=['GET', 'POST'])

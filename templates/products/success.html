@@ -1,0 +1,22 @@
+{% extends "productbase.html" %}
+{% block title %}Thank you for ordering! - Num1Salon{% endblock %}
+
+{% block content %}
+<h1 class="display-4 uptitel">Order details</h1>
+{% endblock %}
+
+{% block content2 %}
+<div class="m-2 uptitel">
+    <p class="h2">Success</p>
+</div>
+
+<p class="h2">
+  We appreciate your business! If you have any questions, please email
+  <a href="mailto:num1salon@gmail.com">num1salon@gmail.com</a>.
+</p>
+
+<a href="{{url_for('productr.products')}}">Back to products</a>
+<br>
+
+
+{% endblock %}
