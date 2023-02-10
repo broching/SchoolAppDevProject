@@ -9,12 +9,16 @@
         <div class="form-group">
             {{ render_field(form.service_selection, class="form-control") }}
         </div>
+        <div class="form-group">
+            {{ render_field(form.stylist_selection, class="form-control") }}
+        </div>
         <br>
         <div class="form-group">
             {{ render_field(form.service_comment, class="form-control") }}
         </div>
         <br>
         <div class="form-group">
+            {%include 'reviews/productRating.html' %}
             {{ render_field(form.service_rating, class="form-control") }}
         </div>
         <br>
@@ -31,7 +35,6 @@
                style="float: right; margin-top: 10px; margin-bottom: 20px;"/>
     </form>
     <br><br>
-    <a href="/serviceReviews">All Service Reviews</a>
 </div>
 
 {% endblock %}

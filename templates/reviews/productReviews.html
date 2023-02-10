@@ -4,11 +4,11 @@
 {% block content2 %}
 
 {% with messages = get_flashed_messages() %}
-   {% if messages %}
-      {% for message in messages %}
-         {{ message }}
-      {% endfor %}
-   {% endif %}
+{% if messages %}
+{% for message in messages %}
+{{ message }}
+{% endfor %}
+{% endif %}
 {% endwith %}
 
 
@@ -28,13 +28,19 @@
     </div>
 
 
+    <div>
+        Click <a href='createProductReview'>here</a> to create a product review.
+    </div>
+
+    <br>
+
     <!--    Table to display all product reviews-->
     <div class="product_reviews">
         <table class="table table-striped">
 
             <thead>
             <tr class="tarow1first">
-                <th style="font-size: 150%;">All Product Reviews</th>
+                <th style="font-size: 150%;">{{ count }} Product Reviews</th>
             </tr>
             </thead>
 
@@ -44,6 +50,7 @@
                 <td>
 
                     <p><b>User:</b> {{ product_review.get_user_name() }}</p>  <br>
+                    <p><b>Product: </b> {{ product_review.get_product_selection() }}</p>  <br>
                     <p><b>Rating: </b> {{ product_review.get_product_rating() }} </p> <br>
                     <p><b>Comment </b> {{ product_review.get_product_comment() }} </p> <br>
                     <p><b>Image </b> <br>
@@ -57,7 +64,7 @@
                 </td>
 
                 <td>
-                    <form action="{{url_for('review.deleteProductReview', id=product_review.get_user_id())}}"
+                    <form action="{{url_for('review.deleteProductReview', id=product_review.get_product_id())}}"
                           method="POST">
                         <input type="submit" value="X" class="btn btn-danger">
                     </form>

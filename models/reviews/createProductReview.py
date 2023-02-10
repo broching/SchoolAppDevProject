@@ -7,6 +7,11 @@ class CreateProductReview(Form):
 
     user_id = HiddenField('')
 
+    product_selection = SelectField('Product', [validators.DataRequired()],
+                                    choices=[('', 'Click to select your product'), ('Product 1', 'Product 1'),
+                                             ('Product 2', 'Product 2'),
+                                             ('Product 3', 'Product 3'), ('Product 4', 'Product 4')], default='')
+
     product_rating = RadioField('Product Rating', [validators.DataRequired()],
                                 choices=[('1', '1'), ('22', '2'),
                                          ('3', '3'), ('4', '4'), ('5', '5')], default='')
