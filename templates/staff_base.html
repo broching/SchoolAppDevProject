@@ -51,18 +51,11 @@
           </ul>
           <ul class="navbar-nav ms-auto justify-content-end">
 
-            {% if 'customer' in session %}
-            <li class="nav-item">
-              <a class="nav-link mx-2" href="#">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart2" viewBox="0 0 16 16" style="color: white">
-                  <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5zM3.14 5l1.25 5h8.22l1.25-5H3.14zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0zm9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0z"/>
-                </svg>
-              </a>
-            </li>
+            {% if 'staff' in session %}
             <li class="nav-item dropdown" style="margin-right: 20px">
               <a class="nav-link mx-2 dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                {% if session['customer']['_Account__user_image'] %}
-                <img src="../static/media/images/account/{{session['customer']['_Account__user_image']}}" alt="" width="30px" height="30px" class="account-img rounded-circle">
+                {% if session['staff']['_Account__user_image'] %}
+                <img src="../static/media/images/account/{{session['staff']['_Account__user_image']}}" alt="" width="30px" height="30px" class="account-img rounded-circle">
                 {% else %}
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16" style="color: white">
                   <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
@@ -71,8 +64,7 @@
                 {% endif %}
               </a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" style="min-width: 10px;">
-                <li><a class="dropdown-item" href=" {{url_for('account.customer_dashboard')}} ">Dashboard </a></li>
-                <li><a class="dropdown-item" href=" {{url_for('account.customer_profile')}} ">Profile</a></li>
+                <li><a class="dropdown-item" href=" {{url_for('account.staff_dashboard')}} ">Dashboard </a></li>
                 <li><hr class="dropdown-divider" /></li>
                 <li><a class="dropdown-item" href="{{ url_for('auth.logout') }} ">Logout</a></li>
               </ul>
@@ -98,9 +90,56 @@
         </div>
       </div>
     </nav>
+  <body xmlns="http://www.w3.org/1999/html">
+<!-- iconscout cdn path -->
+   <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+<!-- CSS File Link -->
+   <link rel="stylesheet" href="../../static/css/account/staff_dashboard.css">
+   <div class="sidebar" id="sidebar">
 
+      <div class="sidebar-menu">
+         <ul>
+            <p style="visibility: hidden;">filler text to add some gap, more gap, more gap</p>
+            <li>
+               <a href="{{ url_for('account.staff_dashboard') }}" class="anchor-links">
+               <i class="uil uil-dashboard"></i>
+               <span>Dashboard</span>
+               </a>
+            </li>
+            <li>
+               <a href="{{ url_for('account.staff_profile') }}" class="anchor-links">
+               <i class="uil uil-user-circle"></i>
+               <span>Profile</span>
+               </a>
+            </li>
+            <li>
+               <a href="{{ url_for('account.staff_profile') }}" class="anchor-links">
+               <i class="uil uil-users-alt"></i>
+               <span>Account Management</span>
+               </a>
+            </li>
+            <li>
+               <a href="{{ url_for('account.staff_profile') }}" class="anchor-links">
+               <i class="uil uil-comment-message"></i>
+               <span>Messages</span>
+               </a>
+            </li>
+            <li>
+               <a href="{{ url_for('account.staff_profile') }}" class="anchor-links">
+               <i class="uil uil-chart-bar"></i>
+               <span>Charts</span>
+               </a>
+            </li>
+         </ul>
+      </div>
+   </div>
 
-{% with messages = get_flashed_messages(with_categories=True) %}
+   <div class="main-content" id="main-content">
+      <header class="flex">
+         <h2>
+            <i class="uil uil-bars" id="menu-icon"></i>
+         </h2>
+         {% with messages = get_flashed_messages(with_categories=True) %}
     {% for category, message in messages %}
       <div class="alert alert-{{category}} alert-dismissible fade show =" role="alert">
         {% if category == "danger" %}
@@ -115,14 +154,31 @@
       </div>
     {% endfor %}
 {% endwith %}
+      </header>
+
+      <main>
+        {% block content %}
+        {% endblock content %}
+      </main>
+   </div>
+
+   <script>
+      let sideBar = document.getElementById('sidebar');
+      let menuIcon = document.getElementById('menu-icon');
+      let mainContent = document.getElementById('main-content');
+
+      menuIcon.onclick = () => {
+         sideBar.classList.toggle('toggleMenu');
+         mainContent.classList.toggle('toggleContent');
+      }
+   </script>
+</body>
 
 
 
-{% block content %}
-{% endblock content %}
 
   <!-- Footer -->
-<footer class="bg-dark text-center text-white">
+<footer class="bg-dark text-center text-white" style="z-index: 10001">
   <!-- Grid container -->
   <div class="container p-4">
     <!-- Section: Social media -->

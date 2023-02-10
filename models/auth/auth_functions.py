@@ -36,8 +36,11 @@ def validate_username(username_to_validate, relative_path_to_db, exceptions=None
     is_valid = True
     username_list = []
     customer_list = get_customers(relative_path_to_db)
+    staff_list = get_staff(relative_path_to_db)
     for customer in customer_list:
         username_list.append(customer.get_username())
+    for staff in staff_list:
+        username_list.append(staff.get_username())
     if exceptions:
         username_list.remove(exceptions)
     for username in username_list:
@@ -46,9 +49,14 @@ def validate_username(username_to_validate, relative_path_to_db, exceptions=None
     return is_valid
 
 
-def validate_password(password_to_validate):
+def validate_customer_password(password_to_validate):
     """Validates password with session"""
     return checkpw(password_to_validate.encode(), session['customer']['_Account__password_hash'])
+
+
+def validate_staff_password(password_to_validate):
+    """Validates password with session"""
+    return checkpw(password_to_validate.encode(), session['staff']['_Account__password_hash'])
 
 
 def validate_email(email_to_validate, relative_path_to_db, exceptions=None):
@@ -56,8 +64,11 @@ def validate_email(email_to_validate, relative_path_to_db, exceptions=None):
     is_valid = True
     email_list = []
     customer_list = get_customers(relative_path_to_db)
+    staff_list = get_staff(relative_path_to_db)
     for customer in customer_list:
         email_list.append(customer.get_email())
+    for staff in staff_list:
+        email_list.append(staff.get_email())
     if exceptions:
         email_list.remove(exceptions)
     for email in email_list:
@@ -71,8 +82,11 @@ def validate_number(number_to_validate, relative_path_to_db, exceptions=None):
     is_valid = True
     number_list = []
     customer_list = get_customers(relative_path_to_db)
+    staff_list = get_staff(relative_path_to_db)
     for customer in customer_list:
         number_list.append(customer.get_number())
+    for staff in staff_list:
+        number_list.append(staff.get_number())
     if exceptions:
         number_list.remove(exceptions)
     for number in number_list:
@@ -137,7 +151,7 @@ def delete_customer(customer_object, relative_path_to_db):
 
 
 def customer_login_authentication(username_email, password, relative_path_to_db):
-    """Checks if customer login matches the database and returns valid (T or F) and a dictionary of the customer
+    """Checks if customer login matches the database and returns a dictionary of the customer
     object """
     customer_dict = {}
     customers = get_customers(relative_path_to_db)
@@ -149,11 +163,13 @@ def customer_login_authentication(username_email, password, relative_path_to_db)
 
 
 def account_to_dictionary_converter(account_object):
+    """Converts an object into a dictionary"""
     account_dict = vars(account_object)
     return account_dict
 
 
 def is_valid_card_number(card_input):
+    """Validates the credit card number"""
     card_input = card_input[::- 1]
     card_input = [int(x) for x in card_input]
     for i in range(1, len(card_input), 2):
@@ -166,3 +182,69 @@ def is_valid_card_number(card_input):
 
     return total % 10 == 0
 
+
+def get_staff(relative_path_to_db):
+    """Returns a list of staff objects"""
+    transfer_dict = {}
+    staff_list = []
+    try:
+        db = shelve.open(f"{relative_path_to_db}/account/staff/staff", 'c')
+        if "staff" in db:
+            transfer_dict = db['staff']
+        else:
+            db['staff'] = transfer_dict
+    except IOError:
+        print("Error occurred while trying to open the shelve file")
+    except Exception as ex:
+        print(f"Error occurred as {ex}")
+    for staff in transfer_dict.values():
+        staff_list.append(staff)
+    return staff_list
+
+
+def store_staff(staff_object, relative_path_to_db):
+    """Stores staff object inside the staff database"""
+    try:
+        transfer_dict = {}
+        db = shelve.open(f"{relative_path_to_db}/account/staff/staff", 'c')
+        if "staff" in db:
+            transfer_dict = db['staff']
+        else:
+            db['staff'] = transfer_dict
+        transfer_dict[staff_object.get_user_id()] = staff_object
+        db['staff'] = transfer_dict
+        db.close()
+    except IOError:
+        print("Error occurred while trying to open the shelve file")
+    except Exception as ex:
+        print(f"Error occurred as {ex}")
+
+
+def delete_staff(staff_object, relative_path_to_db):
+    """Deletes customer object inside the customer database"""
+    try:
+        transfer_dict = {}
+        db = shelve.open(f"{relative_path_to_db}/account/staff/staff", 'c')
+        if "staff" in db:
+            transfer_dict = db['staff']
+        else:
+            db['staff'] = transfer_dict
+        transfer_dict.pop(staff_object.get_user_id(), None)
+        db['staff'] = transfer_dict
+        db.close()
+    except IOError:
+        print("Error occurred while trying to open the shelve file")
+    except Exception as ex:
+        print(f"Error occurred as {ex}")
+
+
+def staff_login_authentication(username_email, password, relative_path_to_db):
+    """Checks if staff login matches the database and returns a dictionary of the staff
+    object """
+    staff_dict = {}
+    staff_list = get_staff(relative_path_to_db)
+    for staff in staff_list:
+        if staff.get_email() == username_email or staff.get_username() == username_email:
+            if checkpw(password.encode(), staff.get_password_hash()):
+                staff_dict = account_to_dictionary_converter(staff)
+    return staff_dict

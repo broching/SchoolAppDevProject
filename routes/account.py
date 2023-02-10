@@ -5,9 +5,10 @@ from flask import Blueprint, render_template, request, session, flash, redirect,
 from models.account.account_forms import UpdateProfileForm, UpdateSecurityForm, DeleteAccountForm, ShippingAddressForm
 from models.account.account_functions import save_image, delete_image
 from models.auth.auth_functions import customer_login_required, restricted_customer_error, staff_login_required, \
-    restricted_staff_error
+    restricted_staff_error, validate_staff_password
 from models.auth.auth_functions import get_customers, store_customer, delete_customer, account_to_dictionary_converter, \
-    validate_password, validate_number, validate_email, validate_username, is_valid_card_number
+    validate_customer_password, validate_number, validate_email, validate_username, is_valid_card_number, get_staff, store_staff, \
+    delete_staff
 from models.auth.payment_classes import CreditCard
 from models.auth.payment_forms import ProfileCreditCardForm, DeleteCreditCardForm, MakeCardDefaultForm
 
@@ -100,7 +101,7 @@ def customer_security():
     if request.method == 'POST' and update_security_form.submit2.data:
         for customer in customer_list:
             if customer.get_user_id() == current_customer_id:
-                if validate_password(update_security_form.current_password.data):
+                if validate_customer_password(update_security_form.current_password.data):
                     if update_security_form.password1.data == update_security_form.password2.data:
                         customer.set_password_hash(update_security_form.password1.data)
                         #     Store in DB
@@ -120,7 +121,8 @@ def customer_security():
     # Check if user is logged in and renders template
     if customer_login_required():
         return render_template('account/customer_security.html',
-                               update_security_form=update_security_form, delete_account_form=delete_account_form, error_messages=error_messages)
+                               update_security_form=update_security_form, delete_account_form=delete_account_form,
+                               error_messages=error_messages)
     else:
         return restricted_customer_error()
 
@@ -163,7 +165,8 @@ def customer_shipping_address():
 
     # Check if user is logged in and renders template
     if customer_login_required():
-        return render_template('account/customer_profile.html', update_profile_form=update_profile_form, update_shipping_form=update_shipping_form, error_messages=error_messages)
+        return render_template('account/customer_profile.html', update_profile_form=update_profile_form,
+                               update_shipping_form=update_shipping_form, error_messages=error_messages)
     else:
         return restricted_customer_error()
 
@@ -186,7 +189,7 @@ def customer_delete():
     # Check if user is logged in and renders template
     if customer_login_required():
         return render_template('account/customer_profile.html',
-                               update_security_form=update_security_form, delete_account_form=delete_account_form,)
+                               update_security_form=update_security_form, delete_account_form=delete_account_form, )
     else:
         return restricted_customer_error()
 
@@ -434,14 +437,121 @@ def customer_default_card(card_id):
     return render_template('account/customer_billing.html', default_card_form=default_card_form,
                            )
 
+
 @account.route('/StaffDashboard')
 def staff_dashboard():
     return render_template('account/staff_dashboard.html')
 
 
-@account.route('/StaffProfile')
+@account.route('/StaffProfile', methods=["POST", "GET"])
 def staff_profile():
-    if staff_login_required():
-        return render_template('account/staff_profile.html')
-    else:
-        return restricted_staff_error()
+    # Code for the update profile page
+    error_messages = {}
+    update_profile_form = UpdateProfileForm()
+    staff_list = get_staff('DB')
+    current_staff_id = session['staff']['_Account__user_id']
+
+    #  If User is submitting form
+
+    if request.method == 'POST' and update_profile_form.submit1.data:
+        for staff in staff_list:
+            if staff.get_user_id() == current_staff_id:
+                staff.set_first_name(update_profile_form.first_name.data)
+                staff.set_last_name(update_profile_form.last_name.data)
+                if validate_username(update_profile_form.username.data, 'DB',
+                                     exceptions=session['staff']['_Account__username']):
+                    staff.set_username(update_profile_form.username.data)
+                else:
+                    error_messages['username'] = "The username is already taken"
+                if validate_email(update_profile_form.email.data, 'DB',
+                                  exceptions=session['staff']['_Account__email']):
+                    staff.set_email(update_profile_form.email.data)
+                else:
+                    error_messages['email'] = "The email is already taken"
+                if update_profile_form.phone_number.data:
+                    if validate_number(update_profile_form.phone_number.data, 'DB',
+                                       exceptions=session['staff']['_Account__number']):
+                        staff.set_number(update_profile_form.phone_number.data)
+                    else:
+                        error_messages['number'] = "The phone number is already taken"
+                if update_profile_form.birthday.data:
+                    staff.set_birthday(update_profile_form.birthday.data.strftime('%Y-%m-%d'))
+                if update_profile_form.image.data:
+                    delete_image(session['staff']['_Account__user_image'])
+                    image_file_name = save_image(update_profile_form.image.data)
+                    staff.set_user_image(image_file_name)
+                #     Store in DB
+                store_staff(staff, 'DB')
+                # Update session with new info
+                staff_dict = account_to_dictionary_converter(staff)
+                session['staff'] = staff_dict
+                # flash and redirect
+                if not error_messages:
+                    flash('Staff Account Successfully changed', category='success')
+                    return redirect(url_for('account.staff_profile'))
+            # If request method is get, load customer data to the update form fields
+    if request.method == 'GET':
+        update_profile_form.username.data = session['staff']['_Account__username']
+        update_profile_form.first_name.data = session['staff']['_Account__first_name']
+        update_profile_form.last_name.data = session['staff']['_Account__last_name']
+        update_profile_form.email.data = session['staff']['_Account__email']
+        update_profile_form.phone_number.data = session['staff']['_Account__number']
+    return render_template('account/staff_profile.html', update_profile_form=update_profile_form,
+                           error_messages=error_messages)
+
+
+@account.route('/StaffSecurity', methods=["POST", "GET"])
+def staff_security():
+    # Code for the update security page
+
+    error_messages = {}
+    update_security_form = UpdateSecurityForm()
+    delete_account_form = DeleteAccountForm()
+    staff_list = get_staff('DB')
+    current_staff_id = session['staff']['_Account__user_id']
+
+    #  If User is submitting form
+
+    if request.method == 'POST' and update_security_form.submit2.data:
+        for staff in staff_list:
+            if staff.get_user_id() == current_staff_id:
+                if validate_staff_password(update_security_form.current_password.data):
+                    if update_security_form.password1.data == update_security_form.password2.data:
+                        staff.set_password_hash(update_security_form.password1.data)
+                        #     Store in DB
+                        delete_staff(staff, 'DB')
+                        store_staff(staff, 'DB')
+                        # Update session with new info
+                        staff_dict = account_to_dictionary_converter(staff)
+                        session['staff'] = staff_dict
+                    else:
+                        error_messages['password'] = 'Passwords do not match'
+                else:
+                    error_messages['current_password'] = 'Current password is wrong'
+                # flash and redirect
+                if not error_messages:
+                    flash('Staff Account Successfully changed', category='success')
+                    return redirect(url_for('account.staff_security'))
+    # Check if user is logged in and renders template
+    return render_template('account/staff_security.html',
+                           update_security_form=update_security_form, delete_account_form=delete_account_form,
+                           error_messages=error_messages)
+
+
+@account.route('/StaffDelete', methods=['POST', 'GET'])
+def staff_delete():
+    """Code for deleted customer account"""
+    update_security_form = UpdateSecurityForm()
+    delete_account_form = DeleteAccountForm()
+    staff_list = get_staff('DB')
+    current_staff_id = session['staff']['_Account__user_id']
+    if request.method == 'POST' and delete_account_form.submit3.data:
+        for staff in staff_list:
+            if staff.get_user_id() == current_staff_id:
+                delete_image(session['staff']['_Account__user_image'])
+                delete_staff(staff, 'DB')
+                session.pop('staff', None)
+                flash("Staff Account successfully deleted", category='info')
+                return redirect(url_for('home'))
+    return render_template('account/staff_security.html',
+                               update_security_form=update_security_form, delete_account_form=delete_account_form, )

@@ -61,11 +61,6 @@
   font-size: 22px;
 }
 
-.sidebar-menu ul li:is(:hover,:first-child){
-  background-color: var(--text-white);
-  color: var(--main-color);
-}
-
 .main-content{
   margin-left: 270px;
   transition: all .5s;
@@ -363,4 +358,17 @@ thead :is(tr,td,th){
 
 .toggleContent{
   margin-left: 0px;
+}
+
+.anchor-links {
+  color: white;
+    text-decoration: none;
+    padding: 5px;
+border-radius: 10px;
+}
+.anchor-links:hover {
+color: white;
+}
+li:hover {
+background-color: gray;
 }

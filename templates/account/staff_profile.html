@@ -1,10 +1,125 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'staff_base.html' %}
 
-</body>
-</html>
+{% block title %}
+Staff Profile
+{% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css"
+      integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous"/>
+<link rel="stylesheet" href="../../static/css/account/customer_profile.css">
+<link rel="stylesheet" href="../../static/css/account/customer_billing.css">
+<link rel="stylesheet" href="../../static/css/account/customer_security.css">
+<div class="container-xl px-4 mt-0">
+    <!-- Account page navigation-->
+    <nav class="nav nav-borders">
+        <a class="nav-link active ms-0" href="{{url_for('account.staff_profile')}}">Profile</a>
+        <a class="nav-link" href="{{url_for('account.staff_security')}}">Security</a>
+    </nav>
+    <hr class="mt-0 mb-4">
+    <div class="tab-content">
+        <div class="container tab-pane active" id="profile">
+            <form method="post" enctype="multipart/form-data" action="{{url_for('account.staff_profile')}}">
+                {{ update_profile_form.hidden_tag() }}
+                <div class="row">
+                    <div class="col-xl-5">
+                        <!-- Profile picture card-->
+                        <div class="card mb-4 mb-xl-0">
+                            <div class="card-header">Profile Picture</div>
+                            <div class="card-body text-center">
+                                <!-- Profile picture image--> {% if session['staff']['_Account__user_image'] %}
+                                <img
+                                    class="account-img rounded-circle"
+                                    src="../../static/media/images/account/{{ session['staff']['_Account__user_image'] }}"
+                                    alt=""
+                                    style="width:292px; height: 292px;"
+                                >
+                                {% else %} <img class="account-img rounded-circle"
+                                                            src="../../static/media/images/account/blank_account.png"
+                                                            alt=""
+                                                            style="width:292px; height: 292px;"
+                            > {% endif %}
+                                <!-- Profile picture help block-->
+                                <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
+                                <!-- Profile picture upload button-->
+                                {{ update_profile_form.image.label() }}
+                                <br>
+                                {{ update_profile_form.image(class="btn btn-primary", accept=".png,.jpg") }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-7">
+                        <!-- Account details card-->
+                        <div class="card mb-4">
+                            <div class="card-header">Account Details</div>
+                            <div class="card-body">
+                                <!-- Form Group (username)-->
+                                <div class="mb-3">
+                                    {{ update_profile_form.username.label(class="small mb-1") }}
+                                    {{ update_profile_form.username(class="form-control" ,placeholder='Enter your username')}}
+                                    {% if error_messages['username'] %}
+                                        <p class="text-danger mb-1 pb-lg-1">{{error_messages['username']}}</p>
+                                    {% endif %}
+                                </div>
+                                <!-- Form Row-->
+                                <div class="row gx-3 mb-3">
+                                    <!-- Form Group (first name)-->
+                                    <div class="col-md-6">
+                                        {{ update_profile_form.first_name.label(class="small mb-1") }}
+                                        {{ update_profile_form.first_name(class="form-control", placeholder='Enter your First name')}}
+                                    </div>
+                                    <!-- Form Group (last name)-->
+                                    <div class="col-md-6">
+                                        {{ update_profile_form.last_name.label(class="small mb-1") }}
+                                        {{ update_profile_form.last_name(class="form-control", placeholder='Enter your Last name')}}
+                                    </div>
+                                </div>
+                                <!-- Form Group (email address)-->
+                                <div class="mb-3">
+                                    {{ update_profile_form.email.label(class="small mb-1") }}
+                                    {{ update_profile_form.email(class="form-control", placeholder='Enter your email')}}
+                                    {% if error_messages['email'] %}
+                                        <p class="text-danger mb-1 pb-lg-1">{{error_messages['email']}}</p>
+                                    {% endif %}
+                                </div>
+                                <!-- Form Row-->
+                                <div class="row gx-3 mb-3">
+                                    <!-- Form Group (phone number)-->
+                                    <div class="col-md-6">
+                                        {{ update_profile_form.phone_number.label(class="small mb-1") }}
+                                        {{ update_profile_form.phone_number(class="form-control", placeholder='Enter your phone number')}}
+                                        {% if error_messages['number'] %}
+                                            <p class="text-danger mb-1 pb-lg-1">{{error_messages['number']}}</p>
+                                        {% endif %}
+                                    </div>
+                                    <!-- Form Group (birthday)-->
+                                    <div class="col-md-6">
+                                    {{ update_profile_form.birthday.label(class="small mb-1") }}
+                                    {% if not session['staff']['_Account__birthday'] %}
+                                    {{ update_profile_form.birthday(class="form-control", value='mm-dd-yy')}}
+                                    {% else%}
+                                    {{ update_profile_form.birthday(class="form-control", value=session['staff']['_Account__birthday'])}}
+                                    {% endif %}
+                                    </div>
+                                </div>
+                                <!-- Save changes button-->
+                                {{ update_profile_form.submit1(class="btn btn-primary") }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="row">
+
+
+              <div class="col-lg-5">
+
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

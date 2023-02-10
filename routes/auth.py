@@ -49,9 +49,17 @@ def customer_login():
 def staff_login():
     login_form = LoginForm()
     if request.method == "POST":
-        session['staff'] = login_form.username.data
-        flash(f"Account {login_form.username.data} successfully logged in!", category="success")
-        return redirect(url_for('account.staff_dashboard'))
+        staff_dict = staff_login_authentication(login_form.username.data, login_form.password.data, 'DB')
+        if staff_dict != {}:
+            if login_form.remember.data:
+                session.permanent = True
+            else:
+                session.permanent = False
+            session['staff'] = staff_dict
+            flash(f"Account {login_form.username.data} successfully logged in!", category="success")
+            return redirect(url_for('account.staff_dashboard'))
+        else:
+            flash("Login failed! Please check your username or password again", category='danger')
     return render_template('auth/staff_login.html', form=login_form)
 
 

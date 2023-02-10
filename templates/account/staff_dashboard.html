@@ -1,65 +1,10 @@
-{% extends 'base.html' %}
+{% extends 'staff_base.html' %}
 
 {% block title %}
 Staff profile
 {% endblock title %}
 
 {% block content %}
-<body>
-<!-- iconscout cdn path -->
-   <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
-<!-- CSS File Link -->
-   <link rel="stylesheet" href="../../static/css/account/staff_dashboard.css">
-   <div class="sidebar" id="sidebar">
-
-      <div class="sidebar-menu">
-         <ul>
-            <p style="visibility: hidden;">filler text to add some gap, more gap, more gap</p>
-            <li>
-               <i class="uil uil-dashboard"></i>
-               <span>Dashboard</span>
-            </li>
-            <li>
-               <i class="uil uil-clipboard-notes"></i>
-               <span>Projects</span>
-            </li>
-            <li>
-               <i class="uil uil-chart-bar"></i>
-               <span>Charts</span>
-            </li>
-            <li>
-               <i class="uil uil-calendar-alt"></i>
-               <span>Calendar</span>
-            </li>
-            <li>
-               <i class="uil uil-shopping-bag"></i>
-               <span>Orders</span>
-            </li>
-            <li>
-               <i class="uil uil-clipboard-notes"></i>
-               <span>Tasks</span>
-            </li>
-            <li>
-               <i class="uil uil-user-circle"></i>
-               <span>Account</span>
-            </li>
-            <li>
-               <i class="uil uil-signin"></i>
-               <span>Logout</span>
-            </li>
-         </ul>
-      </div>
-   </div>
-
-   <div class="main-content" id="main-content">
-      <header class="flex">
-         <h2>
-            <i class="uil uil-bars" id="menu-icon"></i>
-         </h2>
-
-      </header>
-
-      <main>
          <div class="cards">
             <div class="single-card">
                <div>
@@ -294,18 +239,4 @@ Staff profile
                </table>
             </div>
          </div>
-      </main>
-   </div>
-
-   <script>
-      let sideBar = document.getElementById('sidebar');
-      let menuIcon = document.getElementById('menu-icon');
-      let mainContent = document.getElementById('main-content');
-
-      menuIcon.onclick = () => {
-         sideBar.classList.toggle('toggleMenu');
-         mainContent.classList.toggle('toggleContent');
-      }
-   </script>
-</body>
 {% endblock content %}
