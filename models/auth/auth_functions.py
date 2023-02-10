@@ -106,9 +106,9 @@ def get_customers(relative_path_to_db):
         else:
             db['customer'] = transfer_dict
     except IOError:
-        print("Error occurred while trying to open the shelve file")
+        print("Error occurred while trying to open the shelve file - get customer function")
     except Exception as ex:
-        print(f"Error occurred as {ex}")
+        print(f"Error occurred as {ex} - get customer function")
     for customer in transfer_dict.values():
         customer_list.append(customer)
     return customer_list
@@ -127,9 +127,9 @@ def store_customer(customer_object, relative_path_to_db):
         db['customer'] = transfer_dict
         db.close()
     except IOError:
-        print("Error occurred while trying to open the shelve file")
+        print("Error occurred while trying to open the shelve file - store customer function")
     except Exception as ex:
-        print(f"Error occurred as {ex}")
+        print(f"Error occurred as {ex} - store customer function")
 
 
 def delete_customer(customer_object, relative_path_to_db):
@@ -145,9 +145,9 @@ def delete_customer(customer_object, relative_path_to_db):
         db['customer'] = transfer_dict
         db.close()
     except IOError:
-        print("Error occurred while trying to open the shelve file")
+        print("Error occurred while trying to open the shelve file - delete customer function")
     except Exception as ex:
-        print(f"Error occurred as {ex}")
+        print(f"Error occurred as {ex} - delete customer function")
 
 
 def customer_login_authentication(username_email, password, relative_path_to_db):
@@ -194,9 +194,9 @@ def get_staff(relative_path_to_db):
         else:
             db['staff'] = transfer_dict
     except IOError:
-        print("Error occurred while trying to open the shelve file")
+        print("Error occurred while trying to open the shelve file - get staff function")
     except Exception as ex:
-        print(f"Error occurred as {ex}")
+        print(f"Error occurred as {ex} - get staff function")
     for staff in transfer_dict.values():
         staff_list.append(staff)
     return staff_list
@@ -215,9 +215,9 @@ def store_staff(staff_object, relative_path_to_db):
         db['staff'] = transfer_dict
         db.close()
     except IOError:
-        print("Error occurred while trying to open the shelve file")
+        print("Error occurred while trying to open the shelve file - store staff function")
     except Exception as ex:
-        print(f"Error occurred as {ex}")
+        print(f"Error occurred as {ex} - store staff function")
 
 
 def delete_staff(staff_object, relative_path_to_db):
@@ -233,9 +233,9 @@ def delete_staff(staff_object, relative_path_to_db):
         db['staff'] = transfer_dict
         db.close()
     except IOError:
-        print("Error occurred while trying to open the shelve file")
+        print("Error occurred while trying to open the shelve file - delete Staff function")
     except Exception as ex:
-        print(f"Error occurred as {ex}")
+        print(f"Error occurred as {ex} - delete Staff function")
 
 
 def staff_login_authentication(username_email, password, relative_path_to_db):
@@ -248,3 +248,4 @@ def staff_login_authentication(username_email, password, relative_path_to_db):
             if checkpw(password.encode(), staff.get_password_hash()):
                 staff_dict = account_to_dictionary_converter(staff)
     return staff_dict
+

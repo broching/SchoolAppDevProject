@@ -1,0 +1,106 @@
+{% extends 'staff_base.html' %}
+
+{% block title %}
+Account management
+{% endblock title %}
+
+{% block content %}
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<link rel="stylesheet"
+href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
+<script type="text/javascript"
+src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript"
+src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<button type="button" class="btn btn-primary"><a style="color: white; text-decoration: none;" href="{{url_for('account.staff_add_account')}}">Add Account</a></button>
+<br>
+<br>
+  <table id="myTable" style="padding: 0;" class="table align-middle mb-0 bg-white">
+          <thead class="bg-light">
+            <tr>
+              <th>Account ID</th>
+              <th>Username/Email</th>
+              <th>Account Type</th>
+              <th>Status</th>
+                <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for account in account_list%}
+          <tr>
+              {% if account.get_account_type() == "customer" %}
+            <td>{{account.get_customer_id()}}</td>
+              {% else %}
+              <td>{{account.get_staff_id()}}</td>
+              {% endif %}
+            <td>
+                <div class="d-flex align-items-center">
+
+                  {% if account.get_user_image() %}
+                      <img
+                      src="../../static/media/images/account/{{account.get_user_image()}}"
+                      alt=""
+                      style="width: 45px; height: 45px"
+                      class="rounded-circle"
+                      />
+                  {% else %}
+                  <img
+                      src="../../static/media/images/account/blank_account.png"
+                      alt=""
+                      style="width: 45px; height: 45px"
+                      class="rounded-circle"
+                      />
+                  {% endif %}
+                  <div class="ms-3">
+                    <p class="fw-bold mb-1">{{account.get_username()}}</p>
+                    <p class="text-muted mb-0">{{account.get_email()}}</p>
+                  </div>
+                </div>
+            </td>
+              <td>{{account.get_account_type()}}</td>
+              {% if account.get_status() == "active" %}
+              <td style="color: green;">{{account.get_status()}}</td>
+              {% else %}
+              <td style="color: orange;">{{account.get_status()}}</td>
+              {% endif %}
+              <td>
+                  <button type="button" class="btn btn-primary"><a href="{{url_for('account.staff_edit_account', user_id=account.get_user_id())}}" style="color: white; text-decoration: none;">Edit</a></button>
+                  <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                    data-bs-target="#targetmodal{{account.get_username()[0:5]}}">Delete
+                  </button>
+                  <div class="modal fade" id="targetmodal{{account.get_username()[0:5]}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                                 aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h2 class="modal-title fs-5" id="exampleModalLabel" style="color:red;">
+                                                Confirm Delete account</h2>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body"> Deleting your account is a permanent action and cannot
+                                            be undone. Are you are sure you want to delete your account, please confirm
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                Close
+                                            </button>
+                                            <form method="post" action="{{url_for('account.staff_account_management_delete', user_id=account.get_user_id())}}">
+                                                {{ delete_account_form.submit3(class="btn btn-danger") }}
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                  </div>
+              </td>
+          </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+
+        <script>
+          $(document).ready(function(){
+              $('#myTable').dataTable();
+          });
+          </script>
+{% endblock content %}

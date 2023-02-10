@@ -94,11 +94,8 @@ Customer Payment
         </div>
         <div class="flexbox">
             <div class="inputBox">
-                <span>State</span>
-                {{ profile_credit_card_form.state(class="input") }}
-                {% if error_messages['state'] %}
-                <p class="text-danger mb-1 pb-lg-1">{{error_messages['state']}}</p>
-                {% endif %}
+                <span>Country</span>
+                {{ profile_credit_card_form.country(class="input") }}
             </div>
             <div class="inputBox">
                 <span>Postal Code</span>

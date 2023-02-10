@@ -1,5 +1,5 @@
 class CreditCard:
-    def __init__(self, card_id, card_number, card_name, card_cvv, card_expiry, street_address, state, postal,
+    def __init__(self, card_id, card_number, card_name, card_cvv, card_expiry, street_address, country, postal,
                  card_default=False):
         self.__card_id = card_id
         self.__card_number = card_number
@@ -8,7 +8,7 @@ class CreditCard:
         self.__card_expiry = card_expiry
         self.__card_default = card_default
         self.__street_address = street_address
-        self.__state = state
+        self.__country = country
         self.__postal = postal
 
     def get_card_id(self):
@@ -53,11 +53,11 @@ class CreditCard:
     def set_street_address(self, street_address):
         self.__street_address = street_address
 
-    def get_state(self):
-        return self.__state
+    def get_country(self):
+        return self.__country
 
-    def set_state(self, state):
-        self.__state = state
+    def set_state(self, country):
+        self.__country = country
 
     def get_postal(self):
         return self.__postal

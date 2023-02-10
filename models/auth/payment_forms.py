@@ -1,6 +1,13 @@
 from wtforms import StringField, SubmitField, IntegerField, SelectField, RadioField
 from wtforms.validators import Length, DataRequired
 from flask_wtf import FlaskForm
+import pycountry
+
+
+class CountrySelectField(SelectField):
+    def __init__(self, *args, **kwargs):
+        super(CountrySelectField, self).__init__(*args, **kwargs)
+        self.choices = [(country.alpha_2, country.name) for country in pycountry.countries]
 
 
 class ProfileCreditCardForm(FlaskForm):
@@ -17,7 +24,7 @@ class ProfileCreditCardForm(FlaskForm):
     cvv = IntegerField('cvv', validators=[DataRequired()])
 
     street_address = StringField(validators=[DataRequired()])
-    state = StringField(validators=[DataRequired()])
+    country = CountrySelectField()
     postal = IntegerField(validators=[DataRequired()])
 
     submit = SubmitField('ADD CARD')

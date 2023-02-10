@@ -53,12 +53,12 @@ Customer Billing
                         <a href="{{url_for('account.customer_edit_card', card_id=details['_CreditCard__card_id'])}}">Edit</a>
 
                             <button type="button" class="btn btn-danger-soft text-danger" data-bs-toggle="modal"
-                                    data-bs-target="#exampleModal"> Delete
+                                    data-bs-target="#targetid{{details['_CreditCard__card_id'][0:5]}}"> Delete
                             </button>
                             <!-- Modal -->
-                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                            <div class="modal fade" id="targetid{{details['_CreditCard__card_id'][0:5]}}" tabindex="-1" aria-labelledby="exampleModalLabel"
                                  aria-hidden="true">
-                                <div class="modal-dialog">
+                                <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h2 class="modal-title fs-5" id="exampleModalLabel" style="color:red;">

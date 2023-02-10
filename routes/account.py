@@ -2,15 +2,18 @@ import secrets
 
 from flask import Blueprint, render_template, request, session, flash, redirect, url_for
 
-from models.account.account_forms import UpdateProfileForm, UpdateSecurityForm, DeleteAccountForm, ShippingAddressForm
+from models.account.account_forms import UpdateProfileForm, UpdateSecurityForm, DeleteAccountForm, ShippingAddressForm, \
+    AddNewAccountForm
 from models.account.account_functions import save_image, delete_image
 from models.auth.auth_functions import customer_login_required, restricted_customer_error, staff_login_required, \
     restricted_staff_error, validate_staff_password
 from models.auth.auth_functions import get_customers, store_customer, delete_customer, account_to_dictionary_converter, \
-    validate_customer_password, validate_number, validate_email, validate_username, is_valid_card_number, get_staff, store_staff, \
+    validate_customer_password, validate_number, validate_email, validate_username, is_valid_card_number, get_staff, \
+    store_staff, \
     delete_staff
 from models.auth.payment_classes import CreditCard
 from models.auth.payment_forms import ProfileCreditCardForm, DeleteCreditCardForm, MakeCardDefaultForm
+from models.account.account_classes import Customer, Staff
 
 account = Blueprint('account', __name__)
 
@@ -181,8 +184,9 @@ def customer_delete():
     if request.method == 'POST' and delete_account_form.submit3.data:
         for customer in customer_list:
             if customer.get_user_id() == current_customer_id:
-                delete_image(session['customer']['_Account__user_image'])
-                delete_customer(customer, 'DB')
+                customer.set_status("Deactivated")
+                store_customer(customer, "DB")
+
                 session.pop('customer', None)
                 flash("Account successfully deleted", category='info')
                 return redirect(url_for('home'))
@@ -211,9 +215,9 @@ def customer_billing():
             card_name = target_card['_CreditCard__card_name']
             card_number = target_card['_CreditCard__card_number']
             street_address = target_card['_CreditCard__street_address']
-            state = target_card['_CreditCard__state']
+            country = target_card['_CreditCard__country']
             postal = target_card['_CreditCard__postal']
-            new_card = CreditCard(card_id, card_number, card_name, card_cvv, card_expiry, street_address, state,
+            new_card = CreditCard(card_id, card_number, card_name, card_cvv, card_expiry, street_address, country,
                                   postal, card_default=card_default)
             for customer in customer_list:
                 if customer.get_user_id() == current_customer_id:
@@ -250,15 +254,13 @@ def customer_add_card():
             error_messages['cvv'] = 'Invalid CVV'
         card_expiry = str(profile_credit_card_form.expiration_month.data) + str(
             profile_credit_card_form.expiration_year.data)
-        if not profile_credit_card_form.state.data.isalpha():
-            error_messages['state'] = 'Please enter a valid state'
         if len(str(profile_credit_card_form.postal.data)) != 6 and str(profile_credit_card_form.postal.data).isdigit():
             error_messages['postal'] = 'Invalid Postal code'
         if error_messages == {}:
             credit_card = CreditCard(secrets.token_hex(15), profile_credit_card_form.card_number.data,
                                      profile_credit_card_form.card_holder.data, profile_credit_card_form.cvv.data,
                                      card_expiry, profile_credit_card_form.street_address.data,
-                                     profile_credit_card_form.state.data,
+                                     profile_credit_card_form.country.data,
                                      profile_credit_card_form.postal.data)
             for customer in customer_list:
                 if customer.get_user_id() == current_customer_id:
@@ -295,15 +297,13 @@ def customer_edit_card(card_id):
             error_messages['cvv'] = 'Invalid CVV'
         card_expiry = str(profile_credit_card_form.expiration_month.data) + str(
             profile_credit_card_form.expiration_year.data)
-        if not profile_credit_card_form.state.data.isalpha():
-            error_messages['state'] = 'Please enter a valid state'
         if len(str(profile_credit_card_form.postal.data)) != 6 and str(profile_credit_card_form.postal.data).isdigit():
             error_messages['postal'] = 'Invalid Postal code'
         if error_messages == {}:
             credit_card = CreditCard(secrets.token_hex(15), profile_credit_card_form.card_number.data,
                                      profile_credit_card_form.card_holder.data, profile_credit_card_form.cvv.data,
                                      card_expiry, profile_credit_card_form.street_address.data,
-                                     profile_credit_card_form.state.data,
+                                     profile_credit_card_form.country.data,
                                      profile_credit_card_form.postal.data)
             for customer in customer_list:
                 if customer.get_user_id() == current_customer_id:
@@ -338,7 +338,7 @@ def customer_edit_card(card_id):
                         profile_credit_card_form.expiration_month.data = expiration_year
                         profile_credit_card_form.cvv.data = card['_CreditCard__card_cvv']
                         profile_credit_card_form.street_address.data = card['_CreditCard__street_address']
-                        profile_credit_card_form.state.data = card['_CreditCard__state']
+                        profile_credit_card_form.country.data = card['_CreditCard__country']
                         profile_credit_card_form.postal.data = card['_CreditCard__postal']
 
     return render_template('account/customer_edit_card.html', profile_credit_card_form=profile_credit_card_form,
@@ -554,4 +554,132 @@ def staff_delete():
                 flash("Staff Account successfully deleted", category='info')
                 return redirect(url_for('home'))
     return render_template('account/staff_security.html',
-                               update_security_form=update_security_form, delete_account_form=delete_account_form, )
+                           update_security_form=update_security_form, delete_account_form=delete_account_form, )
+
+
+@account.route('/AccountManagement', methods=['POST', 'GET'])
+def staff_account_management():
+    delete_account_form = DeleteAccountForm()
+    account_list = get_customers("DB") + get_staff("DB")
+    if request.method == "GET":
+        pass
+    return render_template('account/account_management.html', account_list=account_list,
+                           delete_account_form=delete_account_form)
+
+
+@account.route('/StaffAccountDelete/<user_id>', methods=['POST', 'GET'])
+def staff_account_management_delete(user_id):
+    delete_account_form = DeleteAccountForm()
+    account_list = get_customers("DB") + get_staff("DB")
+    if request.method == 'POST' and delete_account_form.submit3.data:
+        for user in account_list:
+            if str(user.get_user_id()) == str(user_id):
+                if user.get_account_type() == 'customer':
+                    delete_image(user.get_user_image())
+                    delete_customer(user, "DB")
+                else:
+                    delete_image(user.get_user_image())
+                    delete_staff(user, "DB")
+                flash(f'Account {user.get_username()} successfully deleted', category='info')
+                return redirect(url_for('account.staff_account_management'))
+    return render_template('account/account_management.html', account_list=account_list,
+                           delete_account_form=delete_account_form)
+
+
+@account.route('/StaffAddAccount', methods=['POST', 'GET'])
+def staff_add_account():
+    error_messages = {}
+    add_account_form = AddNewAccountForm()
+
+    #  If User is submitting form
+
+    if request.method == 'POST' and add_account_form.submit1.data:
+        if not validate_username(add_account_form.username.data, 'DB', ):
+            error_messages['username'] = "The username is already taken"
+        if not validate_email(add_account_form.email.data, 'DB', ):
+            error_messages['email'] = "The email is already taken"
+        if add_account_form.phone_number.data:
+            if not validate_number(add_account_form.phone_number.data, 'DB', ):
+                error_messages['number'] = "The phone number is already taken"
+        if error_messages == {}:
+            if add_account_form.account_type.data == 'customer':
+                customer = Customer(add_account_form.username.data, add_account_form.email.data,
+                                    add_account_form.password1.data)
+                customer.set_account_type('customer')
+                customer.set_status(add_account_form.status.data)
+                customer.set_first_name(add_account_form.first_name.data)
+                customer.set_last_name(add_account_form.last_name.data)
+                customer.set_number(add_account_form.phone_number.data)
+                #     Store in DB
+                store_customer(customer, 'DB')
+            else:
+                staff = Staff(add_account_form.username.data, add_account_form.email.data,
+                              add_account_form.password1.data)
+                staff.set_account_type('staff')
+                staff.set_status(add_account_form.status.data)
+                staff.set_first_name(add_account_form.first_name.data)
+                staff.set_last_name(add_account_form.last_name.data)
+                staff.set_number(add_account_form.phone_number.data)
+                #     Store in DB
+                store_staff(staff, 'DB')
+            # flash and redirect
+            flash('Account Successfully Added', category='success')
+            return redirect(url_for('account.staff_account_management'))
+    return render_template('account/staff_add_account.html', add_account_form=add_account_form,
+                           error_messages=error_messages)
+
+
+@account.route('/StaffEditAccount/<user_id>', methods=['POST', 'GET'])
+def staff_edit_account(user_id):
+    error_messages = {}
+    add_account_form = AddNewAccountForm()
+    user_list = get_customers("DB") + get_staff("DB")
+
+    #  If User is submitting form
+
+    if request.method == 'POST' and add_account_form.submit1.data:
+        for target_user in user_list:
+            if str(target_user.get_user_id()) == str(user_id):
+                username = target_user.get_username()
+                email = target_user.get_email()
+                number = target_user.get_number()
+                if validate_username(add_account_form.username.data, 'DB', exceptions=username):
+                    target_user.set_username(add_account_form.username.data)
+                else:
+                    error_messages['username'] = "The username is already taken"
+                if validate_email(add_account_form.email.data, 'DB', exceptions=email):
+                    target_user.set_email(add_account_form.email.data)
+                else:
+                    error_messages['email'] = "The email is already taken"
+                if add_account_form.phone_number.data:
+                    if validate_number(add_account_form.phone_number.data, 'DB', exceptions=number):
+                        target_user.set_number(add_account_form.phone_number.data)
+                    else:
+                        error_messages['number'] = "The phone number is already taken"
+                if error_messages == {}:
+                    target_user.set_password_hash(add_account_form.password1.data)
+                    target_user.set_status(add_account_form.status.data)
+                    target_user.set_first_name(add_account_form.first_name.data)
+                    target_user.set_last_name(add_account_form.last_name.data)
+                    #     Store in DB
+                    if target_user.get_account_type() == 'customer':
+                        store_customer(target_user, "DB")
+                    else:
+                        store_staff(target_user, "DB")
+                    # flash and redirect
+                    flash(f'Account {target_user.get_username()} Successfully Edited', category='success')
+                    return redirect(url_for('account.staff_account_management'))
+    if request.method == "GET":
+        for target_user in user_list:
+            if str(target_user.get_user_id()) == str(user_id):
+                add_account_form.username.data = target_user.get_username()
+                add_account_form.first_name.data = target_user.get_first_name()
+                add_account_form.last_name.data = target_user.get_last_name()
+                add_account_form.email.data = target_user.get_email()
+                add_account_form.phone_number.data = target_user.get_number()
+                add_account_form.password1.data = target_user.get_password_hash()
+                add_account_form.status.data = target_user.get_status()
+                add_account_form.account_type.data = target_user.get_account_type()
+
+    return render_template('account/staff_edit_account.html', add_account_form=add_account_form,
+                           error_messages=error_messages)
