@@ -11,8 +11,8 @@ from models.products.Product import Product
 import stripe
 import os
 from dotenv import load_dotenv
-from models.auth.auth_functions import account_to_dictionary_converter, store_customer, get_customers
-
+from models.auth.auth_functions import account_to_dictionary_converter, store_customer, get_customers, \
+    staff_login_required, customer_login_required
 
 productr = Blueprint('productr', __name__, template_folder='templates', static_folder='static')
 
@@ -323,7 +323,7 @@ def orders():
     return render_template('products/orders.html', count=len(orders_list), orders_list=orders_list)
 
 
-@productr.route('/inventory')
+@productr.route('/inventory', methods=['GET', 'POST'])
 def inventory():
     products_list = []
     try:
@@ -339,7 +339,7 @@ def inventory():
     except Exception as ex:
         print(f"Unknown error in retrieving customers from customer.db - {ex}")
 
-    return render_template('products/inventory.html', count=len(products_list), products_list=products_list)
+    return render_template('products/inventory_onstaffbase.html', count=len(products_list), products_list=products_list)
 
 
 # @productr.route('/createProduct', methods=['GET', 'POST'])
@@ -527,6 +527,15 @@ def deleteProduct(id):
         with shelve.open('DB/products/product.db', 'w') as db:
             if 'Products' in db:
                 products_dict = db['Products']
+
+            # products_list = list(products_dict.values())
+            # last_item = products_list[-1]
+            # print(last_item)
+            if id in products_dict:
+                product = products_dict.get(id)
+                product_img_name = product.get_product_image()
+                delete_image(product_img_name)
+
             products_dict.pop(id)  # Step 1: Updates are handled using dictionaries first.
             db['Products'] = products_dict
 
