@@ -5,14 +5,39 @@ Avatar Customisation Page
 {% endblock title %}
 
 {% block content %}
-<style>
-
-</style>
 
 <html>
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+    <style>
+    input {
+        text-decoration: none;
+        display: inline-block;
+        padding: 8px 16px;
+    }
+
+    input:hover {
+        background-color: #ddd;
+        color: black;
+    }
+
+    .previous {
+        background-color: #f1f1f1;
+        color: black;
+    }
+
+    .next {
+        background-color: #04AA6D;
+        color: white;
+    }
+
+    .round {
+        border-radius: 50%;
+    }
+
+    </style>
 </head>
 <body>
 
@@ -20,7 +45,7 @@ Avatar Customisation Page
     <div class="row">
         <div class="col-sm">
             {% for avatar in avatar_list %}
-               <img src="{{ avatar.image }}" width="300" height="400">
+            <img src="{{ avatar.image }}" width="300" height="400">
             {% endfor %}
         </div>
 
@@ -43,7 +68,7 @@ Avatar Customisation Page
         </div>
         <div class="col-lg">
             <div>
-                <h1>Preview: </h1>
+                <h1 class="center">Preview: </h1>
                 <img src="{{ preview.image }}" alt="image">
             </div>
         </div>

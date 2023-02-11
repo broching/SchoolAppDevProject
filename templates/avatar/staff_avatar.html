@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "staff_base.html" %}
 
 {% block title %}
 Avatar Customisation Page - Staff
@@ -16,12 +16,13 @@ Avatar Customisation Page - Staff
 </head>
 <body>
 
+<h1 class="display-4">Avatar Management</h1>
 <div class="container">
     <div class="row">
         <div class="col">
             <form action = "/success" method = "post" enctype="multipart/form-data">
                 <input type="file" name="file" />
-                <input type = "submit" value="Upload">
+                <input type="submit" value="Upload">
             </form>
             {% for asset_list in assets %}
                 {% for asset in asset_list %}

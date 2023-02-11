@@ -1,10 +1,12 @@
-import shelve, os
-from flask import Blueprint, render_template, request, session, redirect, url_for
+import shelve, os, imghdr
+from flask import Blueprint, render_template, request, session, redirect, url_for, flash
 from models.avatar.Avatar import *
+from models.auth.auth_functions import customer_login_required, staff_login_required
 
 avatar_blueprint = Blueprint('avatar', __name__)
 
 @avatar_blueprint.route("/avatar", methods=['GET', 'POST'])
+@customer_login_required
 def avatar():
     hairstyle_dir = os.listdir(hairstyle_path)
     hairstyle_assets = [hairstyle_path + "/" + hairstyle for hairstyle in hairstyle_dir]
@@ -15,10 +17,8 @@ def avatar():
     if "customer" in session:
         user_id = session["customer"].get("_Account__user_id")
         user_id = str(user_id)
-    elif "staff" in session:
-        return redirect(url_for('avatar.avatarStaff'))
     else:
-        return redirect(url_for('auth.customer_login'))
+        pass
 
     try:
         with shelve.open("DB/avatar_temporary/avatar_lists", "c") as db:
@@ -53,7 +53,9 @@ def avatar():
 
     return render_template('avatar/customer_avatar.html', preview=preview, avatar_list=avatar_list)
 
+
 @avatar_blueprint.route("/avatarStaff", methods=['GET', 'POST'])
+@staff_login_required
 def avatarStaff():
     hairstyle_dir = os.listdir(hairstyle_path)
     hairstyle_assets = [hairstyle_path + "/" + hairstyles for hairstyles in hairstyle_dir]
@@ -62,9 +64,14 @@ def avatarStaff():
     return render_template('avatar/staff_avatar.html', assets=assets, enumerate=enumerate)
 
 
-@avatar_blueprint.route('/success', methods = ['POST'])
+@avatar_blueprint.route('/success', methods=['POST'])
 def success():
     if request.method == 'POST':
         f = request.files['file']
-        f.save("static/media/images/avatar_assets/hairstyles/"+f.filename)
-        return render_template("avatar/acknowledgement.html", name=f.filename)
+        if imghdr.what(f) != 'png':
+            text = "You must upload a png file!"
+        else:
+            f.save("static/media/images/avatar_assets/hairstyles/"+f.filename)
+            text = "Upload succesful"
+
+        return render_template("avatar/acknowledgement.html", name=f.filename, text=text)
