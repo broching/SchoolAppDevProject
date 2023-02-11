@@ -15,7 +15,7 @@
     </title>
   </head>
 
-<body>
+<body style="font-size:16px;">
   <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark p-3" style="background-color: #000000; z-index: 100000; margin-bottom:0;">
       <div class="container-fluid">
@@ -91,87 +91,74 @@
         </div>
       </div>
     </nav>
-  <body xmlns="http://www.w3.org/1999/html">
 <!-- iconscout cdn path -->
    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
 <!-- CSS File Link -->
    <link rel="stylesheet" href="../../static/css/account/staff_dashboard.css">
-   <div class="sidebar" id="sidebar">
 
-      <div class="sidebar-menu">
-         <ul>
-            <p style="visibility: hidden;">filler text to add some gap, more gap, more gap</p>
-            <li>
-               <a href="{{ url_for('account.staff_dashboard') }}" class="anchor-links">
-               <i class="uil uil-dashboard"></i>
-               <span>Dashboard</span>
-               </a>
-            </li>
-            <li>
-               <a href="{{ url_for('account.staff_profile') }}" class="anchor-links">
+<link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+
+		<div class="wrapper d-flex align-items-stretch">
+			<nav id="sidebar" class="active" style="background: #343434;">
+				<div class="custom-menu">
+					<button type="button" id="sidebarCollapse" class="btn btn-primary">
+	          <i class="fa fa-bars"></i>
+	          <span class="sr-only">Toggle Menu</span>
+	        </button>
+        </div>
+				<div class="p-4">
+		  		<h1><a href="#" class="logo">Staff</a></h1>
+	        <ul class="list-unstyled components mb-5">
+	          <li class="active">
+                <a href="{{ url_for('account.staff_dashboard') }}">
+               <i class="uil uil-dashboard"></i> Dashboard
+                </a>
+	          </li>
+	          <li>
+	          <a href="{{ url_for('account.staff_profile') }}">
                <i class="uil uil-user-circle"></i>
-               <span>Profile</span>
+               Profile
                </a>
-            </li>
-            <li>
-               <a href="{{ url_for('account.staff_account_management') }}" class="anchor-links">
+	          </li>
+	          <li>
+              <a href="{{ url_for('account.staff_account_management') }}">
                <i class="uil uil-users-alt"></i>
-               <span>Account Management</span>
+               Account Management
                </a>
-            </li>
-            <li>
-               <a href="{{ url_for('account.staff_account_management') }}" class="anchor-links">
-               <i class="uil uil-comment-message"></i>
-               <span>Messages</span>
-               </a>
-            </li>
-            <li>
-               <a href="{{ url_for('account.staff_profile') }}" class="anchor-links">
-               <i class="uil uil-chart-bar"></i>
-               <span>Charts</span>
-               </a>
-            </li>
-         </ul>
-      </div>
-   </div>
+	          </li>
+	        </ul>
 
-   <div class="main-content" id="main-content">
-      <header class="flex">
-         <h2>
-            <i class="uil uil-bars" id="menu-icon"></i>
-         </h2>
-         {% with messages = get_flashed_messages(with_categories=True) %}
-    {% for category, message in messages %}
-      <div class="alert alert-{{category}} alert-dismissible fade show =" role="alert">
-        {% if category == "danger" %}
-        <strong>Warning!</strong>
-        {% elif category == "success" %}
-        <strong>Success!</strong>
-        {% elif category == "info" %}
-        <strong>Info</strong>
-        {% endif %}
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    {% endfor %}
-{% endwith %}
-      </header>
+	      </div>
+    	</nav>
 
-      <main>
-        {% block content %}
-        {% endblock content %}
-      </main>
-   </div>
+        <!-- Page Content  -->
+      <div id="content" class="p-4 p-md-5 pt-5">
+            {% block content %}
+            {% endblock content %}
+      </div>
+</div>
 
    <script>
-      let sideBar = document.getElementById('sidebar');
-      let menuIcon = document.getElementById('menu-icon');
-      let mainContent = document.getElementById('main-content');
+      (function($) {
 
-      menuIcon.onclick = () => {
-         sideBar.classList.toggle('toggleMenu');
-         mainContent.classList.toggle('toggleContent');
-      }
+	"use strict";
+
+	var fullHeight = function() {
+
+		$('.js-fullheight').css('height', $(window).height());
+		$(window).resize(function(){
+			$('.js-fullheight').css('height', $(window).height());
+		});
+
+	};
+	fullHeight();
+
+	$('#sidebarCollapse').on('click', function () {
+      $('#sidebar').toggleClass('active');
+  });
+
+})(jQuery);
+
    </script>
 </body>
 

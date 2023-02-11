@@ -5,8 +5,8 @@ from flask import Blueprint, render_template, request, session, flash, redirect,
 from models.account.account_forms import UpdateProfileForm, UpdateSecurityForm, DeleteAccountForm, ShippingAddressForm, \
     AddNewAccountForm
 from models.account.account_functions import save_image, delete_image
-from models.auth.auth_functions import customer_login_required, restricted_customer_error, staff_login_required, \
-    restricted_staff_error, validate_staff_password
+from models.auth.auth_functions import customer_login_required, restricted_customer_error, restricted_staff_error, \
+    validate_staff_password
 from models.auth.auth_functions import get_customers, store_customer, delete_customer, account_to_dictionary_converter, \
     validate_customer_password, validate_number, validate_email, validate_username, is_valid_card_number, get_staff, \
     store_staff, \
@@ -53,11 +53,12 @@ def customer_profile():
                 else:
                     error_messages['email'] = "The email is already taken"
                 if update_profile_form.phone_number.data:
-                    if validate_number(update_profile_form.phone_number.data, 'DB',
-                                       exceptions=session['customer']['_Account__number']):
+                    if str(update_profile_form.phone_number.data).isdigit() and validate_number(
+                            update_profile_form.phone_number.data, 'DB',
+                            exceptions=session['customer']['_Account__number']):
                         customer.set_number(update_profile_form.phone_number.data)
                     else:
-                        error_messages['number'] = "The phone number is already taken"
+                        error_messages['number'] = "Invalid phone number"
                 if update_profile_form.birthday.data:
                     customer.set_birthday(update_profile_form.birthday.data.strftime('%Y-%m-%d'))
                 if update_profile_form.image.data:
@@ -72,7 +73,7 @@ def customer_profile():
                 # flash and redirect
                 if not error_messages:
                     flash('Account Successfully changed', category='success')
-                    return redirect(url_for('account.customer_dashboard'))
+                    return redirect(url_for('account.customer_profile'))
             # If request method is get, load customer data to the update form fields
     if request.method == 'GET':
         update_profile_form.username.data = session['customer']['_Account__username']
@@ -120,7 +121,7 @@ def customer_security():
                 # flash and redirect
                 if not error_messages:
                     flash('Account Successfully changed', category='success')
-                    return redirect(url_for('account.customer_dashboard'))
+                    return redirect(url_for('account.customer_security'))
     # Check if user is logged in and renders template
     if customer_login_required():
         return render_template('account/customer_security.html',
@@ -141,20 +142,15 @@ def customer_shipping_address():
     if request.method == 'POST' and update_shipping_form.submit4.data:
         for customer in customer_list:
             if customer.get_user_id() == current_customer_id:
-                print(update_shipping_form.state.data)
-                print(update_shipping_form.street_address.data)
-                print(update_shipping_form.postal.data)
-                if not update_shipping_form.state.data.isalpha():
-                    error_messages['state'] = 'Please enter a valid state'
                 if len(str(update_shipping_form.postal.data)) != 6:
                     error_messages['postal'] = 'Invalid Postal code'
                 if error_messages == {}:
                     shipping_dict = {}
                     street_address = update_shipping_form.street_address.data
-                    state = update_shipping_form.state.data
+                    country = update_shipping_form.country.data
                     postal = update_shipping_form.postal.data
                     shipping_dict['street_address'] = street_address
-                    shipping_dict['state'] = state
+                    shipping_dict['country'] = country
                     shipping_dict['postal'] = postal
                     customer.set_shipping_address(shipping_dict)
 
@@ -184,7 +180,7 @@ def customer_delete():
     if request.method == 'POST' and delete_account_form.submit3.data:
         for customer in customer_list:
             if customer.get_user_id() == current_customer_id:
-                customer.set_status("Deactivated")
+                customer.set_status("deactivated")
                 store_customer(customer, "DB")
 
                 session.pop('customer', None)
@@ -273,7 +269,7 @@ def customer_add_card():
                     session['customer'] = customer_dict
 
                     flash('Credit Card Successfully added', category='success')
-                    return redirect(url_for('home'))
+                    return redirect(url_for('account.customer_billing'))
 
     return render_template('account/customer_add_card.html', profile_credit_card_form=profile_credit_card_form,
                            error_messages=error_messages)
@@ -320,7 +316,7 @@ def customer_edit_card(card_id):
                             session['customer'] = customer_dict
 
                             flash('Credit Card Successfully Changed', category='success')
-                            return redirect(url_for('home'))
+                            return redirect(url_for('account.customer_billing'))
     if request.method == 'GET':
         for customer in customer_list:
             if customer.get_user_id() == current_customer_id:
@@ -469,11 +465,12 @@ def staff_profile():
                 else:
                     error_messages['email'] = "The email is already taken"
                 if update_profile_form.phone_number.data:
-                    if validate_number(update_profile_form.phone_number.data, 'DB',
-                                       exceptions=session['staff']['_Account__number']):
+                    if str(update_profile_form.phone_number.data).isdigit() and validate_number(
+                            update_profile_form.phone_number.data, 'DB',
+                            exceptions=session['staff']['_Account__number']):
                         staff.set_number(update_profile_form.phone_number.data)
                     else:
-                        error_messages['number'] = "The phone number is already taken"
+                        error_messages['number'] = "Invalid phone number"
                 if update_profile_form.birthday.data:
                     staff.set_birthday(update_profile_form.birthday.data.strftime('%Y-%m-%d'))
                 if update_profile_form.image.data:
@@ -548,8 +545,8 @@ def staff_delete():
     if request.method == 'POST' and delete_account_form.submit3.data:
         for staff in staff_list:
             if staff.get_user_id() == current_staff_id:
-                delete_image(session['staff']['_Account__user_image'])
-                delete_staff(staff, 'DB')
+                staff.set_status("deactivated")
+                store_staff(staff, "DB")
                 session.pop('staff', None)
                 flash("Staff Account successfully deleted", category='info')
                 return redirect(url_for('home'))
@@ -599,8 +596,8 @@ def staff_add_account():
         if not validate_email(add_account_form.email.data, 'DB', ):
             error_messages['email'] = "The email is already taken"
         if add_account_form.phone_number.data:
-            if not validate_number(add_account_form.phone_number.data, 'DB', ):
-                error_messages['number'] = "The phone number is already taken"
+            if not str(add_account_form.data).isdigit() and not validate_number(add_account_form.phone_number.data, 'DB', ):
+                error_messages['number'] = "Invalid phone number"
         if error_messages == {}:
             if add_account_form.account_type.data == 'customer':
                 customer = Customer(add_account_form.username.data, add_account_form.email.data,
@@ -623,7 +620,7 @@ def staff_add_account():
                 #     Store in DB
                 store_staff(staff, 'DB')
             # flash and redirect
-            flash('Account Successfully Added', category='success')
+            flash(f'Account {add_account_form.username.data} Successfully Added', category='success')
             return redirect(url_for('account.staff_account_management'))
     return render_template('account/staff_add_account.html', add_account_form=add_account_form,
                            error_messages=error_messages)
@@ -652,7 +649,7 @@ def staff_edit_account(user_id):
                 else:
                     error_messages['email'] = "The email is already taken"
                 if add_account_form.phone_number.data:
-                    if validate_number(add_account_form.phone_number.data, 'DB', exceptions=number):
+                    if str(add_account_form.phone_number.data).isdigit() and validate_number(add_account_form.phone_number.data, 'DB', exceptions=number):
                         target_user.set_number(add_account_form.phone_number.data)
                     else:
                         error_messages['number'] = "The phone number is already taken"
@@ -679,7 +676,6 @@ def staff_edit_account(user_id):
                 add_account_form.phone_number.data = target_user.get_number()
                 add_account_form.password1.data = target_user.get_password_hash()
                 add_account_form.status.data = target_user.get_status()
-                add_account_form.account_type.data = target_user.get_account_type()
 
     return render_template('account/staff_edit_account.html', add_account_form=add_account_form,
                            error_messages=error_messages)

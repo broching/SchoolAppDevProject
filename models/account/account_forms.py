@@ -2,6 +2,13 @@ from wtforms import StringField, SubmitField, EmailField, DateField, TelField, P
 from wtforms.validators import Email, Length, EqualTo, DataRequired
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField
+import pycountry
+
+
+class CountrySelectField(SelectField):
+    def __init__(self, *args, **kwargs):
+        super(CountrySelectField, self).__init__(*args, **kwargs)
+        self.choices = [(country.alpha_2, country.name) for country in pycountry.countries]
 
 
 class UpdateProfileForm(FlaskForm):
@@ -24,7 +31,7 @@ class UpdateSecurityForm(FlaskForm):
 
 class ShippingAddressForm(FlaskForm):
     street_address = StringField(validators=[DataRequired()])
-    state = StringField(validators=[DataRequired()])
+    country = CountrySelectField()
     postal = IntegerField(validators=[DataRequired()])
     submit4 = SubmitField('Save Changes')
 

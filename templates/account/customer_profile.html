@@ -130,14 +130,11 @@
                                 <div class="row gx-3 mb-3" >
                                     <div class="col-md-6">
                                         <label class="small mb-1" >State</label>
-                                    {% if session['customer']['_Customer__shipping_address']['state'] %}
-                                    {{ update_shipping_form.state(class='form-control', placeholder='Enter your state', value=session['customer']['_Customer__shipping_address']['state']) }}
+                                    {% if session['customer']['_Customer__shipping_address']['country'] %}
+                                    {{ update_shipping_form.country(class='form-control', value=session['customer']['_Customer__shipping_address']['country']) }}
                                     {% else %}
-                                    {{ update_shipping_form.state(class='form-control', placeholder='Enter your state') }}
+                                    {{ update_shipping_form.country(class='form-control') }}
                                     {% endif %}
-                                    {% if error_messages['state'] %}
-                                        <p class="text-danger mb-1 pb-lg-1">{{error_messages['state']}}</p>
-                                   {% endif %}
                                     </div>
                                     <div class="col-md-6">
                                         <label class="small mb-1" >Postal Code</label>

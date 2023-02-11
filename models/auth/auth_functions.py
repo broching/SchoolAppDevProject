@@ -1,6 +1,7 @@
 import shelve
 from flask import redirect, url_for, session, flash
 from bcrypt import checkpw
+from models.account.account_classes import Customer, Staff
 
 
 def customer_login_required():
@@ -156,9 +157,10 @@ def customer_login_authentication(username_email, password, relative_path_to_db)
     customer_dict = {}
     customers = get_customers(relative_path_to_db)
     for customer in customers:
-        if customer.get_email() == username_email or customer.get_username() == username_email:
-            if checkpw(password.encode(), customer.get_password_hash()):
-                customer_dict = account_to_dictionary_converter(customer)
+        if customer.get_status() == 'active':
+            if customer.get_email() == username_email or customer.get_username() == username_email:
+                if checkpw(password.encode(), customer.get_password_hash()):
+                    customer_dict = account_to_dictionary_converter(customer)
     return customer_dict
 
 
@@ -244,8 +246,27 @@ def staff_login_authentication(username_email, password, relative_path_to_db):
     staff_dict = {}
     staff_list = get_staff(relative_path_to_db)
     for staff in staff_list:
-        if staff.get_email() == username_email or staff.get_username() == username_email:
-            if checkpw(password.encode(), staff.get_password_hash()):
-                staff_dict = account_to_dictionary_converter(staff)
+        if staff.get_status() == 'active':
+            if staff.get_email() == username_email or staff.get_username() == username_email:
+                if checkpw(password.encode(), staff.get_password_hash()):
+                    staff_dict = account_to_dictionary_converter(staff)
     return staff_dict
+
+
+def add_mass_customer(number_of_customer_to_add, id_to_start):
+    for number in range(id_to_start, number_of_customer_to_add + id_to_start + 1):
+        username = 'customer' + str(number)
+        email = username + "@gmail.com"
+        password = 'testtest'
+        customer = Customer(username, email, password)
+        store_customer(customer, "../../DB")
+
+
+def add_mass_staff(number_of_staff_to_add, id_to_start):
+    for number in range(id_to_start, number_of_staff_to_add + id_to_start + 1):
+        username = 'staff' + str(number)
+        email = username + "@gmail.com"
+        password = 'testtest'
+        staff = Staff(username, email, password)
+        store_staff(staff, "../../DB")
 

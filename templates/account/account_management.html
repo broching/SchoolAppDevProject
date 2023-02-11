@@ -12,6 +12,85 @@ href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
 src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript"
 src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  rel="stylesheet"
+/>
+<!-- Earnings (Monthly) Card Example -->
+                    <div class="row">
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Amount of Users</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ count }}</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-user fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earnings (Annual) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                NO. of staff</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ staff_count }}</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fa fa-unlock-keyhole fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                         <!-- Earnings (Annual) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                NO. of customer</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ customer_count }}</div>
+
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fa-brands fa-intercom fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                       <!-- Earnings (Annual) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                                Active Users</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ active_count }}</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fa-solid fa-signal text-success fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
 <button type="button" class="btn btn-primary"><a style="color: white; text-decoration: none;" href="{{url_for('account.staff_add_account')}}">Add Account</a></button>
 <br>
 <br>
