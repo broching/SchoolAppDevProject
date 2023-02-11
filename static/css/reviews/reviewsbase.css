@@ -16,3 +16,8 @@ body {
 div {
     color: black;
 }
+
+button {
+    margin: 5px;
+    margin-right: 10px;
+}
