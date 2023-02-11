@@ -73,11 +73,15 @@ def productOrder(id):
             if id not in products_dict:
                 abort(404)
 
+            product_id = product.get_product_id()
+            product_name = product.get_product_name()
             product_image_for_stripe = product.get_product_image()
+            print(product_image_for_stripe)
+
             checkout_session = stripe.checkout.Session.create(
                 line_items=[{'price_data': {
-                    'product_data': {'name': f"ID: {product.get_product_id()} | {product.get_product_name()}",
-                                     'images': [product_image_for_stripe],
+                    'product_data': {'name': f"ID: {product_id} | {product_name}",
+                                     'images': ["https://th.bing.com/th/id/OIP.eqxBQW-U29nnvWcva2d1VwAAAA?pid=ImgDet&rs=1"],
                                      },
                     'unit_amount': int(product.get_product_price() * 100),
                     'currency': 'sgd',
@@ -139,10 +143,11 @@ def new_event():
                   f'${item.amount_total / 100:.02f} {item.currency.upper()}')
 
             # Handle product quantity
-            string = str({item.name})
-            result = [s for s in string.split("|") if "id:" in s][0].split(":")[1].strip()
-            productStripeId = result
-            print(productStripeId)
+            string = str(item.description)
+            print(string)
+            id_value = int(string.split(" ")[1])
+            productStripeId = id_value
+            print(f"id_value: {productStripeId}")
             products_dict = {}
             try:
                 with shelve.open('DB/products/product.db', 'w') as pdb:
@@ -151,22 +156,13 @@ def new_event():
                     if productStripeId in products_dict:
                         product = products_dict.get(productStripeId)
                         product_quantity_temp = product.get_product_quantity()
+                        print(f"Product quantity old: {product_quantity_temp}")
                         product_quantity_temp -= 1
                         product.set_product_quantity(product_quantity_temp)
-                        print(product_quantity_temp)
+                        print(f"Product quantity new: {product_quantity_temp}")
                     pdb['Products'] = products_dict
             except IOError as ex:
                 print(f"Error in opening product.db in new_event - {ex}")
-
-            # with shelve.open('DB/products/product.db', 'w') as pdb:
-            #     if 'Products' in pdb:
-            #         products_dict = pdb['Products']
-            #     if id in products_dict:
-            #         product = products_dict.get(id)
-            #         product_quantity_temp = product.get_product_quantity()
-            #         product_quantity_temp -= 1
-            #         product.set_product_quantity(product_quantity_temp)
-            #     pdb['Products'] = products_dict
 
     return {'success': True}
 

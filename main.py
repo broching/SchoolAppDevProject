@@ -1,7 +1,6 @@
 import shelve
 from datetime import timedelta
 from flask import Flask, render_template, request, redirect, url_for
-from pyngrok import ngrok
 
 from routes.services import service
 from routes.auth import auth
