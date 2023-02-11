@@ -147,9 +147,9 @@ src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></scrip
               <td>
                   <button type="button" class="btn btn-primary"><a href="{{url_for('account.staff_edit_account', user_id=account.get_user_id())}}" style="color: white; text-decoration: none;">Edit</a></button>
                   <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                    data-bs-target="#targetmodal{{account.get_username()[0:5]}}">Delete
+                                    data-bs-target="#targetmodal{{account.get_username()}}">Delete
                   </button>
-                  <div class="modal fade" id="targetmodal{{account.get_username()[0:5]}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                  <div class="modal fade" id="targetmodal{{account.get_username()}}" tabindex="-1" aria-labelledby="exampleModalLabel"
                                  aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
