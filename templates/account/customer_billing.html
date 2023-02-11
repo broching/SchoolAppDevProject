@@ -14,15 +14,15 @@ Customer Billing
         <a class="nav-link" href="{{url_for('account.customer_security')}}">Security</a>
         <a class="nav-link active" href="{{url_for('account.customer_billing')}}">Billing</a>
     </nav>
-    <hr class="mt-0 mb-4">
+    <hr class="mt-0 mb-5">
 
-<div class="container tab-pane " id="billing">
+<div class="container tab-pane mb-5 " id="billing">
     <div class="row">
         <!-- Payment methods card-->
         <div class="card card-header-actions mb-4">
             <div class="card-header"> Payment Methods
                 <button class="btn btn-sm btn-primary" type="button">
-                    <a class = 'text-light' href=" {{ url_for('account.customer_add_card') }} ">Add Payment Method</a>
+                    <a style="text-decoration:none;" class = 'text-light' href=" {{ url_for('account.customer_add_card') }} ">Add Payment Method</a>
                 </button>
             </div>
             <div class="card-body px-0">
@@ -92,9 +92,8 @@ Customer Billing
         </div>
 
     </div>
-
         <!-- Billing history table-->
-        <div class="card mb-4">
+        <div class="card mb-5">
             <div class="card-header">Billing History</div>
             <div class="card-body p-0">
                 <!-- Billing history table-->
@@ -102,50 +101,41 @@ Customer Billing
                     <table class="table mb-0">
                         <thead>
                         <tr>
-                            <th class="border-gray-200" scope="col">Transaction ID</th>
-                            <th class="border-gray-200" scope="col">Date</th>
-                            <th class="border-gray-200" scope="col">Amount</th>
-                            <th class="border-gray-200" scope="col">Status</th>
+                            <th class="border-gray-200" scope="col">Image</th>
+                            <th class="border-gray-200" scope="col">Product ID</th>
+                            <th class="border-gray-200" scope="col">Product Name</th>
+                            <th class="border-gray-200" scope="col">Cost</th>
                         </tr>
                         </thead>
                         <tbody>
+                        {% if session['customer']['_Customer__billing_history'] != [] %}
+                        {% for product in session['customer']['_Customer__billing_history'] %}
                         <tr>
-                            <td>#39201</td>
-                            <td>06/15/2021</td>
-                            <td>$29.99</td>
                             <td>
-                                <span class="badge bg-light text-dark">Pending</span>
-                            </td>
+                                <img
+                      src="../../static/media/images/product/{{product['_Product__image']}}"
+                      alt=""
+                      style="width: 45px; height: 45px"
+                      class="rounded-circle"
+                      /></td>
+                            <td>{{ product['_Product__id'] }}</td>
+                            <td>{{ product['_Product__productName'] }}</td>
+                            <td>${{ product['_Product__price'] }}</td>
                         </tr>
+                        {% endfor %}
+                        {% else %}
                         <tr>
-                            <td>#38594</td>
-                            <td>05/15/2021</td>
-                            <td>$29.99</td>
-                            <td>
-                                <span class="badge bg-success">Paid</span>
-                            </td>
+                            <td>NO BILLING HISTORY</td>
                         </tr>
-                        <tr>
-                            <td>#38223</td>
-                            <td>04/15/2021</td>
-                            <td>$29.99</td>
-                            <td>
-                                <span class="badge bg-success">Paid</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>#38125</td>
-                            <td>03/15/2021</td>
-                            <td>$29.99</td>
-                            <td>
-                                <span class="badge bg-success">Paid</span>
-                            </td>
-                        </tr>
+
+                        {% endif %}
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
+
+
     </div>
 </div>
 </div>
