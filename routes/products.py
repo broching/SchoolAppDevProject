@@ -60,6 +60,7 @@ def productsSpecific(id):
 
 
 @productr.route('/products/order/<int:id>/')
+@customer_login_required
 def productOrder(id):
     try:
         products_dict = {}
@@ -437,6 +438,9 @@ def createProduct():
 
                 products_dict[product.get_product_id()] = product
                 db['Products'] = products_dict
+
+                flash(f"Product {product.get_product_name()} has been added.", category="success")
+
         except IOError:
             print("Error in retrieving Products from Product.db.")
         return redirect(url_for('productr.inventory'))
@@ -485,6 +489,8 @@ def updateProduct(id):
                     product.set_product_image(image_file_name)
 
                     db['Products'] = products_dict
+
+                    flash(f"Product {product.get_product_name()} has been updated.", category="success")
 
         except IOError as ex:
             print(f"Error in updating products to products.db - {ex}")
