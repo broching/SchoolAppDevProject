@@ -376,11 +376,11 @@ def customer_default_card(card_id):
                     card_cvv = card['_CreditCard__card_cvv']
                     card_expiry = card['_CreditCard__card_expiry']
                     street_address = card['_CreditCard__street_address']
-                    state = card['_CreditCard__state']
+                    country = card['_CreditCard__country']
                     postal = card['_CreditCard__postal']
                     card_default = False
                     new_card = CreditCard(credit_card_id, card_number, card_name, card_cvv, card_expiry, street_address,
-                                          state, postal, card_default=card_default)
+                                          country, postal, card_default=card_default)
                     new_credit_card_list.append(account_to_dictionary_converter(new_card))
 
                     customer.set_payment_details(new_credit_card_list)
@@ -401,11 +401,11 @@ def customer_default_card(card_id):
                         card_cvv = card['_CreditCard__card_cvv']
                         card_expiry = card['_CreditCard__card_expiry']
                         street_address = card['_CreditCard__street_address']
-                        state = card['_CreditCard__state']
+                        country = card['_CreditCard__country']
                         postal = card['_CreditCard__postal']
                         card_default = True
                         new_card = CreditCard(credit_card_id, card_number, card_name, card_cvv, card_expiry,
-                                              street_address, state, postal, card_default=card_default)
+                                              street_address, country, postal, card_default=card_default)
 
                         index = credit_card_list.index(card)
                         new_credit_card_list = credit_card_list

@@ -1,31 +1,61 @@
-{% extends "productbase.html" %}
-{% block title %}Create Inventory - ID: {{ prdid }}{% endblock %}
-{% block content %}<h1 class="display-4 uptitel">Inventory</h1>{% endblock %}
-{% block content2 %}
+{% extends "staff_base.html" %}
+{% block title %}Create Inventory - ID: {{ prdid }}<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<link rel="stylesheet"
+href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
+<script type="text/javascript"
+src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript"
+src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  rel="stylesheet"
+/>{% endblock %}
+{% block content %}<h1 class="display-4">Inventory</h1><script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<link rel="stylesheet"
+href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
+<script type="text/javascript"
+src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript"
+src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  rel="stylesheet"
+/>{% endblock %}
+{% block content2 %}<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<link rel="stylesheet"
+href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
+<script type="text/javascript"
+src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript"
+src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  rel="stylesheet"
+/>
 <h1 class="h2 m-3 uptitel">Create Product - ID: {{ prdid }}</h1>
 <div class="formdiv1">
     <form method="POST" enctype='multipart/form-data' class="m-3 createprodform">
     {{ form.hidden_tag() }}
     <div class="form-group">
-        {{ form.product_name.label }} {{ form.product_name(class="form-control") }}
+        {{ form.product_name.label }} {{ form.product_name(class="form-control border") }}
     </div>
     <div class="form-group">
-        {{ form.product_type.label }} {{ form.product_type(class="form-control") }}
+        {{ form.product_type.label }} {{ form.product_type(class="form-control border") }}
     </div>
     <div class="form-group">
-        {{ form.product_price.label }} {{ form.product_price(class="form-control") }}
+        {{ form.product_price.label }} {{ form.product_price(class="form-control border") }}
     </div>
     <div class="form-group">
-        {{ form.product_cost.label }} {{ form.product_cost(class="form-control") }}
+        {{ form.product_cost.label }} {{ form.product_cost(class="form-control border") }}
     </div>
     <div class="form-group">
-        {{ form.product_quantity.label }} {{ form.product_quantity(class="form-control") }}
+        {{ form.product_quantity.label }} {{ form.product_quantity(class="form-control border") }}
     </div>
     <div class="form-group">
-        {{ form.product_description.label }} {{ form.product_description(class="form-control") }}
+        {{ form.product_description.label }} {{ form.product_description(class="form-control border") }}
     </div>
     <div class="form-group">
-            {{ form.product_image.label }} {{ form.product_image(class="form-control") }}
+            {{ form.product_image.label }} {{ form.product_image(class="form-control border") }}
     </div>
     {{ form.submit1(class="btn btn-primary", value="Create Product", style="float: right; margin-top: 10px; margin-bottom: 20px;") }}
     </form>
