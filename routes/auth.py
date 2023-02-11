@@ -65,10 +65,7 @@ def staff_login():
 
 @auth.route('/logout')
 def logout():
-    if customer_login_required() or staff_login_required():
-        session.pop('customer', None)
-        session.pop('staff', None)
-        flash("Account has been successfully logged out", category='info')
-        return redirect(url_for('home'))
-    else:
-        restricted_customer_error()
+    session.pop('customer', None)
+    session.pop('staff', None)
+    flash("Account has been successfully logged out", category='info')
+    return redirect(url_for('home'))

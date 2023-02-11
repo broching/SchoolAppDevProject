@@ -6,9 +6,6 @@ from models.reviews.serviceReview import serviceReview
 from models.reviews.createProductReview import CreateProductReview
 from models.reviews.createServiceReview import CreateServiceReview
 
-from models.auth.auth_functions import customer_login_required, restricted_customer_error, staff_login_required, \
-    restricted_staff_error
-
 from routes.account import customer_profile
 
 review = Blueprint('review', __name__)

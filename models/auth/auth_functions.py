@@ -2,35 +2,33 @@ import shelve
 from flask import redirect, url_for, session, flash
 from bcrypt import checkpw
 from models.account.account_classes import Customer, Staff
+from functools import wraps
 
 
-def customer_login_required():
-    """Returns True if customer is logged in"""
-    if 'customer' in session:
-        return True
-    else:
-        return False
+def customer_login_required(func):
+    """Decorator that validates customer login"""
+    @wraps(func)
+    def wrapper_func(*args, **kwargs):
+        if 'customer' not in session:
+            flash("Please log in to your account first to access this page", category='danger')
+            return redirect(url_for('auth.customer_login'))
+        else:
+            return func(*args, **kwargs)
+
+    return wrapper_func
 
 
-def staff_login_required():
-    """Returns True if staff is logged in"""
-    if 'staff' in session:
-        return True
-    else:
-        return False
+def staff_login_required(func):
+    """Decorator that validates staff login"""
+    @wraps(func)
+    def wrapper_func(*args, **kwargs):
+        if 'staff' not in session:
+            flash("Please log in to your account first to access this page", category='danger')
+            return redirect(url_for('auth.staff_login'))
+        else:
+            return func(*args, **kwargs)
 
-
-def restricted_customer_error():
-    """Flashes error message and redirects account to the login page"""
-    flash("Please log in to your account first to access this page", category='danger')
-    return redirect(url_for('auth.customer_login'))
-
-
-def restricted_staff_error():
-    """Flashes error message and redirects account to the login page"""
-    flash("Please log in to your account first to access this page", category='danger')
-    return redirect(url_for('auth.staff_login'))
-
+    return wrapper_func
 
 def validate_username(username_to_validate, relative_path_to_db, exceptions=None):
     """Return True if username is not taken, False if username is taken"""
@@ -269,4 +267,3 @@ def add_mass_staff(number_of_staff_to_add, id_to_start):
         password = 'testtest'
         staff = Staff(username, email, password)
         store_staff(staff, "../../DB")
-

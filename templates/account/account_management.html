@@ -17,14 +17,15 @@ src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></scrip
   rel="stylesheet"
 />
 <!-- Earnings (Monthly) Card Example -->
-                    <div class="row">
+
+                    <div class="row mt-4">
                         <div class="col-xl-3 col-md-6 mb-4">
                             <div class="card border-left-primary shadow h-100 py-2">
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Amount of Users</div>
+                                                No. of Accounts</div>
                                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ count }}</div>
                                         </div>
                                         <div class="col-auto">
@@ -42,7 +43,7 @@ src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></scrip
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                NO. of staff</div>
+                                                NO. of  staff</div>
                                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ staff_count }}</div>
                                         </div>
                                         <div class="col-auto">
@@ -136,11 +137,11 @@ src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></scrip
                   </div>
                 </div>
             </td>
-              <td>{{account.get_account_type()}}</td>
+              <td>&nbsp;&nbsp;&nbsp;{{account.get_account_type()}}</td>
               {% if account.get_status() == "active" %}
-              <td style="color: green;">{{account.get_status()}}</td>
+              <td style="color: green;">&nbsp;&nbsp;Active</td>
               {% else %}
-              <td style="color: orange;">{{account.get_status()}}</td>
+              <td style="color: orange;">&nbsp;&nbsp;Deactivated</td>
               {% endif %}
               <td>
                   <button type="button" class="btn btn-primary"><a href="{{url_for('account.staff_edit_account', user_id=account.get_user_id())}}" style="color: white; text-decoration: none;">Edit</a></button>

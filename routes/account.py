@@ -5,8 +5,7 @@ from flask import Blueprint, render_template, request, session, flash, redirect,
 from models.account.account_forms import UpdateProfileForm, UpdateSecurityForm, DeleteAccountForm, ShippingAddressForm, \
     AddNewAccountForm
 from models.account.account_functions import save_image, delete_image
-from models.auth.auth_functions import customer_login_required, restricted_customer_error, restricted_staff_error, \
-    validate_staff_password
+from models.auth.auth_functions import customer_login_required, validate_staff_password, staff_login_required
 from models.auth.auth_functions import get_customers, store_customer, delete_customer, account_to_dictionary_converter, \
     validate_customer_password, validate_number, validate_email, validate_username, is_valid_card_number, get_staff, \
     store_staff, \
@@ -19,14 +18,13 @@ account = Blueprint('account', __name__)
 
 
 @account.route('/CustomerDashboard')
+@customer_login_required
 def customer_dashboard():
-    if customer_login_required():
-        return render_template('account/customer_dashboard.html')
-    else:
-        return restricted_customer_error()
+    return render_template('account/customer_dashboard.html')
 
 
 @account.route('/customerProfile', methods=["POST", "GET"])
+@customer_login_required
 def customer_profile():
     # Code for the update profile page
     error_messages = {}
@@ -83,14 +81,12 @@ def customer_profile():
         update_profile_form.phone_number.data = session['customer']['_Account__number']
 
     # Check if user is logged in and renders template
-    if customer_login_required():
-        return render_template('account/customer_profile.html', update_profile_form=update_profile_form,
+    return render_template('account/customer_profile.html', update_profile_form=update_profile_form,
                                update_shipping_form=update_shipping_form, error_messages=error_messages)
-    else:
-        return restricted_customer_error()
 
 
 @account.route('/customerSecurity', methods=["POST", "GET"])
+@customer_login_required
 def customer_security():
     # Code for the update security page
 
@@ -123,15 +119,13 @@ def customer_security():
                     flash('Account Successfully changed', category='success')
                     return redirect(url_for('account.customer_security'))
     # Check if user is logged in and renders template
-    if customer_login_required():
-        return render_template('account/customer_security.html',
+    return render_template('account/customer_security.html',
                                update_security_form=update_security_form, delete_account_form=delete_account_form,
                                error_messages=error_messages)
-    else:
-        return restricted_customer_error()
 
 
 @account.route('/CustomerShipping', methods=['POST', 'GET'])
+@customer_login_required
 def customer_shipping_address():
     """Code for changing customer shipping address"""
     error_messages = {}
@@ -163,14 +157,12 @@ def customer_shipping_address():
                     return redirect(url_for('account.customer_profile'))
 
     # Check if user is logged in and renders template
-    if customer_login_required():
-        return render_template('account/customer_profile.html', update_profile_form=update_profile_form,
+        render_template('account/customer_profile.html', update_profile_form=update_profile_form,
                                update_shipping_form=update_shipping_form, error_messages=error_messages)
-    else:
-        return restricted_customer_error()
 
 
 @account.route('/customerDelete', methods=['POST', 'GET'])
+@customer_login_required
 def customer_delete():
     """Code for deleted customer account"""
     update_security_form = UpdateSecurityForm()
@@ -187,14 +179,12 @@ def customer_delete():
                 flash("Account successfully deleted", category='info')
                 return redirect(url_for('home'))
     # Check if user is logged in and renders template
-    if customer_login_required():
-        return render_template('account/customer_profile.html',
-                               update_security_form=update_security_form, delete_account_form=delete_account_form, )
-    else:
-        return restricted_customer_error()
+    return render_template('account/customer_profile.html',
+                            update_security_form=update_security_form, delete_account_form=delete_account_form, )
 
 
 @account.route('/CustomerBilling//')
+@customer_login_required
 def customer_billing():
     delete_card_form = DeleteCreditCardForm()
     default_card_form = MakeCardDefaultForm()
@@ -224,14 +214,12 @@ def customer_billing():
                     customer_dict = account_to_dictionary_converter(customer)
                     session['customer'] = customer_dict
 
-    if customer_login_required():
-        return render_template('account/customer_billing.html', credit_card_list=credit_card_list,
+    return render_template('account/customer_billing.html', credit_card_list=credit_card_list,
                                delete_card_form=delete_card_form, default_card_form=default_card_form)
-    else:
-        return restricted_staff_error()
 
 
 @account.route('/AddCard', methods=['POST', 'GET'])
+@customer_login_required
 def customer_add_card():
     customer_list = get_customers('DB')
     current_customer_id = session['customer']['_Account__user_id']
@@ -276,6 +264,7 @@ def customer_add_card():
 
 
 @account.route('/EditCard/<card_id>', methods=['POST', 'GET'])
+@customer_login_required
 def customer_edit_card(card_id):
     current_customer_id = session['customer']['_Account__user_id']
     customer_list = get_customers('DB')
@@ -342,6 +331,7 @@ def customer_edit_card(card_id):
 
 
 @account.route('/DeleteCard/<card_id>', methods=['POST', 'GET'])
+@customer_login_required
 def customer_delete_card(card_id):
     current_customer_id = session['customer']['_Account__user_id']
     customer_list = get_customers('DB')
@@ -368,6 +358,7 @@ def customer_delete_card(card_id):
 
 
 @account.route('/DefaultCard/<card_id>', methods=['POST', 'GET'])
+@customer_login_required
 def customer_default_card(card_id):
     current_customer_id = session['customer']['_Account__user_id']
     customer_list = get_customers('DB')
@@ -435,11 +426,13 @@ def customer_default_card(card_id):
 
 
 @account.route('/StaffDashboard')
+@staff_login_required
 def staff_dashboard():
     return render_template('account/staff_dashboard.html')
 
 
 @account.route('/StaffProfile', methods=["POST", "GET"])
+@staff_login_required
 def staff_profile():
     # Code for the update profile page
     error_messages = {}
@@ -498,6 +491,7 @@ def staff_profile():
 
 
 @account.route('/StaffSecurity', methods=["POST", "GET"])
+@staff_login_required
 def staff_security():
     # Code for the update security page
 
@@ -536,6 +530,7 @@ def staff_security():
 
 
 @account.route('/StaffDelete', methods=['POST', 'GET'])
+@staff_login_required
 def staff_delete():
     """Code for deleted customer account"""
     update_security_form = UpdateSecurityForm()
@@ -555,6 +550,7 @@ def staff_delete():
 
 
 @account.route('/AccountManagement', methods=['POST', 'GET'])
+@staff_login_required
 def staff_account_management():
     delete_account_form = DeleteAccountForm()
     account_list = get_customers("DB") + get_staff("DB")
@@ -565,6 +561,7 @@ def staff_account_management():
 
 
 @account.route('/StaffAccountDelete/<user_id>', methods=['POST', 'GET'])
+@staff_login_required
 def staff_account_management_delete(user_id):
     delete_account_form = DeleteAccountForm()
     account_list = get_customers("DB") + get_staff("DB")
@@ -584,6 +581,7 @@ def staff_account_management_delete(user_id):
 
 
 @account.route('/StaffAddAccount', methods=['POST', 'GET'])
+@staff_login_required
 def staff_add_account():
     error_messages = {}
     add_account_form = AddNewAccountForm()
