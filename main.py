@@ -1,6 +1,7 @@
 import shelve
 from datetime import timedelta
 from flask import Flask, render_template, request, redirect, url_for
+from pyngrok import ngrok
 
 from routes.services import service
 from routes.auth import auth
@@ -15,8 +16,6 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = "641z69bc491f8cb891fc0417d2eb29bb5"
 app.config["PRODUCT_UPLOAD"] = 'static/media/images/product'
 app.config["PRODUCT_REVIEW_UPLOAD"] = 'static/media/images/reviews/product_reviews'
-
-
 
 # registered blueprints to app
 app.register_blueprint(auth)
@@ -36,6 +35,8 @@ app.permanent_session_lifetime = timedelta(days=15)
 def home():
     return render_template('home/home.html')
 
+
+# ngrok live server testing for Stripe API
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -67,28 +67,25 @@ def productOrder(id):
             if id in products_dict:
                 product = products_dict.get(id)
                 product_quantity_temp = product.get_product_quantity()
-                product_quantity_temp -= 1
                 print(product_quantity_temp)
-                product.set_product_quantity(product_quantity_temp)
-                print(product.get_product_quantity())
             pdb['Products'] = products_dict
 
             if id not in products_dict:
                 abort(404)
 
+            product_image_for_stripe = product.get_product_image()
             checkout_session = stripe.checkout.Session.create(
-                line_items=[
-                    {
-                        'price_data': {
-                            'product_data': {
-                                'name': product.get_product_name(),
-                            },
-                            'unit_amount': int(product.get_product_price() * 100),
-                            'currency': 'usd',
-                        },
-                        'quantity': 1,
-                    },
+                line_items=[{'price_data': {
+                    'product_data': {'name': f"ID: {product.get_product_id()} | {product.get_product_name()}",
+                                     'images': [product_image_for_stripe],
+                                     },
+                    'unit_amount': int(product.get_product_price() * 100),
+                    'currency': 'sgd',
+                },
+                    'quantity': 1,
+                },
                 ],
+
                 payment_method_types=['card'],
                 mode='payment',
                 success_url=request.host_url + 'products/order/success',
@@ -109,6 +106,69 @@ def success():
 @productr.route('/products/order/cancel')
 def cancel():
     return render_template('products/cancel.html')
+
+
+# Creating a Stripe Webhook
+# Below you can see a very simple webhook that handles new orders by
+# printing the order contents to the terminal.
+@productr.route('/event', methods=['POST'])
+def new_event():
+    event = None
+    payload = request.data
+    signature = request.headers['STRIPE_SIGNATURE']
+
+    # Verifying the data passed from Stripe
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, signature, os.environ['STRIPE_WEBHOOK_SECRET'])
+    except Exception as e:
+        # If the payload could not be verified, return a 400 error
+        abort(400)
+
+    # Checking if the event type is checkout.session.completed
+    if event['type'] == 'checkout.session.completed':
+        # Retrieving the Session object that corresponds to the order
+        session = stripe.checkout.Session.retrieve(
+            event['data']['object'].id, expand=['line_items'])
+
+        # Handling things
+        print(f'Sale to {session.customer_details.email}:')
+        for item in session.line_items.data:
+            # Print item sold and customer email
+            print(f'  - {item.quantity} {item.description} '
+                  f'${item.amount_total / 100:.02f} {item.currency.upper()}')
+
+            # Handle product quantity
+            string = str({item.name})
+            result = [s for s in string.split("|") if "id:" in s][0].split(":")[1].strip()
+            productStripeId = result
+            print(productStripeId)
+            products_dict = {}
+            try:
+                with shelve.open('DB/products/product.db', 'w') as pdb:
+                    if 'Products' in pdb:
+                        products_dict = pdb['Products']
+                    if productStripeId in products_dict:
+                        product = products_dict.get(productStripeId)
+                        product_quantity_temp = product.get_product_quantity()
+                        product_quantity_temp -= 1
+                        product.set_product_quantity(product_quantity_temp)
+                        print(product_quantity_temp)
+                    pdb['Products'] = products_dict
+            except IOError as ex:
+                print(f"Error in opening product.db in new_event - {ex}")
+
+            # with shelve.open('DB/products/product.db', 'w') as pdb:
+            #     if 'Products' in pdb:
+            #         products_dict = pdb['Products']
+            #     if id in products_dict:
+            #         product = products_dict.get(id)
+            #         product_quantity_temp = product.get_product_quantity()
+            #         product_quantity_temp -= 1
+            #         product.set_product_quantity(product_quantity_temp)
+            #     pdb['Products'] = products_dict
+
+    return {'success': True}
 
 
 @productr.route('/products/<int:id>/paymentspecific', methods=['GET', 'POST'])
