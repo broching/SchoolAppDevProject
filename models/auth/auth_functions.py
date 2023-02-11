@@ -6,12 +6,18 @@ from functools import wraps
 import datetime
 
 
+def log_out():
+    """Deletes session for customer and staff without flashing info message"""
+    session.pop('customer', None)
+    session.pop('staff', None)
+
+
 def customer_login_required(func):
     """Decorator that validates customer login"""
-
     @wraps(func)
     def wrapper_func(*args, **kwargs):
         if 'customer' not in session:
+            log_out()
             flash("Please log in to your account first to access this page", category='danger')
             return redirect(url_for('auth.customer_login'))
         else:
@@ -22,10 +28,10 @@ def customer_login_required(func):
 
 def staff_login_required(func):
     """Decorator that validates staff login"""
-
     @wraps(func)
     def wrapper_func(*args, **kwargs):
         if 'staff' not in session:
+            log_out()
             flash("Please log in to your account first to access this page", category='danger')
             return redirect(url_for('auth.staff_login'))
         else:
