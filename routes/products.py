@@ -545,6 +545,8 @@ def deleteProduct(id):
             products_dict.pop(id)  # Step 1: Updates are handled using dictionaries first.
             db['Products'] = products_dict
 
+            flash(f"Product {product.get_product_name()} has been deleted.", category="success")
+
             # Step 2: Updates are then pointed to and stored back to the database using the database variable.
 
             # Step 3: The 'shelve' database closes since 'with' boolean is used. If it is not used, have to manually close using 'db.close' function.
