@@ -53,7 +53,7 @@
           <ul class="navbar-nav ms-auto justify-content-end">
 
             {% if 'staff' in session %}
-            <li class="nav-item dropdown" style="margin-right: 20px">
+            <li class="nav-item dropdown mr-5">
               <a class="nav-link mx-2 dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 {% if session['staff']['_Account__user_image'] %}
                 <img src="../static/media/images/account/{{session['staff']['_Account__user_image']}}" alt="" width="30px" height="30px" class="account-img rounded-circle">
@@ -151,6 +151,21 @@
 
         <!-- Page Content  -->
       <div id="content" class="p-4 p-md-5 pt-5 overflow-auto">
+        {% with messages = get_flashed_messages(with_categories=True) %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{category}} alert-dismissible fade show =" role="alert">
+        {% if category == "danger" %}
+        <strong>Warning!</strong>
+        {% elif category == "success" %}
+        <strong>Success!</strong>
+        {% elif category == "info" %}
+        <strong>Info</strong>
+        {% endif %}
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+{% endwith %}
             {% block content %}
             {% endblock content %}
             {% block content2 %}
