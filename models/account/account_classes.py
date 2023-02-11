@@ -104,6 +104,12 @@ class Customer(Account):
     def get_customer_id(self):
         return self.__user_id
 
+    def get_billing_history(self):
+        return self.__billing_history
+
+    def set_billing_history(self, billing_history):
+        self.__billing_history = billing_history
+
     def set_customer_id(self, customer_id):
         self.__user_id = customer_id
 

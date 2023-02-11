@@ -1,6 +1,6 @@
 import shelve
 
-from flask import flash, Blueprint, render_template, request, redirect, url_for, current_app, abort
+from flask import flash, Blueprint, render_template, request, redirect, url_for, abort, session
 from werkzeug.datastructures import FileStorage
 
 from models.products.InventorybackendFlaskForm import CreateNewProduct, PaymentForm, UpdateNewProduct
@@ -11,6 +11,8 @@ from models.products.Product import Product
 import stripe
 import os
 from dotenv import load_dotenv
+from models.auth.auth_functions import account_to_dictionary_converter, store_customer, get_customers
+
 
 productr = Blueprint('productr', __name__, template_folder='templates', static_folder='static')
 
@@ -69,6 +71,8 @@ def productOrder(id):
                 product_quantity_temp = product.get_product_quantity()
                 print(product_quantity_temp)
             pdb['Products'] = products_dict
+            session['temp_product_id'] = id
+            print(session['temp_product_id'])
 
             if id not in products_dict:
                 abort(404)
@@ -81,7 +85,8 @@ def productOrder(id):
             checkout_session = stripe.checkout.Session.create(
                 line_items=[{'price_data': {
                     'product_data': {'name': f"ID: {product_id} | {product_name}",
-                                     'images': ["https://th.bing.com/th/id/OIP.eqxBQW-U29nnvWcva2d1VwAAAA?pid=ImgDet&rs=1"],
+                                     'images': [
+                                         "https://th.bing.com/th/id/OIP.eqxBQW-U29nnvWcva2d1VwAAAA?pid=ImgDet&rs=1"],
                                      },
                     'unit_amount': int(product.get_product_price() * 100),
                     'currency': 'sgd',
@@ -104,6 +109,47 @@ def productOrder(id):
 
 @productr.route('/products/order/success')
 def success():
+    # if request.method == 'GET':
+    #     print(session['customer'])
+    # Handle billing history
+    productStripeId = session['temp_product_id']
+    print(productStripeId)
+    try:
+        with shelve.open('DB/products/product.db', 'w') as pdb:
+            if 'Products' in pdb:
+                products_dict = pdb['Products']
+            if productStripeId in products_dict:
+                product = products_dict.get(productStripeId)
+                product_dict_for_storing = account_to_dictionary_converter(product)
+                cust_list = get_customers('DB')
+            pdb['Products'] = products_dict
+
+            # Get customer id from current session
+            print(session['customer'])
+            target_id = session['customer']['_Account__user_id']
+            print(target_id)
+            for customer in cust_list:
+                if customer.get_user_id() == target_id:
+                    print('Customer found')
+                    print(customer)
+
+                    # Get billing history list
+                    cust_billing_history = customer.get_billing_history()
+
+                    # Append product dictionary into billing history list
+                    cust_billing_history.append(product_dict_for_storing)
+
+                    # Set new billing history list to the updated one that has the product appended.
+                    customer.set_billing_history(cust_billing_history)
+                    print(customer.get_billing_history())
+                    store_customer(customer, 'DB')
+
+                    # Update session with new info
+                    customer_dict = account_to_dictionary_converter(customer)
+                    session['customer'] = customer_dict
+
+    except IOError as ex:
+        print(f"Error in new_event for billing history - {ex}")
     return render_template('products/success.html')
 
 
@@ -157,12 +203,41 @@ def new_event():
                         product = products_dict.get(productStripeId)
                         product_quantity_temp = product.get_product_quantity()
                         print(f"Product quantity old: {product_quantity_temp}")
-                        product_quantity_temp -= 1
+                        product_quantity_temp -= item.quantity
                         product.set_product_quantity(product_quantity_temp)
                         print(f"Product quantity new: {product_quantity_temp}")
                     pdb['Products'] = products_dict
             except IOError as ex:
                 print(f"Error in opening product.db in new_event - {ex}")
+
+            # # Handle billing history
+            # try:
+            #     with shelve.open('DB/products/product.db', 'w') as pdb:
+            #         if 'Products' in pdb:
+            #             products_dict = pdb['Products']
+            #         if productStripeId in products_dict:
+            #             product = products_dict.get(productStripeId)
+            #             product_dict_for_storing = account_to_dictionary_converter(product)
+            #             cust_list = get_customers('DB')
+            #         pdb['Products'] = products_dict
+            #
+            #         # Get customer id from current session
+            #         print(session['customer'])
+            #         customer_id = session['customer']['_Account__userid']
+            #         customer = cust_list.get(customer_id)
+            #
+            #         # Get billing history list
+            #         cust_billing_history = customer.get_billing_history()
+            #
+            #         # Append product dictionary into billing history list
+            #         cust_billing_history.append(product_dict_for_storing)
+            #
+            #         # Set new billing history list to the updated one that has the product appended.
+            #         customer.set_billing_history(cust_billing_history)
+            #         store_customer(customer, 'DB')
+            #
+            # except IOError as ex:
+            #     print(f"Error in new_event for billing history - {ex}")
 
     return {'success': True}
 
