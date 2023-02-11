@@ -1,38 +1,55 @@
 {% extends "staff_base.html" %}
-{% block title %}Inventory
+{% block title %}Inventory{% endblock title %}
+{% block content %}
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <link rel="stylesheet"
-href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
+      href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
 <script type="text/javascript"
-src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+        src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript"
-src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+        src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <link
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-  rel="stylesheet"
-/>{% endblock %}
-{% block content %}<h1 class="display-4 uptitel">Inventory</h1><script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-<link rel="stylesheet"
-href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
-<script type="text/javascript"
-src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript"
-src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-<link
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-  rel="stylesheet"
-/>{% endblock %}
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        rel="stylesheet"
+/>
+
+
+<h1 class="display-4 uptitel">Inventory</h1>
+
+<!--{% if 'product_created' in session %}-->
+<!--<div class="alert alert-success alert-dismissible">-->
+<!--    <button type="button" class="close" data-dismiss="alert">&times;</button>-->
+<!--    Success! {{ session.pop('product_created', None) }} was created.-->
+<!--</div>-->
+<!--{% endif %}-->
+
+<!--{% if 'product_updated' in session %}-->
+<!--<div class="alert alert-success alert-dismissible">-->
+<!--    <button type="button" class="close" data-dismiss="alert">&times;</button>-->
+<!--    Success! {{ session.pop('product_updated', None) }} was updated.-->
+<!--</div>-->
+<!--{% endif %}-->
+
+<!--{% if 'product_deleted' in session %}-->
+<!--<div class="alert alert-success alert-dismissible">-->
+<!--    <button type="button" class="close" data-dismiss="alert">&times;</button>-->
+<!--    Success! {{ session.pop('product_deleted', None) }} was deleted.-->
+<!--</div>-->
+<!--{% endif %}-->
+
+{% endblock content %}
+
 {% block content2 %}
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <link rel="stylesheet"
-href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
+      href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
 <script type="text/javascript"
-src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+        src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript"
-src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+        src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <link
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-  rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        rel="stylesheet"
 />
 <div class="m-2">
     <div class="m-2 uptitel">
@@ -74,8 +91,10 @@ src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></scrip
             <tbody>
             {% for product in products_list %}
             <tr>
-                <td style="width: 100px; height: 100px; padding: 5px"><img src="../../static/media/images/product/{{ product.get_product_image() }}"
-                 alt="Image of product with ID: {{ product.get_product_id() }}" style="height: 90px; width: 90px; border-radius: 5px;"></td>
+                <td style="width: 100px; height: 100px; padding: 5px"><img
+                        src="../../static/media/images/product/{{ product.get_product_image() }}"
+                        alt="Image of product with ID: {{ product.get_product_id() }}"
+                        style="height: 90px; width: 90px; border-radius: 5px;"></td>
                 <td>{{ product.get_product_id() }}</td>
                 <td>{{ product.get_product_name() }}</td>
                 <td>${{ "%.2f"|format(product.get_product_price()) }}</td>
@@ -84,10 +103,47 @@ src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></scrip
                 <td>{{ product.get_product_description() }}</td>
                 <td><a href="/updateProduct/{{product.get_product_id()}}" class="btn btn-warning">Update</a></td>
                 <td>
-                    <form action="{{url_for('productr.deleteProduct', id=product.get_product_id())}}" method="POST">
-                        <input type="submit" value="X" class="btn btn-danger">
-                    </form>
+                    <!--                                        <form action="{{url_for('productr.deleteProduct', id=product.get_product_id())}}" method="POST">-->
+                    <!--                                            <input type="submit" value="Delete" class="btn btn-danger">-->
+                    <!--                                        </form>-->
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                            data-bs-target="#targetmodal{{ product.get_product_id() }}">
+                        Delete
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="targetmodal{{ product.get_product_id() }}" tabindex="-1"
+                         aria-labelledby="exampleModalLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">{{ product.get_product_name() }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to delete?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                                    </button>
+                                    <form action="{{url_for('productr.deleteProduct', id=product.get_product_id())}}"
+                                          method="POST">
+                                        <input type="submit" value="Confirm Delete" class="btn btn-danger">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </td>
+
+                <!--                <td>-->
+                <!--                    <form action="{{url_for('productr.deleteProduct', id=product.get_product_id())}}" method="POST">-->
+                <!--                        <input type="submit" value="X" class="btn btn-danger">-->
+                <!--                    </form>-->
+                <!--                </td>-->
             </tr>
             {% endfor %}
             </tbody>
