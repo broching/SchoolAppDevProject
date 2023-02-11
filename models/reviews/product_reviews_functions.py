@@ -3,6 +3,7 @@ import os
 
 from PIL import Image
 
+
 def save_image(image):
     """Saves image to static directory"""
     if image:
@@ -14,12 +15,3 @@ def save_image(image):
         img.thumbnail((300, 300))
         img.save(file_path)
         return image_file_name
-
-
-def delete_image(image_from_object):
-    """Deletes image from static directory"""
-    if image_from_object:
-        """Deletes image from static directory"""
-        file_path = 'static/media/images/reviews/product_reviews/' + image_from_object
-        if os.path.isfile(file_path):
-            os.remove(file_path)

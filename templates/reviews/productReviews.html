@@ -2,6 +2,16 @@
 {% block title %}All Product Reviews{% endblock %}
 {% block content %}<h1 class="display-4"></h1>{% endblock %}
 {% block content2 %}
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages %}
+{{ message }}
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+
 <div class="m-2">
 
     <div class="secondheader"><a href="#"></a></div>
@@ -17,36 +27,51 @@
         {% endif %}
     </div>
 
+
+    <div>
+        Click <a href='createProductReview'>here</a> to create a product review.
+    </div>
+
+    <br>
+
+    <div>
+        <button type="button"><a href="/productReviews">All</a></button>
+        <button type="button"><a href="/product1Reviews">Product 1</a></button>
+        <button type="button"><a href="/productReviews">Product 2</a></button>
+        <button type="button"><a href="/productReviews">Product 3</a></button>
+    </div>
+
+    <br>
+
     <!--    Table to display all product reviews-->
     <div class="product_reviews">
         <table class="table table-striped">
 
             <thead>
             <tr class="tarow1first">
-                <th style="font-size: 150%;">Product Ratings</th>
+                <th style="font-size: 150%;">{{ count }} Product Reviews</th>
             </tr>
             </thead>
 
             <tbody>
-            {% for product_review in product_reviews_list %}
+            {% for product_review in product_reviews_list|reverse %}
             <tr>
                 <td>
-
-                    <p><b>User:</b></p> <br>
+                    <p><b>User:</b> {{ product_review.get_user_name() }}</p>  <br>
+                    <p><b>Product: </b> {{ product_review.get_product_selection() }}</p>
                     <p><b>Rating: </b> {{ product_review.get_product_rating() }} </p> <br>
                     <p><b>Comment </b> {{ product_review.get_product_comment() }} </p> <br>
                     <p><b>Image </b> <br>
-                    <p style="width: 100px; height: 100px; padding: 5px"><img
-                            src="../../static/media/images/reviews/product_reviews/{{ product_review.get_product_image() }}"
-                            style="height: 90px; width: 90px; border-radius: 5px;"></p>
+                    <p style="width: 200px; height: 200px; padding: 5px"><img
+                            src="../../static/media/images/reviews/product_reviews/ {{ product_review.get_product_image() }}"
+                            style="height: 200px; width: 200px; border-radius: 5px;"></p>
                     <p><b>Video </b> {{ product_review.get_product_video() }} </p> <br>
                     <p><b>Unique ID </b> {{ product_review.get_product_id() }} </p> <br>
 
 
                 </td>
-
                 <td>
-                    <form action="{{url_for('review.deleteProductReview', id=product_review.get_product_id())}}"
+                    <form action="{{url_for('review.deleteProductReview', id=product_review.get_user_id(), pid=product_review.get_product_id())}}"
                           method="POST">
                         <input type="submit" value="X" class="btn btn-danger">
                     </form>

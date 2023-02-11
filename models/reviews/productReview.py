@@ -1,24 +1,43 @@
 from datetime import datetime
 
 
-class productReview:
+class productReview():
     unique_id = datetime.now()
     unique_id = int(unique_id.strftime('%Y%m%d%H%M%S'))
-    count_id = 0
 
-    def __init__(self, product_rating, product_comment, product_image, product_video):
-        productReview.count_id += 1
+    def __init__(self, user_name, user_id, product_selection, product_rating, product_comment, product_image, product_video):
         self.__product_id = productReview.unique_id
+        self.__user_name = user_name
+        self.__user_id = user_id
+        self.__product_selection = product_selection
         self.__product_rating = product_rating
         self.__product_comment = product_comment
         self.__product_image = product_image
         self.__product_video = product_video
+
+    def get_user_name(self):
+        return self.__user_name
+
+    def set_user_name(self, user_name):
+        self.__user_name = user_name
+
+    def get_user_id(self):
+        return self.__user_id
+
+    def set_user_id(self, user_id):
+        self.__user_id = user_id
 
     def get_product_id(self):
         return self.__product_id
 
     def set_product_id(self, product_id):
         self.__product_id = product_id
+
+    def get_product_selection(self):
+        return self.__product_selection
+
+    def set_product_selection(self, product_selection):
+        self.__product_selection = product_selection
 
     def get_product_rating(self):
         return self.__product_rating

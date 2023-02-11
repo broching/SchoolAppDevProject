@@ -1,0 +1,99 @@
+{% extends "staff_base.html" %}
+{% block title %}Inventory
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<link rel="stylesheet"
+href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
+<script type="text/javascript"
+src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript"
+src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  rel="stylesheet"
+/>{% endblock %}
+{% block content %}<h1 class="display-4 uptitel">Inventory</h1><script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<link rel="stylesheet"
+href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
+<script type="text/javascript"
+src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript"
+src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  rel="stylesheet"
+/>{% endblock %}
+{% block content2 %}
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<link rel="stylesheet"
+href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
+<script type="text/javascript"
+src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript"
+src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  rel="stylesheet"
+/>
+<div class="m-2">
+    <div class="m-2 uptitel">
+        <p class="h2">View products</p>
+    </div>
+
+    <!--    Conditions-->
+    <div class="uptitel">
+        {% if count == 0 %}
+        <p>There are no products.</p>
+        {% elif count == 1 %}
+        <p>There is 1 product.</p>
+        {% else %}
+        <p>There are {{ count }} products.</p>
+        {% endif %}
+    </div>
+
+    <!--    Add new-->
+    <div class="secondheader addnewbutn"><a href="/createProduct" class="addnewbutn">Add new</a></div>
+
+    <!--    Table to display products for Staff-->
+    <div class="productitems2343">
+        <table class="table table-striped">
+
+            <thead>
+            <tr class="tarow1first">
+                <th style="width: 100px;">Image</th>
+                <th>ID</th>
+                <th>Name</th>
+                <th style="width: 80px;">Price</th>
+                <th style="width: 80px;">Cost</th>
+                <th>Quantity</th>
+                <th style="width: 300px;">Description</th>
+                <th style="width: 50px"></th>
+                <th style="width: 50px"></th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for product in products_list %}
+            <tr>
+                <td style="width: 100px; height: 100px; padding: 5px"><img src="../../static/media/images/product/{{ product.get_product_image() }}"
+                 alt="Image of product with ID: {{ product.get_product_id() }}" style="height: 90px; width: 90px; border-radius: 5px;"></td>
+                <td>{{ product.get_product_id() }}</td>
+                <td>{{ product.get_product_name() }}</td>
+                <td>${{ "%.2f"|format(product.get_product_price()) }}</td>
+                <td>${{ "%.2f"|format(product.get_product_cost()) }}</td>
+                <td>{{ product.get_product_quantity() }}</td>
+                <td>{{ product.get_product_description() }}</td>
+                <td><a href="/updateProduct/{{product.get_product_id()}}" class="btn btn-warning">Update</a></td>
+                <td>
+                    <form action="{{url_for('productr.deleteProduct', id=product.get_product_id())}}" method="POST">
+                        <input type="submit" value="X" class="btn btn-danger">
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+{% endblock %}

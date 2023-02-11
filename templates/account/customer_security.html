@@ -1,0 +1,100 @@
+{% extends 'base.html' %} {% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css"
+      integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous"/>
+<link rel="stylesheet" href="../../static/css/account/customer_profile.css">
+<link rel="stylesheet" href="../../static/css/account/customer_billing.css">
+<link rel="stylesheet" href="../../static/css/account/customer_security.css">
+<div class="container-xl px-4 mt-4">
+    <!-- Account page navigation-->
+    <nav class="nav nav-borders">
+        <a class="nav-link ms-0" href="{{url_for('account.customer_profile')}}">Profile</a>
+        <a class="nav-link active" href="{{url_for('account.customer_security')}}">Security</a>
+        <a class="nav-link" href="{{url_for('account.customer_billing')}}">Billing</a>
+    </nav>
+    <hr class="mt-0 mb-4">
+    <div class="tab-content">
+        <div class="container tab-pane active" id="profile">
+            <div class="row">
+
+
+              <div class="col-lg-8">
+                    <!-- Change password card-->
+                    <div class="card mb-4">
+                        <div class="card-header">Change Password</div>
+                        <div class="card-body">
+                            <form method="post" action="{{url_for('account.customer_security')}}">
+                                {{ update_security_form.hidden_tag() }}
+                                <div class="mb-3">
+                                    {{ update_security_form.current_password.label(class="small mb-1") }}
+                                    {{ update_security_form.current_password(class="form-control", placeholder='Current password') }}
+                                    {% if error_messages['current_password'] %}
+                                        <p class="text-danger mb-1 pb-lg-1">{{error_messages['current_password']}}</p>
+                                    {% endif %}
+                                </div>
+                                <!-- Form Group (new password)-->
+                                <div class="mb-3">
+                                    {{ update_security_form.password1.label(class="small mb-1") }}
+                                    {{ update_security_form.password1(class="form-control", placeholder='Enter new password') }}
+                                    {% if error_messages['password'] %}
+                                        <p class="text-danger mb-1 pb-lg-1">{{error_messages['password']}}</p>
+                                    {% endif %}
+                                </div>
+                                <!-- Form Group (confirm password)-->
+                                <div class="mb-3">
+                                    {{ update_security_form.password2.label(class="small mb-1") }}
+                                    {{ update_security_form.password2(class="form-control", placeholder='Confirm new password') }}
+                                    {% if error_messages['password'] %}
+                                        <p class="text-danger mb-1 pb-lg-1">{{error_messages['password']}}</p>
+                                    {% endif %}
+                                </div>
+                                {{ update_security_form.submit2(class="btn btn-primary") }}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <!-- Delete account card-->
+                    <div class="card mb-4">
+                        <div class="card-header">Delete Account</div>
+                        <div class="card-body">
+                            <p>Please understand that deleting your Account is a <b>Permanent</b> action and cannot be undone, please be sure before deleting your account</p>
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn btn-danger-soft text-danger" data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal"> I understand, delete my account
+                            </button>
+                            <!-- Modal -->
+                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                                 aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h2 class="modal-title fs-5" id="exampleModalLabel" style="color:red;">
+                                                Confirm Delete account</h2>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body"> Deleting your account is a permanent action and cannot
+                                            be undone. Are you are sure you want to delete your account, please confirm
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                Close
+                                            </button>
+                                            <form method="post" action="{{url_for('account.customer_delete')}}">
+                                                {{ delete_account_form.submit3(class="btn btn-danger") }}
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

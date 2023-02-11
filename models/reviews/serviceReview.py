@@ -1,20 +1,45 @@
-class serviceReview:
-    count_id = 0
+from datetime import datetime
 
-    def __init__(self, service_selection, service_rating, service_image, service_video, service_comment ):
-        serviceReview.count_id += 1
-        self.__service_id = serviceReview.count_id
+
+class serviceReview:
+    unique_id = datetime.now()
+    unique_id = int(unique_id.strftime('%Y%m%d%H%M%S'))
+
+    def __init__(self, user_id, user_name, service_selection, stylist_selection, service_rating, service_image, service_video,
+                 service_comment):
+        self.__service_id = serviceReview.unique_id
+        self.__user_id = user_id
+        self.__user_name = user_name
         self.__service_selection = service_selection
+        self.__stylist_selection = stylist_selection
         self.__service_rating = service_rating
         self.__service_comment = service_comment
         self.__service_image = service_image
         self.__service_video = service_video
+
+    def get_user_id(self):
+        return self.__user_id
+
+    def set_user_id(self, user_id):
+        self.__user_id = user_id
+
+    def get_user_name(self):
+        return self.__user_name
+
+    def set_user_name(self, user_name):
+        self.__user_name = user_name
 
     def get_service_selection(self):
         return self.__service_selection
 
     def set_service_selection(self, service_selection):
         self.__service_selection = service_selection
+
+    def get_stylist_selection(self):
+        return self.__stylist_selection
+
+    def set_stylist_selection(self, stylist_selection):
+        self.__stylist_selection = stylist_selection
 
     def get_service_id(self):
         return self.__service_id

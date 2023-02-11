@@ -9,26 +9,32 @@
         <div class="form-group">
             {{ render_field(form.service_selection, class="form-control") }}
         </div>
-
         <div class="form-group">
-            {{ render_field(form.service_rating, class="form-control") }}
+            {{ render_field(form.stylist_selection, class="form-control") }}
         </div>
-        <div class="form-group">
-            {{ render_field(form.service_image, class="form-control") }}
-        </div>
-        <div class="form-group">
-            {{ render_field(form.service_video, class="form-control") }}
-        </div>
+        <br>
         <div class="form-group">
             {{ render_field(form.service_comment, class="form-control") }}
         </div>
+        <br>
+        <div class="form-group">
+            {%include 'reviews/productRating.html' %}
+            {{ render_field(form.service_rating, class="form-control") }}
+        </div>
+        <br>
+        <div class="form-group">
+            {{ render_field(form.service_image, class="form-control") }}
+        </div>
+        <br>
+        <div class="form-group">
+            {{ render_field(form.service_video, class="form-control") }}
+        </div>
 
-
+        <br>
         <input type="submit" value="Submit" class="btn btn-primary"
                style="float: right; margin-top: 10px; margin-bottom: 20px;"/>
     </form>
     <br><br>
-    <a href="/serviceReviews">All Service Reviews</a>
 </div>
 
 {% endblock %}

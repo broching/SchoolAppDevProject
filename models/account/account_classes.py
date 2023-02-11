@@ -3,13 +3,11 @@ from bcrypt import hashpw, gensalt
 
 
 class Account:
-    time = datetime.now()
-    time = int(round(time.timestamp()))
-    user_count = 0
 
     def __init__(self, username, email, password_hash):
-        Account.user_count += 1
-        self.__user_id = Account.time
+        time = datetime.now()
+        time = int(round(time.timestamp()))
+        self.__user_id = time
         self.__username = username
         self.__email = email
         self.__password_hash = hashpw(password_hash.encode(), gensalt())
@@ -19,6 +17,7 @@ class Account:
         self.__first_name = None
         self.__last_name = None
         self.__birthday = None
+        self.__status = 'active'
 
     def get_user_id(self):
         return self.__user_id
@@ -81,21 +80,44 @@ class Account:
     def set_number(self, number):
         self.__number = number
 
+    def get_status(self):
+        return self.__status
+
+    def set_status(self, status):
+        self.__status = status
+
 
 class Customer(Account):
-    customer_count = 0
 
     def __init__(self, username, email, password_hash):
         super().__init__(username, email, password_hash)
-        Customer.customer_count += 1
         self.__account_type = "customer"
         self.__user_id = "C" + str(self.get_user_id())
-        self.__cart = None
-        self.__wish_list = None
-        self.__booked_services = None
-        self.__payment_details = None
-        self.__customizations = None
-        self.__billing_history = None
+        self.__cart = []
+        self.__wish_list = []
+        self.__booked_services = []
+        self.__payment_details = []
+        self.__customizations = []
+        self.__billing_history = []
+        self.__shipping_address = {}
+
+    def get_customer_id(self):
+        return self.__user_id
+
+    def get_billing_history(self):
+        return self.__billing_history
+
+    def set_billing_history(self, billing_history):
+        self.__billing_history = billing_history
+
+    def set_customer_id(self, customer_id):
+        self.__user_id = customer_id
+
+    def get_account_type(self):
+        return self.__account_type
+
+    def set_account_type(self, account_type):
+        self.__account_type = account_type
 
     def get_cart(self):
         return self.__cart
@@ -121,16 +143,26 @@ class Customer(Account):
     def set_customizations(self, customizations):
         self.__customizations = customizations
 
+    def get_shipping_address(self):
+        return self.__shipping_address
+
+    def set_shipping_address(self, shipping_address):
+        self.__shipping_address = shipping_address
+
 
 class Staff(Account):
-    staff_count = 0
 
     def __init__(self, username, email, password_hash):
         super().__init__(username, email, password_hash)
-        Staff.staff_count += 1
         self.__account_type = "staff"
         self.__user_id = "S" + str(self.get_user_id())
         self.__appointments = None
+
+    def get_staff_id(self):
+        return self.__user_id
+
+    def set_staff_id(self, staff_id):
+        self.__user_id = staff_id
 
     def get_appointments(self):
         return self.__appointments

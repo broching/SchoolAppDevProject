@@ -1,18 +1,29 @@
-from wtforms import Form, StringField, TextAreaField, validators, SelectField, IntegerField, FloatField, FileField
-
-from models.reviews.serviceReview import serviceReview
+from wtforms import Form, StringField, TextAreaField, validators, SelectField, RadioField, FloatField, FileField, \
+    HiddenField
 
 
 class CreateServiceReview(Form):
+    user_id = HiddenField('')
+
+    user_name = HiddenField('')
+
     service_selection = SelectField('Service', [validators.DataRequired()],
-                                    choices=[('', 'Select'), ('Service 1', 'Service 1'), ('Service 2', 'Service 2'),
-                                             ('Service 3', 'Service 3')], default='')
+                                    choices=[('', 'Click to choose your service'), ('Hair Wash', 'Hair Wash'),
+                                             ('Hair Styling', 'Hair Styling'),
+                                             ('Hair Dye', 'Hair Dye')], default='')
 
-    service_rating = IntegerField('Service Rating', [validators.DataRequired()])
+    stylist_selection = SelectField('Stylist', [validators.DataRequired()],
+                                    choices=[('', 'Click to choose your hairstylist'),
+                                             ('Hairstylist 1', 'Hairstylist 1'),
+                                             ('Hairstylist 2', 'Hairstylist 2'),
+                                             ('Hairstylist 3', 'Hairstylist 3')], default='')
 
-    service_image = FileField('Upload your image', [validators.DataRequired()])
-
-    service_video = FileField('Upload your video', [validators.Optional()])
+    service_rating = RadioField('Service Rating', [validators.DataRequired()],
+                                choices=[('1', '1'), ('22', '2'),
+                                         ('3', '3'), ('4', '4'), ('5', '5')], default='')
 
     service_comment = TextAreaField('Write your review here', [validators.Optional()])
 
+    service_image = FileField('Upload your image', [validators.Optional()])
+
+    service_video = FileField('Upload your video', [validators.Optional()])

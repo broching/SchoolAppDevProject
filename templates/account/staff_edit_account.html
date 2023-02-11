@@ -1,0 +1,78 @@
+{% extends 'staff_base.html' %}
+
+{% block title %}
+Customer Profile
+{% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css"
+      integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous"/>
+<link rel="stylesheet" href="../../static/css/account/customer_profile.css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript"
+src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="../../static/css/account/customer_profile.css">
+    <div class="col-xl-5 mx-auto" style="margin-left: 35px">
+        <!-- Account details card-->
+        <div class="card mb-4">
+            <div class="card-header">Account Details</div>
+            <div class="card-body">
+                <!-- Form Group (username)-->
+                <form action="" method="post">
+                                    <div class="mb-3">
+                    {{ add_account_form.username.label(class="small mb-1") }}
+                    {{ add_account_form.username(class="form-control" ,placeholder='Enter your username')}}
+                    {% if error_messages['username'] %}
+                        <p class="text-danger mb-1 pb-lg-1">{{error_messages['username']}}</p>
+                    {% endif %}
+                </div>
+                <!-- Form Row-->
+                <div class="row gx-3 mb-3">
+                    <!-- Form Group (first name)-->
+                    <div class="col-md-6">
+                        {{ add_account_form.first_name.label(class="small mb-1") }}
+                        {{ add_account_form.first_name(class="form-control", placeholder='Enter your First name')}}
+                    </div>
+                    <!-- Form Group (last name)-->
+                    <div class="col-md-6">
+                        {{ add_account_form.last_name.label(class="small mb-1") }}
+                        {{ add_account_form.last_name(class="form-control", placeholder='Enter your Last name')}}
+                    </div>
+                </div>
+                <!-- Form Row-->
+                <div class="row gx-3 mb-3">
+
+                <!-- Form Group (email address)-->
+                <div class="mb-3">
+                    {{ add_account_form.email.label(class="small mb-1") }}
+                    {{ add_account_form.email(class="form-control", placeholder='Enter your email')}}
+                    {% if error_messages['email'] %}
+                        <p class="text-danger mb-1 pb-lg-1">{{error_messages['email']}}</p>
+                    {% endif %}
+                </div>
+                    <!-- Form Group (phone number)-->
+                    <div class="col-md-6">
+                        {{ add_account_form.phone_number.label(class="small mb-1") }}
+                        {{ add_account_form.phone_number(class="form-control", placeholder='Enter your phone number')}}
+                        {% if error_messages['number'] %}
+                            <p class="text-danger mb-1 pb-lg-1">{{error_messages['number']}}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                                    <!-- Form Group (password)-->
+                <div class="mb-3">
+                    {{ add_account_form.password1.label(class="small mb-1") }}
+                    {{ add_account_form.password1(class="form-control", placeholder='Enter your Password')}}
+                </div>
+                <div class="mb-3">
+                    {{ add_account_form.status.label(class="small mb-1") }}
+                    {{ add_account_form.status(class="form-select")}}
+                </div>
+                <!-- Save changes button-->
+                <button type="button" class="btn btn-secondary"><a style="text-decoration: none; color: white;" href="{{url_for('account.staff_account_management')}}">Back</a></button>
+                {{ add_account_form.submit1(class="btn btn-primary", value='Save Changes') }}
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

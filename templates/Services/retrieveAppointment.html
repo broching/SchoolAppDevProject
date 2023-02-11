@@ -15,8 +15,9 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th>service</th>
-            <th>hairstylist</th>
+            <th>first namne</th>
+            <th>last name</th>
+            <th>gender</th>
             <th>Appointment Date</th>
             <th>Appointment Time</th>
             <th></th>
@@ -24,13 +25,14 @@
         </tr>
         </thead>
         <tbody>
-        {% for service in apppt_list %}
+        {% for service in appt_list %}
         <tr>
-            <td>{{ service.get_service()}}</td>
-            <td>{{ service.get_hairstylist()}}</td>
-            <td>{{service.get_appointment_date()}}</td>
-            <td>{{service.get_appointment_time()}}</td>
-            <td><a href="/addNewServiceform{{Service.get_hairstylist}}" class="btn btn-warning">Update</a></td>
+            <td>{{ service.get_first_Name() }}</td>
+            <td>{{ service.get_last_Name() }}</td>
+            <td>{{ service.get_gender() }}</td>
+            <td>{{ service.get_appointment_Date() }}</td>
+            <td>{{ service.get_appointment_Time() }}</td>
+            <td><a href="/addNewServiceform{{service.get_first_name}}" class="btn btn-warning">Update</a></td>
             <td>
                 <form action="" method="POST">
                     <input type="submit" value="Delete" class="btn btn-danger">
@@ -47,9 +49,8 @@
             <td></td>
             <td><a href="#" class="btn btn-warning">Update</a></td>
             <td>
-                <form action={{url_for('appointment.deleteappointment', id=AddNewService.get_membership_ID())}}" method="POST">
-                    <input type="submit" value="Delete" class="btn btn-danger">
-                </form>
+
+
             </td>
         </tr>
         </tbody>
