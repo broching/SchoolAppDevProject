@@ -553,11 +553,37 @@ def staff_delete():
 @staff_login_required
 def staff_account_management():
     delete_account_form = DeleteAccountForm()
-    account_list = get_customers("DB") + get_staff("DB")
+    customer_list = []
+    staff_list = []
+    account_list = get_customers('DB') + get_staff('DB')
+    for customer in get_customers('DB'):
+        if customer.get_status() == 'active':
+            customer_list.append(customer)
+    for staff in get_staff('DB'):
+        if staff.get_status() == 'active':
+            staff_list.append(staff)
+    new_account_list = customer_list + staff_list
+    account_count = len(new_account_list)
+    staff_count = len(staff_list)
+    customer_count = len(customer_list)
+    deactivated_count = (len(get_staff('DB')) + len(get_customers('DB'))) - account_count
     if request.method == "GET":
-        pass
+        customer_list = []
+        staff_list = []
+        for customer in get_customers('DB'):
+            if customer.get_status() == 'active':
+                customer_list.append(customer)
+        for staff in get_staff('DB'):
+            if staff.get_status() == 'active':
+                staff_list.append(staff)
+        new_account_list = customer_list + staff_list
+        account_count = len(new_account_list)
+        staff_count = len(staff_list)
+        customer_count = len(customer_list)
+        deactivated_count = len(account_list) - account_count
+
     return render_template('account/account_management.html', account_list=account_list,
-                           delete_account_form=delete_account_form)
+                           delete_account_form=delete_account_form, account_count=account_count, customer_count=customer_count, staff_count=staff_count, deactivated_count=deactivated_count)
 
 
 @account.route('/StaffAccountDelete/<user_id>', methods=['POST', 'GET'])
