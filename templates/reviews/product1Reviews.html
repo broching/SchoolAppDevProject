@@ -54,24 +54,24 @@
             </thead>
 
             <tbody>
-            {% for product_review in product_reviews_list|reverse %}
+            {% for product1_review in product1_reviews_list|reverse %}
             <tr>
                 <td>
-                    <p><b>User:</b> {{ product_review.get_user_name() }}</p>  <br>
-                    <p><b>Product: </b> {{ product_review.get_product_selection() }}</p>
-                    <p><b>Rating: </b> {{ product_review.get_product_rating() }} </p> <br>
-                    <p><b>Comment </b> {{ product_review.get_product_comment() }} </p> <br>
+                    <p><b>User:</b> {{ product1_review.get_user_name() }}</p>  <br>
+                    <p><b>Product: </b> {{ product1_review.get_product_selection() }}</p>
+                    <p><b>Rating: </b> {{ product1_review.get_product_rating() }} </p> <br>
+                    <p><b>Comment </b> {{ product1_review.get_product_comment() }} </p> <br>
                     <p><b>Image </b> <br>
                     <p style="width: 200px; height: 200px; padding: 5px"><img
-                            src="../../static/media/images/reviews/product_reviews/ {{ product_review.get_product_image() }}"
+                            src="../../static/media/images/reviews/product1_reviews/ {{ product1_review.get_product_image() }}"
                             style="height: 200px; width: 200px; border-radius: 5px;"></p>
-                    <p><b>Video </b> {{ product_review.get_product_video() }} </p> <br>
-                    <p><b>Unique ID </b> {{ product_review.get_product_id() }} </p> <br>
+                    <p><b>Video </b> {{ product1_review.get_product_video() }} </p> <br>
+                    <p><b>Unique ID </b> {{ product1_review.get_product_id() }} </p> <br>
 
 
                 </td>
                 <td>
-                    <form action="{{url_for('review.deleteProductReview', id=product_review.get_user_id(), pid=product_review.get_product_id())}}"
+                    <form action="{{url_for('review.deleteProductReview', id=product1_review.get_user_id(), pid=product1_review.get_product_id())}}"
                           method="POST">
                         <input type="submit" value="X" class="btn btn-danger">
                     </form>
