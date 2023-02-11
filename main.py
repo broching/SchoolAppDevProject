@@ -1,6 +1,6 @@
-import shelve
+
 from datetime import timedelta
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template
 
 from routes.services import service
 from routes.auth import auth
@@ -35,7 +35,15 @@ def home():
     return render_template('home/home.html')
 
 
-# ngrok live server testing for Stripe API
+@app.errorhandler(404)
+def page_not_found_404(e):
+    return render_template('error_pages/404.html'), 404
+
+
+@app.errorhandler(500)
+def page_not_found_500(e):
+    return render_template('error_pages/500.html'), 500
+
 
 if __name__ == "__main__":
     app.run(debug=True)

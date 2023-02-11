@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}
+500 ERROR
+{% endblock title %}
+
+{% block content %}
+<!-- Google font -->
+	<link href="https://fonts.googleapis.com/css?family=Kanit:200" rel="stylesheet">
+
+	<!-- Font Awesome Icon -->
+	<link type="text/css" rel="stylesheet" href="css/font-awesome.min.css" />
+
+	<!-- Custom stlylesheet -->
+	<link type="text/css" rel="stylesheet" href="../../static/css/error_pages/404.css" />
+
+	<div id="notfound">
+		<div class="notfound">
+			<div class="notfound-404">
+				<h1>500</h1>
+			</div>
+			<h2>Oops! Server error</h2>
+			<p>The server encountered an internal error or misconfiguration and was unable to process your request. <a href="{{url_for('home')}}">Return to homepage</a></p>
+		</div>
+	</div>
+
+{% endblock content %}
