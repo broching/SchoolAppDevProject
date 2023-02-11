@@ -5,7 +5,7 @@ from flask import Blueprint, render_template, request, session, flash, redirect,
 from models.account.account_forms import UpdateProfileForm, UpdateSecurityForm, DeleteAccountForm, ShippingAddressForm, \
     AddNewAccountForm
 from models.account.account_functions import save_image, delete_image
-from models.auth.auth_functions import customer_login_required, validate_staff_password, staff_login_required
+from models.auth.auth_functions import customer_login_required, validate_staff_password, staff_login_required, validate_birthday_
 from models.auth.auth_functions import get_customers, store_customer, delete_customer, account_to_dictionary_converter, \
     validate_customer_password, validate_number, validate_email, validate_username, is_valid_card_number, get_staff, \
     store_staff, \
@@ -58,7 +58,10 @@ def customer_profile():
                     else:
                         error_messages['number'] = "Invalid phone number"
                 if update_profile_form.birthday.data:
-                    customer.set_birthday(update_profile_form.birthday.data.strftime('%Y-%m-%d'))
+                    if validate_birthday_(update_profile_form.birthday.data):
+                        customer.set_birthday(update_profile_form.birthday.data.strftime('%Y-%m-%d'))
+                    else:
+                        error_messages['birthday'] = 'Invalid Birthday'
                 if update_profile_form.image.data:
                     delete_image(session['customer']['_Account__user_image'])
                     image_file_name = save_image(update_profile_form.image.data)
@@ -465,7 +468,10 @@ def staff_profile():
                     else:
                         error_messages['number'] = "Invalid phone number"
                 if update_profile_form.birthday.data:
-                    staff.set_birthday(update_profile_form.birthday.data.strftime('%Y-%m-%d'))
+                    if validate_birthday_(update_profile_form.birthday.data):
+                        staff.set_birthday(update_profile_form.birthday.data.strftime('%Y-%m-%d'))
+                    else:
+                        error_messages['birthday'] = 'Invalid Birthday'
                 if update_profile_form.image.data:
                     delete_image(session['staff']['_Account__user_image'])
                     image_file_name = save_image(update_profile_form.image.data)
