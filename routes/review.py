@@ -54,6 +54,28 @@ def createProductReview():
                         db['Product1_Reviews'] = product1_reviews_dict
                 # end of testing filter
 
+                # testing filter for product 2
+                elif product_review.get_product_selection() == 'Product 2':
+                    with shelve.open('DB/reviews/productReviews/Product2/productReview.db', 'c') as db:
+                        product2_reviews_dict = {}
+                        if 'Product2_Reviews' in db:
+                            product2_reviews_dict = db['Product2_Reviews']
+
+                        product2_reviews_dict[product_review.get_product_id()] = product_review
+                        db['Product2_Reviews'] = product2_reviews_dict
+                # end of testing filter
+
+                # testing filter for product 3
+                elif product_review.get_product_selection() == 'Product 3':
+                    with shelve.open('DB/reviews/productReviews/Product3/productReview.db', 'c') as db:
+                        product3_reviews_dict = {}
+                        if 'Product3_Reviews' in db:
+                            product3_reviews_dict = db['Product3_Reviews']
+
+                        product3_reviews_dict[product_review.get_product_id()] = product_review
+                        db['Product3_Reviews'] = product3_reviews_dict
+                # end of testing filter
+
         except IOError:
             print("Error in retrieving Product Reviews from Product_Reviews.db.")
         return redirect(url_for('review.productReviews'))
@@ -80,6 +102,7 @@ def productReviews():
     return render_template('reviews/productReviews.html', count=len(product_reviews_list),
                            product_reviews_list=product_reviews_list)
 
+
 @review.route('/product1Reviews')
 def product1_filter():
     product1_reviews_list = []
@@ -100,11 +123,52 @@ def product1_filter():
                            product1_reviews_list=product1_reviews_list)
 
 
+@review.route('/product2Reviews')
+def product2_filter():
+    product2_reviews_list = []
+    try:
+        product2_reviews_dict = {}
+        with shelve.open('DB/reviews/productReviews/Product2/productReview.db', 'c') as db:
+            if 'Product2_Reviews' in db:
+                product2_reviews_dict = db['Product2_Reviews']
+                for key in product2_reviews_dict:
+                    product2_review = product2_reviews_dict.get(key)
+                    product2_reviews_list.append(product2_review)
+    except IOError as ex:
+        print(f"Error in retrieving product2 reviews from product2_reviews.db - {ex}")
+    except Exception as ex:
+        print(f"Unknown error in retrieving product2 reviews from product2_reviews.db - {ex}")
+
+    return render_template('reviews/product2Reviews.html', count=len(product2_reviews_list),
+                           product2_reviews_list=product2_reviews_list)
+
+
+@review.route('/product3Reviews')
+def product3_filter():
+    product3_reviews_list = []
+    try:
+        product3_reviews_dict = {}
+        with shelve.open('DB/reviews/productReviews/Product3/productReview.db', 'c') as db:
+            if 'Product3_Reviews' in db:
+                product3_reviews_dict = db['Product3_Reviews']
+                for key in product3_reviews_dict:
+                    product3_review = product3_reviews_dict.get(key)
+                    product3_reviews_list.append(product3_review)
+    except IOError as ex:
+        print(f"Error in retrieving product3 reviews from product3_reviews.db - {ex}")
+    except Exception as ex:
+        print(f"Unknown error in retrieving product3 reviews from product3_reviews.db - {ex}")
+
+    return render_template('reviews/product3Reviews.html', count=len(product3_reviews_list),
+                           product3_reviews_list=product3_reviews_list)
+
+
 @review.route('/deleteProductReview/<int:id>/<int:pid>', methods=['POST'])
 @customer_login_required
 def deleteProductReview(id, pid):
     product_reviews_dict = {}
     try:
+        # delete for all reviews
         with shelve.open('DB/reviews/productReviews/productReview.db', 'w') as db:
             if 'Product_Reviews' in db:
                 product_reviews_dict = db['Product_Reviews']
@@ -114,15 +178,39 @@ def deleteProductReview(id, pid):
 
                 if delete_id == id:
                     product_reviews_dict.pop(pid)
+                    next_pid = pid
                     db['Product_Reviews'] = product_reviews_dict
 
-
-                    #for product1 filter
-                    with shelve.open('DB/reviews/productReviews/Product1/productReview.db','w') as db:
+                    # delete from product1 filter
+                    product1_reviews_dict = {}
+                    with shelve.open('DB/reviews/productReviews/Product1/productReview.db', 'w') as db:
                         if 'Product1_Reviews' in db:
                             product1_reviews_dict = db['Product1_Reviews']
-                            product1_reviews_dict.pop(pid)
+
+                        if next_pid in product1_reviews_dict:
+                            product1_reviews_dict.pop(next_pid)
                             db['Product1_Reviews'] = product1_reviews_dict
+
+                    # delete from product2 filter
+                    product2_reviews_dict = {}
+                    with shelve.open('DB/reviews/productReviews/Product2/productReview.db', 'w') as db:
+                        if 'Product2_Reviews' in db:
+                            product2_reviews_dict = db['Product2_Reviews']
+
+                        if next_pid in product2_reviews_dict:
+                            product2_reviews_dict.pop(next_pid)
+                            db['Product2_Reviews'] = product2_reviews_dict
+
+                    # delete from product3 filter
+                    product3_reviews_dict = {}
+                    with shelve.open('DB/reviews/productReviews/Product3/productReview.db', 'w') as db:
+                        if 'Product3_Reviews' in db:
+                            product3_reviews_dict = db['Product3_Reviews']
+
+                        if next_pid in product3_reviews_dict:
+                            product3_reviews_dict.pop(next_pid)
+                            db['Product3_Reviews'] = product3_reviews_dict
+
 
     except IOError as ex:
         print(f"Error in retrieving product reviews from productReviews.db - {ex}")
@@ -132,7 +220,6 @@ def deleteProductReview(id, pid):
 @review.route('/createServiceReview', methods=['GET', 'POST'])
 @customer_login_required
 def createServiceReview():
-
     create_service_review_form = CreateServiceReview(request.form)
     if request.method == 'POST' and create_service_review_form.validate():
         try:
