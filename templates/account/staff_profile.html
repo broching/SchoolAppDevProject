@@ -101,8 +101,14 @@ src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></scrip
                                     {{ update_profile_form.birthday.label(class="small mb-1") }}
                                     {% if not session['staff']['_Account__birthday'] %}
                                     {{ update_profile_form.birthday(class="form-control", value='mm-dd-yy')}}
+                                        {% if error_messages['birthday'] %}
+                                            <p class="text-danger mb-1 pb-lg-1">{{error_messages['birthday']}}</p>
+                                        {% endif %}
                                     {% else%}
                                     {{ update_profile_form.birthday(class="form-control", value=session['staff']['_Account__birthday'])}}
+                                        {% if error_messages['birthday'] %}
+                                            <p class="text-danger mb-1 pb-lg-1">{{error_messages['birthday']}}</p>
+                                        {% endif %}
                                     {% endif %}
                                     </div>
                                 </div>

@@ -3,10 +3,12 @@ from flask import redirect, url_for, session, flash
 from bcrypt import checkpw
 from models.account.account_classes import Customer, Staff
 from functools import wraps
+import datetime
 
 
 def customer_login_required(func):
     """Decorator that validates customer login"""
+
     @wraps(func)
     def wrapper_func(*args, **kwargs):
         if 'customer' not in session:
@@ -20,6 +22,7 @@ def customer_login_required(func):
 
 def staff_login_required(func):
     """Decorator that validates staff login"""
+
     @wraps(func)
     def wrapper_func(*args, **kwargs):
         if 'staff' not in session:
@@ -29,6 +32,7 @@ def staff_login_required(func):
             return func(*args, **kwargs)
 
     return wrapper_func
+
 
 def validate_username(username_to_validate, relative_path_to_db, exceptions=None):
     """Return True if username is not taken, False if username is taken"""
@@ -252,6 +256,7 @@ def staff_login_authentication(username_email, password, relative_path_to_db):
 
 
 def add_mass_customer(number_of_customer_to_add, id_to_start):
+    """Adds alot of customer"""
     for number in range(id_to_start, number_of_customer_to_add + id_to_start + 1):
         username = 'customer' + str(number)
         email = username + "@gmail.com"
@@ -261,9 +266,17 @@ def add_mass_customer(number_of_customer_to_add, id_to_start):
 
 
 def add_mass_staff(number_of_staff_to_add, id_to_start):
+    """Adds alot of staff"""
     for number in range(id_to_start, number_of_staff_to_add + id_to_start + 1):
         username = 'staff' + str(number)
         email = username + "@gmail.com"
         password = 'testtest'
         staff = Staff(username, email, password)
         store_staff(staff, "../../DB")
+
+
+def validate_birthday_(birthday_to_validate):
+    if birthday_to_validate > datetime.datetime.now().date():
+        return False
+    else:
+        return True
