@@ -10,7 +10,7 @@ class CreateProductReview(Form):
     product_selection = SelectField('Product', [validators.DataRequired()],
                                     choices=[('', 'Click to select your product'), ('Product 1', 'Product 1'),
                                              ('Product 2', 'Product 2'),
-                                             ('Product 3', 'Product 3'), ('Product 4', 'Product 4')], default='')
+                                             ('Product 3', 'Product 3')], default='')
 
     product_rating = RadioField('Product Rating', [validators.DataRequired()],
                                 choices=[('1', '1'), ('22', '2'),
