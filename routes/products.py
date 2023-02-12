@@ -20,6 +20,7 @@ load_dotenv('.env')
 stripe.api_key = os.environ['STRIPE_SECRET_KEY']
 
 
+# Show all products
 @productr.route('/products')
 def products():
     products_list = []
@@ -39,6 +40,7 @@ def products():
     return render_template('products/products.html', count=len(products_list), products_list=products_list)
 
 
+# Show specific product (Also page right before external Stripe payment page)
 @productr.route('/products/<int:id>/')
 def productsSpecific(id):
     products_list = []
@@ -59,6 +61,7 @@ def productsSpecific(id):
     return render_template('products/payment1.html', count=len(products_list), products_list=products_list, id=id)
 
 
+# Stripe external payment page
 @productr.route('/products/order/<int:id>/')
 @customer_login_required
 def productOrder(id):
@@ -108,6 +111,138 @@ def productOrder(id):
     return redirect(checkout_session.url)
 
 
+# Cart functions and pages
+# TODO: Add to cart (Add to database)
+
+# When customer press add to cart,
+# Open cart shelve (Cart shelve is tied to customer ID)
+# Mirror shelve to local dictionary
+# create cart object, the object is a convert_to_dictionary(product, for specific product ID)
+# Mirror dictionary to shelve
+# return redirect back to same page.
+# in the same page flash successful addition to cart
+@productr.route('/addtocart/<int:id>', methods=['POST'])
+@customer_login_required
+def addToCart(id):
+    try:
+        with shelve.open('DB/products/product.db', 'w') as pdb:
+            if 'Products' in pdb:
+                products_dict = pdb['Products']
+            product = products_dict.get(id)
+            product_dict_for_storing = account_to_dictionary_converter(product)
+            cust_list = get_customers('DB')
+            pdb['Products'] = products_dict
+
+            # Get customer id from current session
+            print(session['customer'])
+            target_id = session['customer']['_Account__user_id']
+            print(target_id)
+            for customer in cust_list:
+                if customer.get_user_id() == target_id:
+                    print('Customer found')
+                    print(customer)
+
+                    # Get cart list
+                    cust_cart = customer.get_cart()
+
+                    # Append product dictionary into customer cart list
+                    cust_cart.append(product_dict_for_storing)
+
+                    # Set new cart list to the updated one that has the product appended.
+                    customer.set_cart(cust_cart)
+                    print(customer.get_cart())
+                    store_customer(customer, 'DB')
+
+                    # Update session with new info
+                    customer_dict = account_to_dictionary_converter(customer)
+                    session['customer'] = customer_dict
+
+            # message = f"Added {product.get_product_name()} to <a href='/cart'>cart</a>."
+            # flash(message, category='success')
+            session['addItemToCart'] = product.get_product_name()
+
+            # cartCount = len(cust_cart)
+            # try:
+            #     with shelve.open('cartcount', 'c') as cdb:
+            #         cdb['Count'] = cartCount
+            #
+            # except IOError as ex:
+            #     print(f"Error at productr.addToCart while trying to open cartcount.db - {ex}")
+
+
+    except IOError as ex:
+        print(f"Error in opening product.db in add_to_cart - {ex}")
+    return redirect(url_for('productr.productsSpecific', id=id))
+
+
+# TODO: View cart (Take from database)
+@productr.route('/cart')
+@customer_login_required
+def viewCart():
+    cust_cart = []
+    # Get customer id from current session
+    cust_list = get_customers('DB')
+    print(session['customer'])
+    target_id = session['customer']['_Account__user_id']
+    print(target_id)
+    for customer in cust_list:
+        if customer.get_user_id() == target_id:
+            print('Customer found')
+            print(customer)
+
+            # Get cart list
+            cust_cart = customer.get_cart()
+            print(cust_cart)
+
+    # def removeitem(itemId):
+    #     cust_cart.pop(itemId)
+
+    return render_template('account/customer_cart.html', count=len(cust_cart), cust_cart=cust_cart)
+
+
+@productr.route('/cart/<int:id>', methods=['POST'])
+def deleteItemFromCart(id):
+    cust_list = get_customers('DB')
+
+    # Get customer id from current session
+    print(session['customer'])
+    target_id = session['customer']['_Account__user_id']
+    print(target_id)
+    for customer in cust_list:
+        if customer.get_user_id() == target_id:
+            print('Customer found')
+            print(customer)
+
+            # Get cart list
+            cust_cart = customer.get_cart()
+
+            # # Append product dictionary into customer cart list
+            # print(cust_cart)
+            # flash(f"Removed item {cust_cart[id]['_Product__productName']} from cart.", category='info')
+            # del cust_cart[id]
+            for item in cust_cart:
+                if item['_Product__id'] == id:
+                    session['deleteCartItem'] = item['_Product__productName']
+                    # flash(f"Removed item {item['_Product__productName']} from cart.", category='info')
+                    cust_cart.remove(item)
+                    break
+
+            # # Reset customer cart (USE FOR EMERGENCIES)
+            # cust_cart = []
+
+            # Set new cart list to the updated one that has the product appended.
+            customer.set_cart(cust_cart)
+            print(customer.get_cart())
+            store_customer(customer, 'DB')
+
+            # Update session with new info
+            customer_dict = account_to_dictionary_converter(customer)
+            session['customer'] = customer_dict
+
+    return redirect(url_for('productr.viewCart', id=id))
+
+
+# Payment success page TODO: Receipt
 @productr.route('/products/order/success')
 def success():
     # if request.method == 'GET':
@@ -149,11 +284,48 @@ def success():
                     customer_dict = account_to_dictionary_converter(customer)
                     session['customer'] = customer_dict
 
+            cust_list = get_customers('DB')
+            # Get customer id from current session
+            print(session['customer'])
+            target_id = session['customer']['_Account__user_id']
+            print(target_id)
+            for customer in cust_list:
+                if customer.get_user_id() == target_id:
+                    print('Customer found')
+                    print(customer)
+
+                    # Get cart list
+                    cust_cart = customer.get_cart()
+
+                    # # Append product dictionary into customer cart list
+                    # print(cust_cart)
+                    # flash(f"Removed item {cust_cart[id]['_Product__productName']} from cart.", category='info')
+                    # del cust_cart[id]
+                    for item in cust_cart:
+                        if item['_Product__id'] == id:
+                            flash(f"Removed item {item['_Product__productName']} from cart.", category='info')
+                            cust_cart.remove(item)
+                            break
+
+                    # # Reset customer cart (USE FOR EMERGENCIES)
+                    # cust_cart = []
+
+                    # Set new cart list to the updated one that has the product appended.
+                    customer.set_cart(cust_cart)
+                    print(customer.get_cart())
+                    store_customer(customer, 'DB')
+
+                    # Update session with new info
+                    customer_dict = account_to_dictionary_converter(customer)
+                    session['customer'] = customer_dict
+
     except IOError as ex:
         print(f"Error in new_event for billing history - {ex}")
+
     return render_template('products/success.html')
 
 
+# Cancel order page
 @productr.route('/products/order/cancel')
 def cancel():
     return render_template('products/cancel.html')
@@ -243,88 +415,93 @@ def new_event():
     return {'success': True}
 
 
-@productr.route('/products/<int:id>/paymentspecific', methods=['GET', 'POST'])
-def productpayment(id):
-    payment_form = PaymentForm()
-    if request.method == 'POST' and payment_form.submit2.data:
-
-        try:
-            products_dict = {}
-            with shelve.open('DB/products/product.db', 'w') as pdb:
-                if 'Products' in pdb:
-                    products_dict = pdb['Products']
-                if id in products_dict:
-                    product = products_dict.get(id)
-                    product_quantity_temp = product.get_product_quantity()
-                    product_quantity_temp -= 1
-                    print(product_quantity_temp)
-                    product.set_product_quantity(product_quantity_temp)
-                    print(product.get_product_quantity())
-                pdb['Products'] = products_dict
-
-                orders_dict = {}
-                with shelve.open('DB/products/order.db', 'c') as db:
-                    if 'Orders' in db:
-                        orders_dict = db['Orders']
-
-                    with shelve.open("DB/products/ordercount.db", writeback=True) as ocounter:
-                        if "coupon" not in ocounter:
-                            orderid = 1
-                        else:
-                            orderid = ocounter["coupon"]
-                        ocounter["coupon"] = orderid
-                        print(ocounter["coupon"])
-
-                        order = Order(orderid, product)
-                        orders_dict[order.get_id()] = order
-
-        except IOError as ex:
-            print(f"Error in trying to open product.db in payment page (Order and payment page) - {ex}")
-        return redirect(url_for('productr.orders'))
-
-    else:
-
-        products_list = []
-    try:
-        products_dict = {}
-        with shelve.open('DB/products/product.db', 'r') as db:
-            if 'Products' in db:
-                products_dict = db['Products']
-            for key in products_dict:
-                product = products_dict.get(key)
-                products_list.append(product)
-            print(products_list)
-    except IOError as ex:
-        print(f"Error in retrieving products from product.db for Product specific page - {ex}")
-    except Exception as ex:
-        print(f"Unknown error in retrieving products from product.db for Product specific page  - {ex}")
-
-    return render_template('products/payment2.html', count=len(products_list), products_list=products_list, id=id,
-                           form=payment_form)
-
-
-@productr.route('/orders')
-def orders():
-    orders_list = []
-    try:
-        orders_dict = {}
-        with shelve.open('DB/products/order.db', 'r') as db:
-            if 'Orders' in db:
-                orders_list = db['Orders']
-            for key in orders_list:
-                order = orders_dict.get(key)
-                orders_list.append(order)
-                print(order)
-
-    except IOError as ex:
-        print(f"Error in retrieving customers from customer.db - {ex}")
-    except Exception as ex:
-        print(f"Unknown error in retrieving customers from customer.db - {ex}")
-
-    return render_template('products/orders.html', count=len(orders_list), orders_list=orders_list)
+# Defunct payment page (OLD, NOT USED ANYMORE)
+# @productr.route('/products/<int:id>/paymentspecific', methods=['GET', 'POST'])
+# def productpayment(id):
+#     payment_form = PaymentForm()
+#     if request.method == 'POST' and payment_form.submit2.data:
+#
+#         try:
+#             products_dict = {}
+#             with shelve.open('DB/products/product.db', 'w') as pdb:
+#                 if 'Products' in pdb:
+#                     products_dict = pdb['Products']
+#                 if id in products_dict:
+#                     product = products_dict.get(id)
+#                     product_quantity_temp = product.get_product_quantity()
+#                     product_quantity_temp -= 1
+#                     print(product_quantity_temp)
+#                     product.set_product_quantity(product_quantity_temp)
+#                     print(product.get_product_quantity())
+#                 pdb['Products'] = products_dict
+#
+#                 orders_dict = {}
+#                 with shelve.open('DB/products/order.db', 'c') as db:
+#                     if 'Orders' in db:
+#                         orders_dict = db['Orders']
+#
+#                     with shelve.open("DB/products/ordercount.db", writeback=True) as ocounter:
+#                         if "coupon" not in ocounter:
+#                             orderid = 1
+#                         else:
+#                             orderid = ocounter["coupon"]
+#                         ocounter["coupon"] = orderid
+#                         print(ocounter["coupon"])
+#
+#                         order = Order(orderid, product)
+#                         orders_dict[order.get_id()] = order
+#
+#         except IOError as ex:
+#             print(f"Error in trying to open product.db in payment page (Order and payment page) - {ex}")
+#         return redirect(url_for('productr.orders'))
+#
+#     else:
+#
+#         products_list = []
+#     try:
+#         products_dict = {}
+#         with shelve.open('DB/products/product.db', 'r') as db:
+#             if 'Products' in db:
+#                 products_dict = db['Products']
+#             for key in products_dict:
+#                 product = products_dict.get(key)
+#                 products_list.append(product)
+#             print(products_list)
+#     except IOError as ex:
+#         print(f"Error in retrieving products from product.db for Product specific page - {ex}")
+#     except Exception as ex:
+#         print(f"Unknown error in retrieving products from product.db for Product specific page  - {ex}")
+#
+#     return render_template('products/payment2.html', count=len(products_list), products_list=products_list, id=id,
+#                            form=payment_form)
 
 
+# Defunct orders page (OLD, NOT USED ANYMORE)
+# @productr.route('/orders')
+# def orders():
+#     orders_list = []
+#     try:
+#         orders_dict = {}
+#         with shelve.open('DB/products/order.db', 'r') as db:
+#             if 'Orders' in db:
+#                 orders_list = db['Orders']
+#             for key in orders_list:
+#                 order = orders_dict.get(key)
+#                 orders_list.append(order)
+#                 print(order)
+#
+#     except IOError as ex:
+#         print(f"Error in retrieving customers from customer.db - {ex}")
+#     except Exception as ex:
+#         print(f"Unknown error in retrieving customers from customer.db - {ex}")
+#
+#     return render_template('products/orders.html', count=len(orders_list), orders_list=orders_list)
+
+
+# Staff pages
+# View created products inventory page
 @productr.route('/inventory', methods=['GET', 'POST'])
+@staff_login_required
 def inventory():
     products_list = []
     try:
@@ -400,6 +577,7 @@ def inventory():
 #         return render_template('products/createProduct.html', form=create_product_form, prdid=cid)
 
 @productr.route('/createProduct', methods=['GET', 'POST'])
+@staff_login_required
 def createProduct():
     cid = 0
     create_product_form = CreateNewProduct()
@@ -462,6 +640,7 @@ def createProduct():
 
 
 @productr.route('/updateProduct/<int:id>/', methods=['GET', 'POST'])
+@staff_login_required
 def updateProduct(id):
     update_product_form = UpdateNewProduct()
     if request.method == 'POST' and update_product_form.submit1.data:
@@ -528,6 +707,7 @@ def updateProduct(id):
 
 
 @productr.route('/deleteProduct/<int:id>', methods=['POST'])
+@staff_login_required
 def deleteProduct(id):
     products_dict = {}
     try:

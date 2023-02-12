@@ -26,12 +26,12 @@
         <div class="row">
             <div class="col-md service-filters">
                 <button type="button" class="btn btn-outline-dark"><a href="/serviceReviews">All</a></button>
-                <button type="button" class="btn btn-outline-dark"><a href="/service1Reviews">Hair Cut / Hair Wash</a></button>
+                <button type="button" class="btn btn-outline-dark"><a href="/service1Reviews">Hair Cut / Hair Wash</a>
+                </button>
                 <button type="button" class="btn btn-outline-dark"><a href="/service2Reviews">Hair Styling</a></button>
                 <button type="button" class="btn btn-outline-dark"><a href="/service3Reviews">Hair Dye</a></button>
             </div>
-
-             <div class="col-md stylist-selection">
+            <div class="col-md stylist-selection">
                 <div class="dropdown">
                     <button class="btn btn-outline-dark dropdown-toggle" type="button" id="dropdownMenuButton"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -44,7 +44,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="col-md create-service-review-button">
                 <button type="button" class="btn btn-outline-dark"><a href="/createServiceReview">Create A Review</a>
                 </button>
@@ -65,28 +64,28 @@
             </thead>
 
             <tbody>
-            {% for service2_review in service2_reviews_list|reverse %}
+            {% for stylist1_review in stylist1_reviews_list|reverse %}
             <tr>
                 <td>
-                    <p><b>User: </b>{{ service2_review.get_user_name() }}</p> <br>
-                    <p><b>Service Selected: </b>{{ service2_review.get_service_selection() }}</p> <br>
-                    <p><b>Your Stylist: </b>{{ service2_review.get_stylist_selection() }}</p> <br>
-                    <p><b>Rating: </b> {{ service2_review.get_service_rating() }} </p> <br>
+                    <p><b>User: </b>{{ stylist1_review.get_user_name() }}</p> <br>
+                    <p><b>Service Selected: </b>{{ stylist1_review.get_service_selection() }}</p> <br>
+                    <p><b>Your Stylist: </b>{{ stylist1_review.get_stylist_selection() }}</p> <br>
+                    <p><b>Rating: </b> {{ stylist1_review.get_service_rating() }} </p> <br>
                     <p><b>Image </b> <br>
 
-                        {{ service2_review.get_service_image() }}
+                        {{ stylist1_review.get_service_image() }}
 
                     <p style="width: 100px; height: 100px; padding: 5px"><img
-                            src="../../static/media/images/reviews/service_reviews/{{ service2_review.get_service_image() }}"
+                            src="../../static/media/images/reviews/service_reviews/{{ stylist1_review.get_service_image() }}"
                             style="height: 90px; width: 90px; border-radius: 5px;"></p>
-                    <p><b>Video </b> {{ service2_review.get_service_video() }} </p> <br>
-                    <p><b>Comment </b> {{ service2_review.get_service_comment() }} </p> <br>
-                    <p><b>Unique ID </b> {{ service2_review.get_service_id() }} </p> <br>
+                    <p><b>Video </b> {{ stylist1_review.get_service_video() }} </p> <br>
+                    <p><b>Comment </b> {{ stylist1_review.get_service_comment() }} </p> <br>
+                    <p><b>Unique ID </b> {{ stylist1_review.get_service_id() }} </p> <br>
 
 
                 </td>
                 <td>
-                    <form action="{{url_for('review.deleteServiceReview', id=service2_review.get_user_id(), pid=service2_review.get_service_id())}}"
+                    <form action="{{url_for('review.deleteServiceReview', id=stylist1_review.get_user_id(), pid=stylist1_review.get_service_id())}}"
                           method="POST">
                         <input type="submit" value="X" class="btn btn-danger">
                     </form>

@@ -2,7 +2,16 @@
 {% block title %}Products{% endblock %}
 
 {% block content %}
+
+{% if 'addItemToCart' in session %}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>Info</strong> {{ session.pop('addItemToCart', None) }} added to&nbsp;&nbsp;&nbsp;<a href="/cart" class="btn btn-outline-dark">cart</a>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+
 <h1 class="display-4 uptitel">Products</h1>
+
 {% endblock %}
 
 {% block content2 %}
@@ -50,7 +59,7 @@
 <!--            </form>-->
 
         <!--        add to cart-->
-            <form action="" method="POST">
+            <form action="{{url_for('productr.addToCart', id=product.get_product_id())}}" method="POST">
                 <input type="submit" value="Add to cart" class="btn btn-primary btnpbtnse">
             </form>
 

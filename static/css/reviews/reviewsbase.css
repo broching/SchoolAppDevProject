@@ -39,10 +39,27 @@ button > a:hover {
     margin-top: 30px;
 }
 
-.col-2 > button {
+.create-product-review-button > button {
     margin-left:450px;
 }
 
 .product_reviews {
     margin-left:10px;
+}
+
+.service_reviews {
+    margin-left:10px;
+
+}
+
+.service-filters > button {
+    margin-bottom: 10px;
+}
+
+.create-service-review-button > button {
+    margin-left:200px;
+}
+
+.stylist-selection {
+    margin-left: 150px;
 }

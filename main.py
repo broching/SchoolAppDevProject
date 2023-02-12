@@ -63,9 +63,7 @@ def send_reset_email(user_id, email):
     msg.sender = 'onesalonsg05@gmail.com'
     msg.body = f"""
 To Reset Your Password, Vist the Following Link:
-
 {url_for('reset_password', token=token, _external=True)}
-
 If you did not send a reset password request, simply ignore this email and have a nice day!
 """
     mail.send(msg)
