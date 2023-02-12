@@ -14,15 +14,7 @@
     </div
     <table class="table table-striped">
         <thead>
-        <tr>
-            <th>first namne</th>
-            <th>last name</th>
-            <th>gender</th>
-            <th>Appointment Date</th>
-            <th>Appointment Time</th>
-            <th></th>
-            <th></th>
-        </tr>
+
         </thead>
         <tbody>
         {% for service in appt_list %}
@@ -41,17 +33,17 @@
         </tr>
         {% endfor %}
         <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>Fellow</td>
-            <td></td>
-            <td><a href="#" class="btn btn-warning">Update</a></td>
+            <td>First Name</td>
+            <td>Last Name</td>
+            <td>Gender</td>
+            <td>Appointment Date</td>
+            <td>Appointment Time</td>
             <td>
-
-
+                <form action="" method="GET">
+                     <input type="submit" value="Delete" class="btn btn-danger">
+                </form>
             </td>
+
         </tr>
         </tbody>
     </table>

@@ -121,19 +121,19 @@ def book_appointment():
         return render_template('/Services/addNewServiceform.html', form=Apointment_booking_form)
 
 
-# @service.route('/Services/addNewServiceform', methods=['POST', 'GET'])  # Datepicker(appointmentbooking)
-# def index():
-#     form = AddNewService()
-#     if form.validate_on_submit():
-#         session['apointment_date'] = form.apointment_date.data
-#         return redirect('/Services/retrieveAppointment.html')
-#     return render_template('/Services/addNewServiceform.html', form=form)
+@service.route('/Services/addNewServiceform', methods=['POST', 'GET'])  # Datepicker(appointmentbooking)
+def index():
+    form = AddNewService()
+    if form.validate_on_submit():
+        session['apointment_date'] = form.apointment_date.data
+        return redirect('/Services/retrieveAppointment.html')
+    return render_template('/Services/addNewServiceform.html', form=form)
 
 
-@service.route('/date', methods=['GET', 'POST'])
-def date():
-    appointment_date = session['appointment_date']
-    return render_template('date.html')
+# @service.route('/date', methods=['GET', 'POST'])
+# def date():
+#     appointment_date = session['appointment_date']
+#     return render_template('date.html')
 
 
 @service.route("/Services/retrieveAppointment")
