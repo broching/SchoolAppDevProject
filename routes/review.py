@@ -473,8 +473,40 @@ def deleteServiceReview(id, pid):
                 delete_id = session['customer']['_Account__user_id']
 
                 if delete_id == id:
-                    service_reviews_dict.pop(pid)  # Step 1: Updates are handled using dictionaries first.
+                    service_reviews_dict.pop(pid)
+                    next_pid = pid
                     db['Service_Reviews'] = service_reviews_dict
+
+                    # delete from service1 filter
+                    service1_reviews_dict = {}
+                    with shelve.open('DB/reviews/serviceReviews/Service1/serviceReview.db', 'w') as db:
+                        if 'Service1_Reviews' in db:
+                            service1_reviews_dict = db['Service1_Reviews']
+
+                        if next_pid in service1_reviews_dict:
+                            service1_reviews_dict.pop(next_pid)
+                            db['Service1_Reviews'] = service1_reviews_dict
+
+                    # delete from service2 filter
+                    service2_reviews_dict = {}
+                    with shelve.open('DB/reviews/serviceReviews/Service2/serviceReview.db', 'w') as db:
+                        if 'Service2_Reviews' in db:
+                            service2_reviews_dict = db['Service2_Reviews']
+
+                        if next_pid in service2_reviews_dict:
+                            service2_reviews_dict.pop(next_pid)
+                            db['Service2_Reviews'] = service2_reviews_dict
+
+                    # delete from service3 filter
+                    service3_reviews_dict = {}
+                    with shelve.open('DB/reviews/serviceReviews/Service3/serviceReview.db', 'w') as db:
+                        if 'Service3_Reviews' in db:
+                            service3_reviews_dict = db['Service3_Reviews']
+
+                        if next_pid in service3_reviews_dict:
+                            service3_reviews_dict.pop(next_pid)
+                            db['Service3_Reviews'] = service3_reviews_dict
+
 
     except IOError as ex:
         print(f"Error in retrieving service reviews from serviceReviews.db - {ex}")
