@@ -21,6 +21,22 @@
 {% include 'includes/_mainnavbar.html' %}
 {% endblock %}
 
+{% with messages = get_flashed_messages(with_categories=True) %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{category}} alert-dismissible fade show =" role="alert">
+        {% if category == "danger" %}
+        <strong>Warning!</strong>
+        {% elif category == "success" %}
+        <strong>Success!</strong>
+        {% elif category == "info" %}
+        <strong>Info</strong>
+        {% endif %}
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+{% endwith %}
+
 <div class="container-fluid">
     {% block content %}
     {% endblock %}
