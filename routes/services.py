@@ -96,7 +96,7 @@ def appointment():
 @service.route('/addNewServiceform', methods=['POST','GET'])
 def book_appointment():
     Apointment_booking_form = AddNewService(request.form)
-    if request.method == 'POST' and Apointment_booking_form.validate():
+    if request.method == 'GET' and Apointment_booking_form.validate():
         try:
             with shelve.open('service_1.db', 'c') as db:
 
