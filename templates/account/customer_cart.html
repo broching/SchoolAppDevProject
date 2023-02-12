@@ -117,6 +117,19 @@
                 </td>
             </tr>
             {% endfor %}
+
+            {% if count > 0 %}
+            <tr>
+                <td colspan="9">
+                    <div>
+                        <!--        submit-->
+                        <a href="{{url_for('productr.productOrderCart', id=cart_id)}}"
+                           class="btn btn-primary">Purchase All</a>
+                    </div>
+                </td>
+            </tr>
+            {% endif %}
+
             </tbody>
 
         </table>
