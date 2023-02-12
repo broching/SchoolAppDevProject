@@ -1,7 +1,7 @@
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark p-3" style="background-color: #000000;">
+<nav class="navbar navbar-expand-lg navbar-dark p-3" style="background-color: #000000; z-index: 100000; margin-bottom:0;">
       <div class="container-fluid">
-        <a class="navbar-brand" href=" {{ url_for('home') }} ">Salon LOGO</a>
+        <a class="navbar-brand" href=" {{ url_for('home') }} "><img style="border-radius:50%; width:70px; height:70px;" src="../../static/media/images/home/salon_logo.jpg" alt=""></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -15,7 +15,7 @@
               <a class="nav-link mx-2" href="/products">Shop</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link mx-2" href="#">Services</a>
+              <a class="nav-link mx-2" href="/services">Services</a>
             </li>
             <li class="nav-item">
               <a class="nav-link mx-2" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -34,18 +34,11 @@
           </ul>
           <ul class="navbar-nav ms-auto justify-content-end">
 
-            {% if 'customer' in session %}
-            <li class="nav-item">
-              <a class="nav-link mx-2" href="#">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart2" viewBox="0 0 16 16" style="color: white">
-                  <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5zM3.14 5l1.25 5h8.22l1.25-5H3.14zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0zm9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0z"/>
-                </svg>
-              </a>
-            </li>
-            <li class="nav-item dropdown" style="margin-right: 20px">
+            {% if 'staff' in session %}
+            <li class="nav-item dropdown mr-5">
               <a class="nav-link mx-2 dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                {% if session['customer']['_Account__user_image'] %}
-                <img src="../static/media/images/account/{{session['customer']['_Account__user_image']}}" alt="" width="30px" height="30px" class="account-img rounded-circle">
+                {% if session['staff']['_Account__user_image'] %}
+                <img src="../static/media/images/account/{{session['staff']['_Account__user_image']}}" alt="" width="30px" height="30px" class="account-img rounded-circle">
                 {% else %}
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16" style="color: white">
                   <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
@@ -54,14 +47,11 @@
                 {% endif %}
               </a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" style="min-width: 10px;">
-                <li><a class="dropdown-item" href=" {{url_for('account.customer_dashboard')}} ">Dashboard </a></li>
-                <li><a class="dropdown-item" href=" {{url_for('account.customer_profile')}} ">Profile</a></li>
+                <li><a class="dropdown-item" href=" {{url_for('account.staff_dashboard')}} ">Dashboard </a></li>
                 <li><hr class="dropdown-divider" /></li>
                 <li><a class="dropdown-item" href="{{ url_for('auth.logout') }} ">Logout</a></li>
               </ul>
             </li>
-            {% elif 'staff' in session %}
-
             {% else %}
             <li class="nav-item">
               <a class="nav-link mx-2" href="{{ url_for('auth.customer_register') }}"> Register </a>

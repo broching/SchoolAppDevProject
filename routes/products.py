@@ -490,6 +490,7 @@ def updateProduct(id):
 
                     db['Products'] = products_dict
 
+                    # session['product_updated'] = product.get_product_name()
                     flash(f"Product {product.get_product_name()} has been updated.", category="success")
 
         except IOError as ex:
