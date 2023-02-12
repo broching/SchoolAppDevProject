@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request
-from models.auth.auth_forms import LoginForm, RegisterForm
+from models.auth.auth_forms import LoginForm, RegisterForm, GetEmailForm
 from models.auth.auth_functions import *
 from models.account.account_classes import Customer
 
@@ -25,24 +25,6 @@ def customer_register():
             flash("You have successfully created a new account", category='success')
             return redirect(url_for('home'))
     return render_template('auth/register.html', form=register_form, error_messages=error_messages)
-
-
-@auth.route('/CustomerLogin', methods=["POST", "GET"])
-def customer_login():
-    login_form = LoginForm()
-    if request.method == "POST":
-        customer_dict = customer_login_authentication(login_form.username.data, login_form.password.data, 'DB')
-        if customer_dict != {}:
-            if login_form.remember.data:
-                session.permanent = True
-            else:
-                session.permanent = False
-            session['customer'] = customer_dict
-            flash(f"Account {login_form.username.data} successfully logged in!", category="success")
-            return redirect(url_for('account.customer_dashboard'))
-        else:
-            flash("Login failed! Please check your username or password again", category='danger')
-    return render_template('auth/customer_login.html', form=login_form)
 
 
 @auth.route('/StaffLogin', methods=["POST", "GET"])

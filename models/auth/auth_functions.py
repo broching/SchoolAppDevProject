@@ -6,7 +6,6 @@ from functools import wraps
 import datetime
 from time import sleep
 
-
 def log_out():
     """Deletes session for customer and staff without flashing info message"""
     session.pop('customer', None)

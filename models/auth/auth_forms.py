@@ -29,3 +29,18 @@ class UpdateCustomerForm(FlaskForm):
     password2 = PasswordField('Confirm Password',
                               validators=[DataRequired(message="Please do not leave this field empty"),
                                           EqualTo("password1", message="Passwords do not match")])
+
+
+class GetEmailForm(FlaskForm):
+    email = EmailField(validators=[Email(), DataRequired()])
+    submit5 = SubmitField()
+
+
+class NewPasswordForm(FlaskForm):
+    password1 = PasswordField('Password', validators=[Length(min=5, max=15),
+                                                      DataRequired(message="Please do not leave this field empty")])
+    password2 = PasswordField('Confirm Password',
+                              validators=[DataRequired(message="Please do not leave this field empty"),
+                                          EqualTo("password1", message="Passwords do not match")])
+
+    submit = SubmitField()
