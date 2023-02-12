@@ -60,7 +60,7 @@
                 </svg>
               </a>
             </li>
-            <li class="nav-item dropdown" style="margin-right: 20px">
+            <li class="nav-item dropdown" style="margin-right: 45px">
               <a class="nav-link mx-2 dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 {% if session['customer']['_Account__user_image'] %}
                 <img src="../static/media/images/account/{{session['customer']['_Account__user_image']}}" alt="" width="30px" height="30px" class="account-img rounded-circle">
@@ -80,7 +80,7 @@
             </li>
 
           {% elif 'staff' in session %}
-            <li class="nav-item dropdown" style="margin-right: 35px">
+            <li class="nav-item dropdown" style="margin-right: 45px">
               <a class="nav-link mx-2 dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 {% if session['staff']['_Account__user_image'] %}
                 <img src="../static/media/images/account/{{session['staff']['_Account__user_image']}}" alt="" width="30px" height="30px" class="account-img rounded-circle">

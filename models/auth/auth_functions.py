@@ -4,6 +4,7 @@ from bcrypt import checkpw
 from models.account.account_classes import Customer, Staff
 from functools import wraps
 import datetime
+from time import sleep
 
 
 def log_out():
@@ -14,6 +15,7 @@ def log_out():
 
 def customer_login_required(func):
     """Decorator that validates customer login"""
+
     @wraps(func)
     def wrapper_func(*args, **kwargs):
         if 'customer' not in session:
@@ -28,6 +30,7 @@ def customer_login_required(func):
 
 def staff_login_required(func):
     """Decorator that validates staff login"""
+
     @wraps(func)
     def wrapper_func(*args, **kwargs):
         if 'staff' not in session:
@@ -263,26 +266,30 @@ def staff_login_authentication(username_email, password, relative_path_to_db):
 
 def add_mass_customer(number_of_customer_to_add, id_to_start):
     """Adds alot of customer"""
-    for number in range(id_to_start, number_of_customer_to_add + id_to_start + 1):
+    for number in range(id_to_start, number_of_customer_to_add + id_to_start):
         username = 'customer' + str(number)
         email = username + "@gmail.com"
         password = 'testtest'
+        sleep(1)
         customer = Customer(username, email, password)
         store_customer(customer, "../../DB")
 
 
 def add_mass_staff(number_of_staff_to_add, id_to_start):
     """Adds alot of staff"""
-    for number in range(id_to_start, number_of_staff_to_add + id_to_start + 1):
+    for number in range(id_to_start, number_of_staff_to_add + id_to_start):
         username = 'staff' + str(number)
         email = username + "@gmail.com"
         password = 'testtest'
+        sleep(1)
         staff = Staff(username, email, password)
         store_staff(staff, "../../DB")
 
 
 def validate_birthday_(birthday_to_validate):
+    """Returns T or F if birthday is validated"""
     if birthday_to_validate > datetime.datetime.now().date():
         return False
     else:
         return True
+
