@@ -50,28 +50,28 @@
             </thead>
 
             <tbody>
-            {% for service_review in service_reviews_list|reverse %}
+            {% for service3_review in service3_reviews_list|reverse %}
             <tr>
                 <td>
-                    <p><b>User: </b>{{ service_review.get_user_name() }}</p> <br>
-                    <p><b>Service Selected: </b>{{ service_review.get_service_selection() }}</p> <br>
-                    <p><b>Your Stylist: </b>{{ service_review.get_stylist_selection() }}</p> <br>
-                    <p><b>Rating: </b> {{ service_review.get_service_rating() }} </p> <br>
+                    <p><b>User: </b>{{ service3_review.get_user_name() }}</p> <br>
+                    <p><b>Service Selected: </b>{{ service3_review.get_service_selection() }}</p> <br>
+                    <p><b>Your Stylist: </b>{{ service3_review.get_stylist_selection() }}</p> <br>
+                    <p><b>Rating: </b> {{ service3_review.get_service_rating() }} </p> <br>
                     <p><b>Image </b> <br>
 
-                        {{ service_review.get_service_image() }}
+                        {{ service3_review.get_service_image() }}
 
                     <p style="width: 100px; height: 100px; padding: 5px"><img
-                            src="../../static/media/images/reviews/service_reviews/{{ service_review.get_service_image() }}"
+                            src="../../static/media/images/reviews/service_reviews/{{ service3_review.get_service_image() }}"
                             style="height: 90px; width: 90px; border-radius: 5px;"></p>
-                    <p><b>Video </b> {{ service_review.get_service_video() }} </p> <br>
-                    <p><b>Comment </b> {{ service_review.get_service_comment() }} </p> <br>
-                    <p><b>Unique ID </b> {{ service_review.get_service_id() }} </p> <br>
+                    <p><b>Video </b> {{ service3_review.get_service_video() }} </p> <br>
+                    <p><b>Comment </b> {{ service3_review.get_service_comment() }} </p> <br>
+                    <p><b>Unique ID </b> {{ service3_review.get_service_id() }} </p> <br>
 
 
                 </td>
                 <td>
-                    <form action="{{url_for('review.deleteServiceReview', id=service_review.get_user_id(), pid=service_review.get_service_id())}}"
+                    <form action="{{url_for('review.deleteServiceReview', id=service3_review.get_user_id(), pid=service3_review.get_service_id())}}"
                           method="POST">
                         <input type="submit" value="X" class="btn btn-danger">
                     </form>

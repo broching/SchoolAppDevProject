@@ -247,6 +247,40 @@ def createServiceReview():
 
                 service_reviews_dict[service_review.get_service_id()] = service_review
                 db['Service_Reviews'] = service_reviews_dict
+
+                # filter db for Haircut/Hairwash
+                if service_review.get_service_selection() == 'Hair Cut / Hair Wash':
+                    with shelve.open('DB/reviews/serviceReviews/Service1/serviceReview.db', 'c') as db:
+                        service1_reviews_dict = {}
+                        if 'Service1_Reviews' in db:
+                            service1_reviews_dict = db['Service1_Reviews']
+
+                        service1_reviews_dict[service_review.get_service_id()] = service_review
+                        db['Service1_Reviews'] = service1_reviews_dict
+                # end of filter
+
+                # filter db for Hair Styling
+                if service_review.get_service_selection() == 'Hair Styling':
+                    with shelve.open('DB/reviews/serviceReviews/Service2/serviceReview.db', 'c') as db:
+                        service2_reviews_dict = {}
+                        if 'Service2_Reviews' in db:
+                            service2_reviews_dict = db['Service2_Reviews']
+
+                        service2_reviews_dict[service_review.get_service_id()] = service_review
+                        db['Service2_Reviews'] = service2_reviews_dict
+                # end of filter
+
+                # filter db for Hair Dye
+                if service_review.get_service_selection() == 'Hair Dye':
+                    with shelve.open('DB/reviews/serviceReviews/Service3/serviceReview.db', 'c') as db:
+                        service3_reviews_dict = {}
+                        if 'Service3_Reviews' in db:
+                            service3_reviews_dict = db['Service3_Reviews']
+
+                        service3_reviews_dict[service_review.get_service_id()] = service_review
+                        db['Service3_Reviews'] = service3_reviews_dict
+                # end of filter
+
         except IOError:
             print("Error in retrieving Service Reviews from Service_Reviews.db.")
         return redirect(url_for('review.serviceReviews'))
@@ -272,6 +306,64 @@ def serviceReviews():
 
     return render_template('reviews/serviceReviews.html', count=len(service_reviews_list),
                            service_reviews_list=service_reviews_list)
+
+@review.route('/service1Reviews')
+def service1_filter():
+    service1_reviews_list = []
+    try:
+        service1_reviews_dict = {}
+        with shelve.open('DB/reviews/serviceReviews/Service1/serviceReview.db', 'c') as db:
+            if 'Service1_Reviews' in db:
+                service1_reviews_dict = db['Service1_Reviews']
+                for key in service1_reviews_dict:
+                    service1_review = service1_reviews_dict.get(key)
+                    service1_reviews_list.append(service1_review)
+    except IOError as ex:
+        print(f"Error in retrieving service1 reviews from service1_reviews.db - {ex}")
+    except Exception as ex:
+        print(f"Unknown error in retrieving service1 reviews from service1_reviews.db - {ex}")
+
+    return render_template('reviews/service1Reviews.html', count=len(service1_reviews_list),
+                           service1_reviews_list=service1_reviews_list)
+
+@review.route('/service2Reviews')
+def service2_filter():
+    service2_reviews_list = []
+    try:
+        service2_reviews_dict = {}
+        with shelve.open('DB/reviews/serviceReviews/Service2/serviceReview.db', 'c') as db:
+            if 'Service2_Reviews' in db:
+                service2_reviews_dict = db['Service2_Reviews']
+                for key in service2_reviews_dict:
+                    service2_review = service2_reviews_dict.get(key)
+                    service2_reviews_list.append(service2_review)
+    except IOError as ex:
+        print(f"Error in retrieving service2 reviews from service2_reviews.db - {ex}")
+    except Exception as ex:
+        print(f"Unknown error in retrieving service2 reviews from service2_reviews.db - {ex}")
+
+    return render_template('reviews/service2Reviews.html', count=len(service2_reviews_list),
+                           service2_reviews_list=service2_reviews_list)
+
+@review.route('/service3Reviews')
+def service3_filter():
+    service3_reviews_list = []
+    try:
+        service3_reviews_dict = {}
+        with shelve.open('DB/reviews/serviceReviews/Service3/serviceReview.db', 'c') as db:
+            if 'Service3_Reviews' in db:
+                service3_reviews_dict = db['Service3_Reviews']
+                for key in service3_reviews_dict:
+                    service3_review = service3_reviews_dict.get(key)
+                    service3_reviews_list.append(service3_review)
+    except IOError as ex:
+        print(f"Error in retrieving service3 reviews from service3_reviews.db - {ex}")
+    except Exception as ex:
+        print(f"Unknown error in retrieving service3 reviews from service3_reviews.db - {ex}")
+
+    return render_template('reviews/service3Reviews.html', count=len(service3_reviews_list),
+                           service3_reviews_list=service3_reviews_list)
+
 
 
 @review.route('/deleteServiceReview/<int:id>/<int:pid>', methods=['POST'])
