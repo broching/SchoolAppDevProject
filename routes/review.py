@@ -507,6 +507,36 @@ def deleteServiceReview(id, pid):
                             service3_reviews_dict.pop(next_pid)
                             db['Service3_Reviews'] = service3_reviews_dict
 
+                    # delete from stylist1 filter
+                    stylist1_reviews_dict = {}
+                    with shelve.open('DB/reviews/serviceReviews/Stylist1/serviceReview.db', 'w') as db:
+                        if 'Stylist1_Reviews' in db:
+                            stylist1_reviews_dict = db['Stylist1_Reviews']
+
+                        if next_pid in stylist1_reviews_dict:
+                            stylist1_reviews_dict.pop(next_pid)
+                            db['Stylist1_Reviews'] = stylist1_reviews_dict
+
+                    # delete from stylist2 filter
+                    stylist2_reviews_dict = {}
+                    with shelve.open('DB/reviews/serviceReviews/Stylist2/serviceReview.db', 'w') as db:
+                        if 'Stylist2_Reviews' in db:
+                            stylist2_reviews_dict = db['Stylist2_Reviews']
+
+                        if next_pid in stylist2_reviews_dict:
+                            stylist2_reviews_dict.pop(next_pid)
+                            db['Stylist2_Reviews'] = stylist2_reviews_dict
+
+                    # delete from stylist3 filter
+                    stylist3_reviews_dict = {}
+                    with shelve.open('DB/reviews/serviceReviews/Stylist3/serviceReview.db', 'w') as db:
+                        if 'Stylist3_Reviews' in db:
+                            stylist3_reviews_dict = db['Stylist3_Reviews']
+
+                        if next_pid in stylist3_reviews_dict:
+                            stylist3_reviews_dict.pop(next_pid)
+                            db['Stylist3_Reviews'] = stylist3_reviews_dict
+
 
     except IOError as ex:
         print(f"Error in retrieving service reviews from serviceReviews.db - {ex}")
