@@ -281,6 +281,40 @@ def createServiceReview():
                         db['Service3_Reviews'] = service3_reviews_dict
                 # end of filter
 
+                # filter db for Stylist 1 - not tested
+                if service_review.get_stylist_selection() == 'Hairstylist 1':
+                    with shelve.open('DB/reviews/serviceReviews/Stylist1/serviceReview.db', 'c') as db:
+                        stylist1_reviews_dict = {}
+                        if 'Stylist1_Reviews' in db:
+                            stylist1_reviews_dict = db['Stylist1_Reviews']
+
+                        stylist1_reviews_dict[service_review.get_service_id()] = service_review
+                        db['Stylist1_Reviews'] = stylist1_reviews_dict
+                # end of filter
+
+                # filter db for Stylist 2 - not tested
+                if service_review.get_stylist_selection() == 'Hairstylist 2':
+                    with shelve.open('DB/reviews/serviceReviews/Stylist2/serviceReview.db', 'c') as db:
+                        stylist2_reviews_dict = {}
+                        if 'Stylist2_Reviews' in db:
+                            stylist2_reviews_dict = db['Stylist2_Reviews']
+
+                        stylist2_reviews_dict[service_review.get_service_id()] = service_review
+                        db['Stylist2_Reviews'] = stylist2_reviews_dict
+                # end of filter
+
+                # filter db for Stylist 3 - not tested
+                if service_review.get_stylist_selection() == 'Hairstylist 3':
+                    with shelve.open('DB/reviews/serviceReviews/Stylist3/serviceReview.db', 'c') as db:
+                        stylist3_reviews_dict = {}
+                        if 'Stylist3_Reviews' in db:
+                            stylist3_reviews_dict = db['Stylist3_Reviews']
+
+                        stylist3_reviews_dict[service_review.get_service_id()] = service_review
+                        db['Stylist3_Reviews'] = stylist3_reviews_dict
+                # end of filter
+
+
         except IOError:
             print("Error in retrieving Service Reviews from Service_Reviews.db.")
         return redirect(url_for('review.serviceReviews'))
@@ -307,6 +341,7 @@ def serviceReviews():
     return render_template('reviews/serviceReviews.html', count=len(service_reviews_list),
                            service_reviews_list=service_reviews_list)
 
+
 @review.route('/service1Reviews')
 def service1_filter():
     service1_reviews_list = []
@@ -325,6 +360,7 @@ def service1_filter():
 
     return render_template('reviews/service1Reviews.html', count=len(service1_reviews_list),
                            service1_reviews_list=service1_reviews_list)
+
 
 @review.route('/service2Reviews')
 def service2_filter():
@@ -345,6 +381,7 @@ def service2_filter():
     return render_template('reviews/service2Reviews.html', count=len(service2_reviews_list),
                            service2_reviews_list=service2_reviews_list)
 
+
 @review.route('/service3Reviews')
 def service3_filter():
     service3_reviews_list = []
@@ -364,6 +401,63 @@ def service3_filter():
     return render_template('reviews/service3Reviews.html', count=len(service3_reviews_list),
                            service3_reviews_list=service3_reviews_list)
 
+
+@review.route('/stylist1Reviews')
+def stylist1_filter():
+    stylist1_reviews_list = []
+    try:
+        stylist1_reviews_dict = {}
+        with shelve.open('DB/reviews/serviceReviews/Stylist1/serviceReview.db', 'c') as db:
+            if 'Stylist1_Reviews' in db:
+                stylist1_reviews_dict = db['Stylist1_Reviews']
+                for key in stylist1_reviews_dict:
+                    stylist1_review = stylist1_reviews_dict.get(key)
+                    stylist1_reviews_list.append(stylist1_review)
+    except IOError as ex:
+        print(f"Error in retrieving service2 reviews from service2_reviews.db - {ex}")
+    except Exception as ex:
+        print(f"Unknown error in retrieving service2 reviews from service2_reviews.db - {ex}")
+
+    return render_template('reviews/stylist1Reviews.html', count=len(stylist1_reviews_list),
+                           stylist1_reviews_list=stylist1_reviews_list)
+
+@review.route('/stylist2Reviews')
+def stylist2_filter():
+    stylist2_reviews_list = []
+    try:
+        stylist2_reviews_dict = {}
+        with shelve.open('DB/reviews/serviceReviews/Stylist2/serviceReview.db', 'c') as db:
+            if 'Stylist2_Reviews' in db:
+                stylist2_reviews_dict = db['Stylist2_Reviews']
+                for key in stylist2_reviews_dict:
+                    stylist2_review = stylist2_reviews_dict.get(key)
+                    stylist2_reviews_list.append(stylist2_review)
+    except IOError as ex:
+        print(f"Error in retrieving stylist2 reviews from stylist2_reviews.db - {ex}")
+    except Exception as ex:
+        print(f"Unknown error in retrieving stylist2 reviews from stylist2_reviews.db - {ex}")
+
+    return render_template('reviews/stylist2Reviews.html', count=len(stylist2_reviews_list),
+                           stylist2_reviews_list=stylist2_reviews_list)
+
+@review.route('/stylist3Reviews')
+def stylist3_filter():
+    stylist3_reviews_list = []
+    try:
+        stylist3_reviews_dict = {}
+        with shelve.open('DB/reviews/serviceReviews/Stylist3/serviceReview.db', 'c') as db:
+            if 'Stylist3_Reviews' in db:
+                stylist3_reviews_dict = db['Stylist3_Reviews']
+                for key in stylist3_reviews_dict:
+                    stylist3_review = stylist3_reviews_dict.get(key)
+                    stylist3_reviews_list.append(stylist3_review)
+    except IOError as ex:
+        print(f"Error in retrieving stylist3 reviews from stylist3_reviews.db - {ex}")
+    except Exception as ex:
+        print(f"Unknown error in retrieving stylist3 reviews from stylist3_reviews.db - {ex}")
+
+    return render_template('reviews/stylist3Reviews.html', count=len(stylist3_reviews_list),
+                           stylist3_reviews_list=stylist3_reviews_list)
 
 
 @review.route('/deleteServiceReview/<int:id>/<int:pid>', methods=['POST'])

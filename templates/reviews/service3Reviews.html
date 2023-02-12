@@ -24,13 +24,28 @@
     <!--    product filters & create review-->
     <div class="container">
         <div class="row">
-            <div class="col-md col-1">
+            <div class="col-md service-filters">
                 <button type="button" class="btn btn-outline-dark"><a href="/serviceReviews">All</a></button>
                 <button type="button" class="btn btn-outline-dark"><a href="/service1Reviews">Hair Cut / Hair Wash</a></button>
                 <button type="button" class="btn btn-outline-dark"><a href="/service2Reviews">Hair Styling</a></button>
                 <button type="button" class="btn btn-outline-dark"><a href="/service3Reviews">Hair Dye</a></button>
             </div>
-            <div class="col-md col-2">
+
+            <div class="col-md stylist-selection">
+                <div class="dropdown">
+                    <button class="btn btn-outline-dark dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Stylist
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="/stylist1Reviews">Stylist 1</a>
+                        <a class="dropdown-item" href="stylist2Reviews">Stylist 2</a>
+                        <a class="dropdown-item" href="stylist3Reviews">Stylist 3</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md create-service-review-button">
                 <button type="button" class="btn btn-outline-dark"><a href="/createServiceReview">Create A Review</a>
                 </button>
             </div>
