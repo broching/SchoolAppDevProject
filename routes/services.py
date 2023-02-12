@@ -74,8 +74,6 @@ def add_new_service():
 #     return render_template('/Services/addNewServiceform.html',form=book_appt_form)
 
 
-
-
 @service.route('/addNewServiceform')
 def appointment():
     service_list = []
@@ -95,7 +93,7 @@ def appointment():
     return render_template('Services/service.html', count=len(service_dict), form=form)
 
 
-@service.route('/Services/addNewServiceform', methods=['POST'])
+@service.route('/addNewServiceform', methods=['POST','GET'])
 def book_appointment():
     Apointment_booking_form = AddNewService(request.form)
     if request.method == 'POST' and Apointment_booking_form.validate():
@@ -104,14 +102,13 @@ def book_appointment():
 
                 service_dict = {}
                 if 'Service' in db:
-                    service_dict = db['Service']
+                    service_dict = db['Service_1']
                 service = Service(Apointment_booking_form.first_name.data,
                                   Apointment_booking_form.last_name.data,
                                   Apointment_booking_form.gender.data,
                                   Apointment_booking_form.appointment_date.data,
                                   Apointment_booking_form.appointment_time.data,
                                   Apointment_booking_form.remarks.data)
-
 
                 service_dict[service.get_first_Name()] = service
                 db['Service'] = service_dict
@@ -138,21 +135,9 @@ def date():
     appointment_date = session['appointment_date']
     return render_template('date.html')
 
+
 @service.route("/Services/retrieveAppointment")
 def retrieve_appt():
-    # appt_dict = {}
-    # db = shelve.open("service_1.db", 'r')
-    # appt_dict = db['first_Name']
-    # appt_list = []
-    # for hairstylist in appt_dict:
-    #     appt = appt_dict.get(first_name)
-    #     appt_list.append(appt)
-    #     db.close()
-    # return render_template('/Services/retrieveAppointment.html', count=len(appt_list), appt_list=appt_list)
-
-
-
-
     appt_list = []
     try:
         appt_dict = {}
@@ -169,32 +154,28 @@ def retrieve_appt():
     return render_template('/Services/retrieveAppointment.html', count=len(appt_list), appt_list=appt_list)
 
 
-
-
-
 # Route for update service forms
 @service.route('/Services/updateServices', methods=['GET', 'POST'])
 def add_new():
-    add_new_form=update_service_form(request.form)
-    if request.method=='POST' and add_new_form.validate():
-        appt_dict={}
-        db=shelve.open('service.db','c')
+    add_new_form = update_service_form(request.form)
+    if request.method == 'POST' and add_new_form.validate():
+        appt_dict = {}
+        db = shelve.open('service.db', 'c')
         try:
-            appt_dict=db['hairstylist']
+            appt_dict = db['hairstylist']
         except:
             print("Error in retrieving appointment records from service.db")
-        service=update_Service.Service(add_new_form.service.data,
-                                add_new_form.hairstylist.data,
-                                add_new_form.appointment_time.data,
-                                add_new_form.appointment_date.data
-                                )
+        service = update_Service.Service(add_new_form.service.data,
+                                         add_new_form.hairstylist.data,
+                                         add_new_form.appointment_time.data,
+                                         add_new_form.appointment_date.data
+                                         )
         print("1")
-        appt_dict[service.get_hairstylist()]=service
-        db['hairstylist']=appt_dict
+        appt_dict[service.get_hairstylist()] = service
+        db['hairstylist'] = appt_dict
         db.close()
         return redirect('/Services/retrieveAppointment.html')
-    return render_template('/Services/updateServices.html',form=add_new_form)
-
+    return render_template('/Services/updateServices.html', form=add_new_form)
 
 
 # @service.route("/Services/retrieveAppointment")
@@ -242,7 +223,7 @@ def add_new():
 #         return render_template('/Services/addNewService.html', form=update_service_form)
 
 
-@service.route('/Services/updateServices.html', methods=['GET', 'POST'])  # Datepicker-update service
+@service.route('/updateService.html', methods=['GET', 'POST'])  # Datepicker-update service
 def add_appt_date():
     form = update_service_form
     if form.validate_on_submit():

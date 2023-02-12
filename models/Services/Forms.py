@@ -9,8 +9,9 @@ class AddNewService(Form):
                          choices=[('', 'Select'), ('F', 'Female'), ('M', 'Male')],
                          default='')
     appointment_date = DateField('Appointment Date', format='%Y-%m-%d')
-    appointment_time = StringField('Appointment Time', [validators.length(min=5, max=5), validators.DataRequired()])
-
+    appointment_time = SelectField('Appointment Time', [validators.DataRequired()],
+                         choices=[('', 'Select'), ('12', '12.30Pm'), ('1', '1.30PM')],
+                         default='')
     remarks = TextAreaField('Remarks', [validators.Optional()])
 
     def validate_on_submit(self):
