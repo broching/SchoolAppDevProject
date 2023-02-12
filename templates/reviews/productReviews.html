@@ -16,40 +16,42 @@
 
     <div class="secondheader"><a href="#"></a></div>
 
-    <!--    Conditions-->
-    <div class="count">
-        {% if count == 0 %}
-        <p>There are no reviews.</p>
-        {% elif count == 1 %}
-        <p>There is 1 review.</p>
-        {% else %}
-        <p>There are {{ count }} reviews.</p>
-        {% endif %}
-    </div>
-
-
-    <div>
-        Click <a href='createProductReview'>here</a> to create a product review.
-    </div>
-
     <br>
 
-    <div class="filter">
-        <button type="button"><a href="/productReviews">All</a></button>
-        <button type="button"><a href="/product1Reviews">Product 1</a></button>
-        <button type="button"><a href="/product2Reviews">Product 2</a></button>
-        <button type="button"><a href="/product3Reviews">Product 3</a></button>
+<!--    product filters & create review-->
+    <div class="container">
+        <div class="row">
+            <div class="col-md col-1">
+                <button type="button" class="btn btn-outline-dark"><a href="/productReviews">All</a></button>
+                <button type="button" class="btn btn-outline-dark"><a href="/product1Reviews">Product 1</a></button>
+                <button type="button" class="btn btn-outline-dark"><a href="/product2Reviews">Product 2</a></button>
+                <button type="button" class="btn btn-outline-dark"><a href="/product3Reviews">Product 3</a></button>
+            </div>
+            <div class="col-md col-2">
+                <button type="button" class="btn btn-outline-dark"><a href="/createProductReview">Create A Review</a>
+                </button>
+            </div>
+        </div>
     </div>
 
-    <br>
+    <br> <br>
 
     <!--    Table to display all product reviews-->
     <div class="product_reviews">
         <table class="table table-striped">
 
+            <!-- Conditions for count -->
             <thead>
             <tr class="tarow1first">
+                {% if count == 0 %}
                 <th style="font-size: 150%;">{{ count }} Product Reviews</th>
+                {% elif count == 1 %}
+                <th style="font-size: 150%;">{{ count }} Product Review</th>
+                {% else %}
+                <th style="font-size: 150%;">{{ count }} Product Reviews</th>
+                {% endif %}
+
+
             </tr>
             </thead>
 

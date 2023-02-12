@@ -8,7 +8,7 @@ class CreateServiceReview(Form):
     user_name = HiddenField('')
 
     service_selection = SelectField('Service', [validators.DataRequired()],
-                                    choices=[('', 'Click to choose your service'), ('Hair Wash', 'Hair Wash'),
+                                    choices=[('', 'Click to choose your service'), ('Hair Cut / Hair Wash', 'Hair Cut / Hair Wash'),
                                              ('Hair Styling', 'Hair Styling'),
                                              ('Hair Dye', 'Hair Dye')], default='')
 
