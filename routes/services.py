@@ -89,12 +89,13 @@ def appointment():
         print(f"Error in retrieving customers from customer.db - {ex}")
     except Exception as ex:
         print(f"Unknown error in retrieving customers from customer.db - {ex}")
-
+    print("1")
     return render_template('Services/service.html', count=len(service_dict), form=form)
 
 
 @service.route('/addNewServiceform', methods=['POST','GET'])
 def book_appointment():
+    print("1")
     Apointment_booking_form = AddNewService(request.form)
     if request.method == 'POST' and Apointment_booking_form.validate():
         try:
@@ -112,12 +113,14 @@ def book_appointment():
 
                 service_dict[service.get_first_Name()] = service
                 db['Service'] = service_dict
+                print("2")
                 return ("Submission Succesful")
         except IOError as ex:
             print("Error in retrieving Appointment")
             return render_template('/Services/servicebase.html', form=Apointment_booking_form)
 
     else:
+        print("3")
         return render_template('/Services/addNewServiceform.html', form=Apointment_booking_form)
 
 
