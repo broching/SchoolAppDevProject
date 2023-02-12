@@ -6,6 +6,7 @@ from functools import wraps
 import datetime
 from time import sleep
 
+
 def log_out():
     """Deletes session for customer and staff without flashing info message"""
     session.pop('customer', None)
@@ -20,7 +21,7 @@ def customer_login_required(func):
         if 'customer' not in session:
             log_out()
             flash("Please log in to your account first to access this page", category='danger')
-            return redirect(url_for('auth.customer_login'))
+            return redirect(url_for('customer_login'))
         else:
             return func(*args, **kwargs)
 
@@ -291,4 +292,3 @@ def validate_birthday_(birthday_to_validate):
         return False
     else:
         return True
-
