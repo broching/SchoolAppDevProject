@@ -1,4 +1,4 @@
-from wtforms import StringField, SubmitField, EmailField, DateField, TelField, PasswordField, IntegerField, SelectField
+from wtforms import StringField, SubmitField, EmailField, DateField, TelField, PasswordField, IntegerField, SelectField, TextAreaField
 from wtforms.validators import Email, Length, EqualTo, DataRequired
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField
@@ -53,3 +53,10 @@ class AddNewAccountForm(FlaskForm):
         choices=[('active', 'active'), ('deactivated', 'deactivated')], validators=[DataRequired()])
 
     submit1 = SubmitField('Save Changes')
+
+
+class ContactUsForm(FlaskForm):
+    email = EmailField(validators=[DataRequired(), Email()])
+    subject = StringField(validators=[DataRequired()])
+    message = TextAreaField(validators=[DataRequired()])
+    submit = SubmitField()

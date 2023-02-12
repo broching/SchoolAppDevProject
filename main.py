@@ -1,6 +1,7 @@
 from flask_mail import Mail, Message
 from datetime import timedelta
 from flask import Flask, render_template, flash, redirect, url_for, request, session
+from models.account.account_forms import ContactUsForm
 from models.auth.auth_forms import NewPasswordForm, LoginForm, GetEmailForm
 from models.auth.auth_functions import get_customers, store_customer, customer_login_authentication
 from routes.services import service
@@ -61,12 +62,31 @@ def send_reset_email(user_id, email):
     msg.subject = "Password reset"
     msg.recipients = [email]
     msg.sender = 'onesalonsg05@gmail.com'
+    msg.html = render_template('auth/reset_password_email.html', token=token)
+
+    mail.send(msg)
+
+
+def send_contact_email(email, subject, message):
+    msg = Message()
+    msg.subject = subject
+    msg.recipients = ['onesalonsg05@gmail.com']
+    msg.sender = email
     msg.body = f"""
-To Reset Your Password, Vist the Following Link:
-{url_for('reset_password', token=token, _external=True)}
-If you did not send a reset password request, simply ignore this email and have a nice day!
+This is an enquire sent by our customer with email: {email}
+
+{message}
 """
     mail.send(msg)
+
+
+@app.route('/ContactUs', methods=["POST", "GET"])
+def contact_us():
+    contact_us_form = ContactUsForm()
+    if request.method == "POST" and contact_us_form.submit.data:
+        send_contact_email(contact_us_form.email.data, contact_us_form.subject.data, contact_us_form.message.data)
+        flash('Message successfully sent', category='success')
+    return render_template('home/contact_us.html', contact_us_form=contact_us_form)
 
 
 @app.route('/CustomerLogin', methods=["POST", "GET"])
@@ -119,7 +139,8 @@ def reset_password(token):
                         store_customer(accounts, "DB")
                         flash('Password successfully changed', category='success')
                         return redirect(url_for('customer_login'))
-    return render_template('auth/reset_password.html', new_password_form=new_password_form, error_messages=error_messages)
+    return render_template('auth/reset_password.html', new_password_form=new_password_form,
+                           error_messages=error_messages)
 
 
 if __name__ == "__main__":
