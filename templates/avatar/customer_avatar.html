@@ -8,7 +8,7 @@ Avatar Customisation Page
 
 <html>
 <head>
-        <!-- Bootstrap 5.1.3 CSS -->
+    <!-- Bootstrap 5.1.3 CSS -->
     <link crossorigin="anonymous"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
           integrity="sha384-
@@ -16,18 +16,8 @@ Avatar Customisation Page
           rel="stylesheet">
 
     <style>
-        body{
+        body {
           background-color: #fff;
-        }
-        .carousel{
-          margin-top: 50px;
-        }
-        .carousel-inner{
-          height: 100px;
-        }
-        .carousel-caption{
-          color: #fff;
-          top: 50%;
         }
 
         .cropped {
@@ -40,6 +30,12 @@ Avatar Customisation Page
         .cropped img {
             margin: -150px 0px 0px -150px;
         }
+
+        .selected {
+            border: 2px solid green;
+        }
+
+
 
 
 
@@ -75,8 +71,8 @@ Avatar Customisation Page
                 <form method="post">
                     <div class="container">
                         {% for asset in menu.tab_items[menu.selected_tab] %}
-                            <button name="select" value="{{ asset }}"><img class="cropped" src="{{ asset }}" width="600"
-                                                                          height="600"></button>
+                        <button name="select" value="{{ asset }}"><img class="cropped" src="{{ asset }}" width="600"
+                                                                       height="600"></button>
                         {% endfor %}
                     </div>
                 </form>
@@ -86,27 +82,23 @@ Avatar Customisation Page
         <div class="col">
             <h1>PREVIEW</h1>
             <div class="row">
-                <div class="col-sm">
-                    {% for avatar in avatar_list %}
-                    <img src="{{ avatar.image }}" width="300" height="400">
-                    {% endfor %}
-                </div>
 
                 <div class="col-sm">
-<!--                    <form method="POST">-->
-<!--                        <input type="submit" name="next" value="hairstyles">-->
-<!--                    </form>-->
-<!--                    <form method="POST">-->
-<!--                        <input type="submit" name="next" value="faceshape">-->
-<!--                    </form>-->
-<!--                    <form method="POST">-->
-<!--                        <input type="submit" name="next" value="eyes">-->
-<!--                    </form>-->
-<!--                    <form method="POST">-->
-<!--                        <input type="submit" name="next" value="lips">-->
-<!--                    </form>-->
+                    <!--                    <form method="POST">-->
+                    <!--                        <input type="submit" name="next" value="hairstyles">-->
+                    <!--                    </form>-->
+                    <!--                    <form method="POST">-->
+                    <!--                        <input type="submit" name="next" value="faceshape">-->
+                    <!--                    </form>-->
+                    <!--                    <form method="POST">-->
+                    <!--                        <input type="submit" name="next" value="eyes">-->
+                    <!--                    </form>-->
+                    <!--                    <form method="POST">-->
+                    <!--                        <input type="submit" name="next" value="lips">-->
+                    <!--                    </form>-->
                     <form method="POST">
                         <input type="submit" name="save" value="save">
+                        <input type="submit" name="delete" value="delete">
                     </form>
                 </div>
                 <div class="col-lg">
@@ -118,15 +110,27 @@ Avatar Customisation Page
         </div>
     </div>
 
+    <div class="row">
+        <form method="POST">
+            <div class="col-sm">
+                {% for avatar in avatar_list %}
+                <button type="submit" name="select_avatar" value="{{ avatar_list.index(avatar) }}"><img
+                        src="{{ avatar.image }}"
+                        width="150" height="200"></button>
+                {% endfor %}
+            </div>
+        </form>
+    </div>
+
 </div>
 </body>
 </html>
 
 <!-- Popper 2.10.2, Bootstrap 5.1.3 JavaScript -->
-<script crossorigin="anonymous"
-integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB"
-src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
-<script crossorigin="anonymous"
-integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"
-src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+<!--<script crossorigin="anonymous"-->
+<!--        integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB"-->
+<!--        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>-->
+<!--<script crossorigin="anonymous"-->
+<!--        integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"-->
+<!--        src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>-->
 {% endblock content %}

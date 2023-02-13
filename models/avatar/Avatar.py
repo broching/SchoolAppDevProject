@@ -46,6 +46,9 @@ class Avatar:
     def select(self, asset, attr):
         setattr(self, attr, asset)
 
+    def check_exists(self, obj):
+        pass
+
 class Menu:
     def __init__(self, tabs, selected_tab, tab_items):
         self.tabs = tabs

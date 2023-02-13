@@ -5,13 +5,14 @@ from models.auth.auth_functions import customer_login_required, staff_login_requ
 
 avatar_blueprint = Blueprint('avatar', __name__)
 
-#TODO: 1. Figure out how to shelve images as objects
-#TODO: 2. Create nice GUI for avatar staff and avatar customer
-#TODO: 3. Create better looking avatar assets
-#TODO: 4. Fix avatar navbar issues with login button
-#TODO: 5. Add flash warnings
-#TODO: 6. Add delete functions to avatars
-#TODO: 7. Set avatar png for profile pic
+
+# TODO: 1. Figure out how to shelve images as objects
+# TODO: 2. Create nice GUI for avatar staff and avatar customer
+# TODO: 3. Create better looking avatar assets
+# TODO: 4. Fix avatar navbar issues with login button
+# TODO: 5. Add flash warnings
+# TODO: 6. Add delete functions to avatars
+# TODO: 7. Set avatar png for profile pic
 
 
 @avatar_blueprint.route("/avatar", methods=['GET', 'POST'])
@@ -22,7 +23,7 @@ def avatar():
     stock = Avatar(hairstyle_assets[0], faceshape_assets[0], eyes_assets[0], lips_assets[0], 0)
     stock.save_avatar("stock")
 
-    menu = Menu(["HAIRSTYLES","FACESHAPE", "EYES", "LIPS"], 0, assets)
+    menu = Menu(["HAIRSTYLES", "FACESHAPE", "EYES", "LIPS"], 0, assets)
 
     if "customer" in session:
         user_id = session["customer"].get("_Account__user_id")
@@ -66,6 +67,18 @@ def avatar():
                     preview.save_avatar(user_id + "/preview")
                     db[user_id] = [preview, avatar_list]
 
+                elif 'select_avatar' in request.form:
+                    index = int(request.form['select_avatar'])
+                    extract = avatar_list[index]
+                    preview = Avatar(extract.hairstyles, extract.faceshape, extract.eyes, extract.lips, extract.image)
+                    preview.save_avatar(user_id + "/preview")
+                    db[user_id] = [preview, avatar_list]
+
+                # elif 'delete' in request.form:
+                #     extract = preview
+                #     for i in avatar_list:
+                #         if extract.__dict__.pop("image") == i.__dict__.pop("image"):
+                #             print("exists")
                 else:
                     pass
 
@@ -115,21 +128,49 @@ def avatarSave(preview, user_id, avatar_list, db):
 @avatar_blueprint.route("/avatarStaff", methods=['GET', 'POST'])
 @staff_login_required
 def avatarStaff():
-    # hairstyle_dir = os.listdir(hairstyle_path)
-    # hairstyle_assets = [hairstyle_path + "/" + hairstyles for hairstyles in hairstyle_dir]
+    hairstyle_path = "static/media/images/avatar_assets/hairstyles"
+    hairstyle_dir = os.listdir(hairstyle_path)
+    hairstyle_assets = [hairstyle_path + "/" + hairstyle for hairstyle in hairstyle_dir]
+
+    faceshape_path = "static/media/images/avatar_assets/faceshape"
+    faceshape_dir = os.listdir(faceshape_path)
+    faceshape_assets = [faceshape_path + "/" + faceshape for faceshape in faceshape_dir]
+
+    eyes_path = "static/media/images/avatar_assets/eyes"
+    eyes_dir = os.listdir(eyes_path)
+    eyes_assets = [eyes_path + "/" + eyes for eyes in eyes_dir]
+
+    lips_path = "static/media/images/avatar_assets/lips"
+    lips_dir = os.listdir(lips_path)
+    lips_assets = [lips_path + "/" + lips for lips in lips_dir]
+
     total_assets = [hairstyle_assets, faceshape_assets, eyes_assets, lips_assets]
     assets = total_assets
-    return render_template('avatar/staff_avatar.html', assets=assets, enumerate=enumerate)
 
-
-@avatar_blueprint.route('/success', methods=['POST'])
-def success():
     if request.method == 'POST':
         f = request.files['file']
         if imghdr.what(f) != 'png':
             text = "You must upload a png file!"
-        else:
-            f.save("static/media/images/avatar_assets/hairstyles/"+f.filename)
-            text = "Upload succesful"
+            flash(text, 'error')
 
-        return render_template("avatar/acknowledgement.html", name=f.filename, text=text)
+        else:
+            f.save("static/media/images/avatar_assets/"+request.form['Upload']+"/"+f.filename)
+            text = "Upload succesful"
+            flash(text, 'info')
+
+
+    return render_template('avatar/staff_avatar.html', hairstyle_assets=hairstyle_assets,
+                           faceshape_assets=faceshape_assets, eyes_assets=eyes_assets, lips_assets=lips_assets,
+                           enumerate=enumerate)
+
+# @avatar_blueprint.route('/success', methods=['POST'])
+# def success():
+#     if request.method == 'POST':
+#         f = request.files['file']
+#         if imghdr.what(f) != 'png':
+#             text = "You must upload a png file!"
+#         else:
+#             f.save("static/media/images/avatar_assets/hairstyles/"+f.filename)
+#             text = "Upload succesful"
+#
+#         return render_template("avatar/acknowledgement.html", name=f.filename, text=text)

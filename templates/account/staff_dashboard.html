@@ -173,6 +173,7 @@ Staff Dashboard
             <tr>
                 <th>Name</th>
                 <th>ID</th>
+                <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
                 <th>Total Profit</th>
                 <th>Quantity</th>
             </tr>
@@ -182,6 +183,7 @@ Staff Dashboard
             <tr>
                 <td>{{ product.get_product_name() }}</td>
                 <td>{{ product.get_product_id() }}</td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>${{ "%.2f"|format(product.get_product_profitTotal()) }}</td>
                 <td>{{ product.get_product_quantity() }}</td>
             </tr>

@@ -6,17 +6,20 @@
 {% endblock %}
 
 {% block content2 %}
+<div></div>
 <div class="m-2 uptitel">
-    <p class="h2">Success</p>
+    <p class="h1 mt-3">Success!</p>
 </div>
 
-<p class="h2">
+
+<div class="w-75 mx-auto text-center">
+<p class="h2 mt-5">
   We appreciate your business! If you have any questions, please email
-  <a href="mailto:num1salon@gmail.com">num1salon@gmail.com</a>.
+  <a href="mailto:num1salon@gmail.com" class="text-decoration-none">num1salon@gmail.com</a>.
 </p>
 
 <a href="{{url_for('productr.products')}}">Back to products</a>
 <br>
-
+</div>
 
 {% endblock %}
