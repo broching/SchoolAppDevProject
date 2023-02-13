@@ -113,6 +113,56 @@ def productOrder(id):
     return redirect(checkout_session.url)
 
 
+@productr.route('/products/cartordersingle/<int:id>/')
+@customer_login_required
+def productOrderCartSingle(id):
+    try:
+        products_dict = {}
+        with shelve.open('DB/products/product.db', 'w') as pdb:
+            if 'Products' in pdb:
+                products_dict = pdb['Products']
+            if id in products_dict:
+                product = products_dict.get(id)
+
+                product_quantity_temp = product.get_product_quantity()
+                print(product_quantity_temp)
+            pdb['Products'] = products_dict
+            session['temp_product_id'] = id
+            print(session['temp_product_id'])
+
+            if id not in products_dict:
+                abort(404)
+
+            product_id = product.get_product_id()
+            product_name = product.get_product_name()
+            product_image_for_stripe = product.get_product_image()
+            print(product_image_for_stripe)
+
+            checkout_session = stripe.checkout.Session.create(
+                line_items=[{'price_data': {
+                    'product_data': {'name': f"ID: {product_id} | {product_name}",
+                                     'images': [
+                                         "https://th.bing.com/th/id/OIP.eqxBQW-U29nnvWcva2d1VwAAAA?pid=ImgDet&rs=1"],
+                                     },
+                    'unit_amount': int(product.get_product_price() * 100),
+                    'currency': 'sgd',
+                },
+                    'quantity': 1,
+                },
+                ],
+
+                payment_method_types=['card'],
+                mode='payment',
+                success_url=request.host_url + 'products/order/successCartSingle',
+                cancel_url=request.host_url + 'products/order/cancel',
+                billing_address_collection='required',
+            )
+
+    except IOError as ex:
+        print(f"Error in trying to open product.db in payment page (Order and payment page) - {ex}")
+
+    return redirect(checkout_session.url)
+
 @productr.route('/products/cartorder/<int:id>/')
 @customer_login_required
 def productOrderCart(id):
@@ -503,12 +553,22 @@ def success():
                     print('Customer found')
                     print(customer)
 
-                    # Get cart list
-                    cust_cart = customer.get_cart()
-                    for item in cust_cart:
-                        if item['_Product__id'] == productStripeId:
-                            cust_cart.remove(item)
-                            break
+                    # This code from get cart list to store_customer is meant for success individual only.
+                    # # Get cart list
+                    # cust_cart = customer.get_cart()
+                    # for item in cust_cart:
+                    #     if item['_Product__id'] == productStripeId:
+                    #         cust_cart.remove(item)
+                    #         break
+                    #
+                    # # Set new cart list to the updated one that has the product appended.
+                    # customer.set_cart(cust_cart)
+                    # print(customer.get_cart())
+                    # store_customer(customer, 'DB')
+
+                    # Update session with new info
+                    customer_dict = account_to_dictionary_converter(customer)
+                    session['customer'] = customer_dict
 
                     # # Append product dictionary into customer cart list
                     # print(cust_cart)
@@ -523,6 +583,71 @@ def success():
                     # flash(f"Removed item {cust_cart[id]['_Product__productName']} from cart.", category='info')
                     # del cust_cart[id]
 
+    except IOError as ex:
+        print(f"Error in new_event for billing history - {ex}")
+
+    return render_template('products/success.html')
+
+
+@productr.route('/products/order/successCartSingle')
+def successCartSingle():
+    # if request.method == 'GET':
+    #     print(session['customer'])
+    # Handle billing history
+    productStripeId = session['temp_product_id']
+    print(productStripeId)
+    try:
+        with shelve.open('DB/products/product.db', 'w') as pdb:
+            if 'Products' in pdb:
+                products_dict = pdb['Products']
+            if productStripeId in products_dict:
+                product = products_dict.get(productStripeId)
+                product_dict_for_storing = account_to_dictionary_converter(product)
+                cust_list = get_customers('DB')
+            pdb['Products'] = products_dict
+
+            # Get customer id from current session
+            print(session['customer'])
+            target_id = session['customer']['_Account__user_id']
+            print(target_id)
+            for customer in cust_list:
+                if customer.get_user_id() == target_id:
+                    print('Customer found')
+                    print(customer)
+
+                    # Get billing history list
+                    cust_billing_history = customer.get_billing_history()
+
+                    # Append product dictionary into billing history list
+                    cust_billing_history.append(product_dict_for_storing)
+
+                    # Set new billing history list to the updated one that has the product appended.
+                    customer.set_billing_history(cust_billing_history)
+                    print(customer.get_billing_history())
+                    store_customer(customer, 'DB')
+
+                    # Update session with new info
+                    customer_dict = account_to_dictionary_converter(customer)
+                    session['customer'] = customer_dict
+
+            cust_list = get_customers('DB')
+            # Get customer id from current session
+            print(session['customer'])
+            target_id = session['customer']['_Account__user_id']
+            print(target_id)
+            for customer in cust_list:
+                if customer.get_user_id() == target_id:
+                    print('Customer found')
+                    print(customer)
+
+                    # This code from get cart list to store_customer is meant for success individual only.
+                    # Get cart list
+                    cust_cart = customer.get_cart()
+                    for item in cust_cart:
+                        if item['_Product__id'] == productStripeId:
+                            cust_cart.remove(item)
+                            break
+
                     # Set new cart list to the updated one that has the product appended.
                     customer.set_cart(cust_cart)
                     print(customer.get_cart())
@@ -531,6 +656,19 @@ def success():
                     # Update session with new info
                     customer_dict = account_to_dictionary_converter(customer)
                     session['customer'] = customer_dict
+
+                    # # Append product dictionary into customer cart list
+                    # print(cust_cart)
+                    # flash(f"Removed item {cust_cart[id]['_Product__productName']} from cart.", category='info')
+                    # del cust_cart[id]
+
+                    # # Reset customer cart (USE FOR EMERGENCIES)
+                    # cust_cart = []
+
+                    # # Append product dictionary into customer cart list
+                    # print(cust_cart)
+                    # flash(f"Removed item {cust_cart[id]['_Product__productName']} from cart.", category='info')
+                    # del cust_cart[id]
 
     except IOError as ex:
         print(f"Error in new_event for billing history - {ex}")
