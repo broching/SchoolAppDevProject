@@ -1,13 +1,13 @@
 import shelve
 from flask import Blueprint, render_template, request, url_for, redirect, session, flash
 
-from models.auth.auth_functions import customer_login_required
+from models.auth.auth_functions import customer_login_required, staff_login_required
 from models.reviews.productReview import productReview
 from models.reviews.serviceReview import serviceReview
 from models.reviews.createProductReview import CreateProductReview
 from models.reviews.createServiceReview import CreateServiceReview
 
-from routes.account import customer_profile
+from routes.account import customer_profile, staff_profile
 
 review = Blueprint('review', __name__)
 
@@ -180,6 +180,7 @@ def deleteProductReview(id, pid):
                     product_reviews_dict.pop(pid)
                     next_pid = pid
                     db['Product_Reviews'] = product_reviews_dict
+                    flash('Your review has been successfully deleted.', category='success')
 
                     # delete from product1 filter
                     product1_reviews_dict = {}
@@ -211,6 +212,9 @@ def deleteProductReview(id, pid):
                             product3_reviews_dict.pop(next_pid)
                             db['Product3_Reviews'] = product3_reviews_dict
 
+
+                else:
+                    flash('You are not authorised to delete this review.', category='error')
 
     except IOError as ex:
         print(f"Error in retrieving product reviews from productReviews.db - {ex}")
@@ -421,6 +425,7 @@ def stylist1_filter():
     return render_template('reviews/stylist1Reviews.html', count=len(stylist1_reviews_list),
                            stylist1_reviews_list=stylist1_reviews_list)
 
+
 @review.route('/stylist2Reviews')
 def stylist2_filter():
     stylist2_reviews_list = []
@@ -439,6 +444,7 @@ def stylist2_filter():
 
     return render_template('reviews/stylist2Reviews.html', count=len(stylist2_reviews_list),
                            stylist2_reviews_list=stylist2_reviews_list)
+
 
 @review.route('/stylist3Reviews')
 def stylist3_filter():
@@ -476,6 +482,7 @@ def deleteServiceReview(id, pid):
                     service_reviews_dict.pop(pid)
                     next_pid = pid
                     db['Service_Reviews'] = service_reviews_dict
+                    flash('Your review has been successfully deleted.', category='success')
 
                     # delete from service1 filter
                     service1_reviews_dict = {}
@@ -536,7 +543,8 @@ def deleteServiceReview(id, pid):
                         if next_pid in stylist3_reviews_dict:
                             stylist3_reviews_dict.pop(next_pid)
                             db['Stylist3_Reviews'] = stylist3_reviews_dict
-
+                else:
+                    flash('You are not authorised to delete this review.', category='error')
 
     except IOError as ex:
         print(f"Error in retrieving service reviews from serviceReviews.db - {ex}")

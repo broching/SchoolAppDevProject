@@ -16,8 +16,6 @@ app = Flask(__name__)
 # app config
 app.config["SECRET_KEY"] = "641z69bc491f8cb891fc0417d2eb29bb5"
 
-app.config["PRODUCT_REVIEW_UPLOAD"] = 'static/media/images/reviews/product_reviews'
-
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USE_TLS'] = False
