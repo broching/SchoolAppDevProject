@@ -1,0 +1,94 @@
+{% extends "staff_base.html" %}
+{% block title %}Product Reviews{% endblock title %}
+{% block content %}
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<link rel="stylesheet"
+      href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
+<script type="text/javascript"
+        src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript"
+        src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<link
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        rel="stylesheet"
+/>
+{% endblock %}
+
+
+<h1 class="display-4 uptitel">Service Reviews</h1>
+
+{% block content2 %}
+
+
+
+
+<div class="m-2">
+
+    <div class="secondheader"><a href="#"></a></div>
+
+    <br> <br>
+
+    <h2>All Service Reviews</h2>
+
+    <br>
+
+    <!--    Table to display all product reviews-->
+    <div class="product_reviews">
+        <table class="table table-striped">
+
+            <!-- Conditions for count -->
+            <thead>
+            <tr class="tarow1first">
+                {% if count == 0 %}
+                <th style="font-size: 150%;">{{ count }} Reviews</th>
+                {% elif count == 1 %}
+                <th style="font-size: 150%;">{{ count }} Review</th>
+                {% else %}
+                <th style="font-size: 150%;">{{ count }} Reviews</th>
+                {% endif %}
+
+
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for staff_service_review in staff_service_reviews_list|reverse %}
+            <tr>
+                <td>
+                    <p><b>User: </b>{{ staff_service_review.get_user_name() }}</p> <br>
+                    <p><b>Service Selected: </b>{{ staff_service_review.get_service_selection() }}</p> <br>
+                    <p><b>Your Stylist: </b>{{ staff_service_review.get_stylist_selection() }}</p> <br>
+                    <p><b>Rating: </b> {{ staff_service_review.get_service_rating() }} </p> <br>
+                    <p><b>Image </b> <br>
+
+                    {% if staff_service_review.get_service_selection() == 'Hair Cut' %}
+                    <p style="width: 200px; height: 200px; padding: 5px"><img
+                            src="../../static/media/images/reviews/service_reviews/haircut.jpg"
+                            style="height: 200px; width: 200px; border-radius: 5px;"></p>
+                    {% elif staff_service_review.get_service_selection() == 'Hair Styling' %}
+                    <p style="width: 200px; height: 200px; padding: 5px"><img
+                            src="../../static/media/images/reviews/service_reviews/hairstyling.jpg"
+                            style="height: 200px; width: 200px; border-radius: 5px;"></p>
+                    {% elif staff_service_review.get_service_selection() == 'Hair Dye' %}
+                    <p style="width: 200px; height: 200px; padding: 5px"><img
+                            src="../../static/media/images/reviews/service_reviews/hairdye.webp"
+                            style="height: 200px; width: 200px; border-radius: 5px;"></p>
+                    {% endif %}
+
+                    <p><b>Video </b> {{ staff_service_review.get_service_video() }} </p> <br>
+                    <p><b>Comment </b> {{ staff_service_review.get_service_comment() }} </p> <br>
+                    <p><b>Unique ID </b> {{ staff_service_review.get_service_id() }} </p> <br>
+
+
+
+                </td>
+
+            </tr>
+            {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+{% endblock %}

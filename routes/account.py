@@ -1,18 +1,20 @@
 import secrets
+import shelve
 
 from flask import Blueprint, render_template, request, session, flash, redirect, url_for
 
+from models.account.account_classes import Customer, Staff
 from models.account.account_forms import UpdateProfileForm, UpdateSecurityForm, DeleteAccountForm, ShippingAddressForm, \
     AddNewAccountForm
 from models.account.account_functions import save_image, delete_image
-from models.auth.auth_functions import customer_login_required, validate_staff_password, staff_login_required, validate_birthday_
+from models.auth.auth_functions import customer_login_required, validate_staff_password, staff_login_required, \
+    validate_birthday_
 from models.auth.auth_functions import get_customers, store_customer, delete_customer, account_to_dictionary_converter, \
     validate_customer_password, validate_number, validate_email, validate_username, is_valid_card_number, get_staff, \
     store_staff, \
     delete_staff
 from models.auth.payment_classes import CreditCard
 from models.auth.payment_forms import ProfileCreditCardForm, DeleteCreditCardForm, MakeCardDefaultForm
-from models.account.account_classes import Customer, Staff
 
 account = Blueprint('account', __name__)
 
@@ -79,7 +81,7 @@ def customer_profile():
 
     # Check if user is logged in and renders template
     return render_template('account/customer_profile.html', update_profile_form=update_profile_form,
-                               update_shipping_form=update_shipping_form, error_messages=error_messages)
+                           update_shipping_form=update_shipping_form, error_messages=error_messages)
 
 
 @account.route('/customerSecurity', methods=["POST", "GET"])
@@ -117,8 +119,8 @@ def customer_security():
                     return redirect(url_for('account.customer_security'))
     # Check if user is logged in and renders template
     return render_template('account/customer_security.html',
-                               update_security_form=update_security_form, delete_account_form=delete_account_form,
-                               error_messages=error_messages)
+                           update_security_form=update_security_form, delete_account_form=delete_account_form,
+                           error_messages=error_messages)
 
 
 @account.route('/CustomerShipping', methods=['POST', 'GET'])
@@ -153,9 +155,9 @@ def customer_shipping_address():
                     flash("Shipping address successfully Changed", category='success')
                     return redirect(url_for('account.customer_profile'))
 
-    # Check if user is logged in and renders template
+        # Check if user is logged in and renders template
         render_template('account/customer_profile.html', update_profile_form=update_profile_form,
-                               update_shipping_form=update_shipping_form, error_messages=error_messages)
+                        update_shipping_form=update_shipping_form, error_messages=error_messages)
 
 
 @account.route('/customerDelete', methods=['POST', 'GET'])
@@ -177,7 +179,7 @@ def customer_delete():
                 return redirect(url_for('home'))
     # Check if user is logged in and renders template
     return render_template('account/customer_profile.html',
-                            update_security_form=update_security_form, delete_account_form=delete_account_form, )
+                           update_security_form=update_security_form, delete_account_form=delete_account_form, )
 
 
 @account.route('/CustomerBilling//')
@@ -212,7 +214,7 @@ def customer_billing():
                     session['customer'] = customer_dict
 
     return render_template('account/customer_billing.html', credit_card_list=credit_card_list,
-                               delete_card_form=delete_card_form, default_card_form=default_card_form)
+                           delete_card_form=delete_card_form, default_card_form=default_card_form)
 
 
 @account.route('/AddCard', methods=['POST', 'GET'])
@@ -425,8 +427,22 @@ def customer_default_card(card_id):
 @account.route('/StaffDashboard')
 @staff_login_required
 def staff_dashboard():
+    appt_list = []
+    try:
+        appt_dict = {}
+        with shelve.open('DB/services/service.db', 'r') as db:
+            if 'Service' in db:
+                appt_dict = db['Service']
+            for key in appt_dict:
+                service = appt_dict.get(key)
+                appt_list.append(service)
+    except IOError as ex:
+        print(f"Error in retrieving products from service.db (inventory route)- {ex}")
+    except Exception as ex:
+        print(f"Unknown error in retrieving customers from service.db - {ex}")
+    upcoming_appointments = len(appt_list)
     account_list = get_customers('DB') + get_staff('DB')
-    return render_template('account/staff_dashboard.html', account_list=account_list, account_count=len(account_list))
+    return render_template('account/staff_dashboard.html', account_list=account_list, account_count=len(account_list), upcoming_appointments=upcoming_appointments)
 
 
 @account.route('/StaffProfile', methods=["POST", "GET"])
@@ -584,7 +600,8 @@ def staff_account_management():
         deactivated_count = len(account_list) - account_count
 
     return render_template('account/account_management.html', account_list=account_list,
-                           delete_account_form=delete_account_form, account_count=account_count, customer_count=customer_count, staff_count=staff_count, deactivated_count=deactivated_count)
+                           delete_account_form=delete_account_form, account_count=account_count,
+                           customer_count=customer_count, staff_count=staff_count, deactivated_count=deactivated_count)
 
 
 @account.route('/StaffAccountDelete/<user_id>', methods=['POST', 'GET'])
@@ -621,7 +638,8 @@ def staff_add_account():
         if not validate_email(add_account_form.email.data, 'DB', ):
             error_messages['email'] = "The email is already taken"
         if add_account_form.phone_number.data:
-            if not str(add_account_form.data).isdigit() and not validate_number(add_account_form.phone_number.data, 'DB', ):
+            if not str(add_account_form.data).isdigit() and not validate_number(add_account_form.phone_number.data,
+                                                                                'DB', ):
                 error_messages['number'] = "Invalid phone number"
         if error_messages == {}:
             if add_account_form.account_type.data == 'customer':
@@ -674,7 +692,8 @@ def staff_edit_account(user_id):
                 else:
                     error_messages['email'] = "The email is already taken"
                 if add_account_form.phone_number.data:
-                    if str(add_account_form.phone_number.data).isdigit() and validate_number(add_account_form.phone_number.data, 'DB', exceptions=number):
+                    if str(add_account_form.phone_number.data).isdigit() and validate_number(
+                            add_account_form.phone_number.data, 'DB', exceptions=number):
                         target_user.set_number(add_account_form.phone_number.data)
                     else:
                         error_messages['number'] = "The phone number is already taken"
