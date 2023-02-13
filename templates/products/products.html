@@ -10,22 +10,22 @@
     <p class="h2"></p>
 </div>
 
-<div class="grid-container productsrow">
+<div class="grid-container productsrow mx-auto p-3">
 
     {% for product in products_list %}
-    <div class="grid-item">
-        <div class="insideproductsrow">
-            <!--Product image (Clickable link)-->
-            <a href="/products/{{product.get_product_id()}}">
-                <img src="../../static/media/images/product/{{ product.get_product_image() }}" alt="Image of product with ID: {{ product.get_product_id() }}">
-            </a>
+    <div class="grid-item card addSpaceBetweenCard" style="width: 18rem;">
+        <!--Product image (Clickable link)-->
+        <a href="/products/{{product.get_product_id()}}" class="mx-auto text-center p-3 m">
+            <img src="../../static/media/images/product/{{ product.get_product_image() }}"
+                 alt="Image of product with ID: {{ product.get_product_id() }}"
+                 class="card-img-top">
+        </a>
+        <div class="card-body">
+            <ul class="card-text text-black">
+                <li class="h5 mx-auto" style="margin-left: auto; margin-right: auto;">{{ product.get_product_name() }}</li>
 
-            <ul>
-                <!--Product name-->
-                <li class="h5" style="width: 80%; margin-left: auto; margin-right: auto;">{{ product.get_product_name() }}</li>
-
-                <!--Product price-->
-                <li>${{ "%.2f"|format(product.get_product_price()) }}</li>
+                <!--Product category-->
+                <li>Quantity: {{ product.get_product_type() }}</li>
 
                 <!--Product rating-->
                 <li>Rating: 5/5 (Temp rating)</li>
@@ -33,11 +33,39 @@
                 <!--Product quantity-->
                 <li>Quantity: {{ product.get_product_quantity() }}</li>
 
+                <!--Product price-->
+                <li class="h6 bg-warning p-3 m-3 rounded text-center"><a href="/products/{{product.get_product_id()}}" class="text-decoration-none text-black">${{ "%.2f"|format(product.get_product_price()) }}</a></li>
+
             </ul>
         </div>
-
-
     </div>
+
+
+    <!--    <div class="grid-item">-->
+    <!--        <div class="insideproductsrow">-->
+    <!--                &lt;!&ndash;Product image (Clickable link)&ndash;&gt;-->
+    <!--                <a href="/products/{{product.get_product_id()}}">-->
+    <!--                    <img src="../../static/media/images/product/{{ product.get_product_image() }}" alt="Image of product with ID: {{ product.get_product_id() }}">-->
+    <!--                </a>-->
+
+    <!--            <ul>-->
+    <!--                &lt;!&ndash;Product name&ndash;&gt;-->
+    <!--                <li class="h5" style="width: 80%; margin-left: auto; margin-right: auto;">{{ product.get_product_name() }}</li>-->
+
+    <!--                &lt;!&ndash;Product price&ndash;&gt;-->
+    <!--                <li>${{ "%.2f"|format(product.get_product_price()) }}</li>-->
+
+    <!--                &lt;!&ndash;Product rating&ndash;&gt;-->
+    <!--                <li>Rating: 5/5 (Temp rating)</li>-->
+
+    <!--                &lt;!&ndash;Product quantity&ndash;&gt;-->
+    <!--                <li>Quantity: {{ product.get_product_quantity() }}</li>-->
+
+    <!--            </ul>-->
+    <!--        </div>-->
+
+
+    <!--    </div>-->
     {% endfor %}
 
     <!--    These 2 may be removable, can use for loop and what not. see grid is already -->
