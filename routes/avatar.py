@@ -21,6 +21,8 @@ def avatar():
     stock = Avatar(hairstyle_assets[0], faceshape_assets[0], eyes_assets[0], lips_assets[0], 0)
     stock.save_avatar("stock")
 
+    menu = Menu(["HAIRSTYLES","FACESHAPE", "EYES", "LIPS"], 0, assets)
+
     if "customer" in session:
         user_id = session["customer"].get("_Account__user_id")
         user_id = str(user_id)
@@ -54,12 +56,41 @@ def avatar():
                     # db[user_id] = [preview, avatar_list]
                     avatarSave(preview, user_id, avatar_list, db)
 
+                else:
+                    pass
+
     except IOError as ex:
         print(f"Error in retrieving avatars from avatar_list.db - {ex}")
     except Exception as ex:
         print(f"Unknown error in retrieving avatars from avatar_list.db - {ex}")
 
-    return render_template('avatar/customer_avatar.html', preview=preview, avatar_list=avatar_list)
+    try:
+        with shelve.open("DB/avatar_temporary/menu", "c") as db:
+            if user_id not in db:
+                db[user_id] = menu
+            else:
+                pass
+
+            menu = db[user_id]
+
+            if request.method == "POST":
+                if "slider" in request.form:
+                    if request.form["slider"] == "next":
+                        menu.next()
+                    else:
+                        menu.prev()
+
+                    db[user_id] = menu
+
+            else:
+                pass
+
+    except IOError as ex:
+        print(f"Error in retrieving menu from menu.db - {ex}")
+    except Exception as ex:
+        print(f"Unknown error in retrieving menu from menu.db - {ex}")
+
+    return render_template('avatar/customer_avatar.html', preview=preview, avatar_list=avatar_list, menu=menu)
 
 
 @avatar_blueprint.route("/avatarSave", methods=['GET', 'POST'])

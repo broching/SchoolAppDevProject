@@ -12,30 +12,34 @@ Avatar Customisation Page
           integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
 
     <style>
-    input {
-        text-decoration: none;
-        display: inline-block;
-        padding: 8px 16px;
-    }
+        body{
+          background-color: #000;
+        }
+        .carousel{
+          margin-top: 50px;
+        }
+        .carousel-inner{
+          height: 100px;
+        }
+        .carousel-caption{
+          color: #fff;
+          top: 50%;
+        }
 
-    input:hover {
-        background-color: #ddd;
-        color: black;
-    }
+        .cropped {
+            width: 300px;
+            height: 400px;
+            overflow: hidden;
+            border: 5px solid #555;
+            object-fit: cover;
+        }
 
-    .previous {
-        background-color: #f1f1f1;
-        color: black;
-    }
+        .cropped img {
+            margin: -150px 0px 0px -150px;
+        }
 
-    .next {
-        background-color: #04AA6D;
-        color: white;
-    }
 
-    .round {
-        border-radius: 50%;
-    }
+
 
     </style>
 </head>
@@ -43,36 +47,70 @@ Avatar Customisation Page
 
 <div class="container">
     <div class="row">
-        <div class="col-sm">
-            {% for avatar in avatar_list %}
-            <img src="{{ avatar.image }}" width="300" height="400">
-            {% endfor %}
+        <div class="col">
+            <h1>CUSTOMISATION</h1>
+            <div class="row">
+                <div class="col">
+                    <form action="" method="post">
+                        <button type="submit" name="slider" value="prev"><span class="carousel-control-prev-icon"
+                                                                             aria-hidden="true"></span></button>
+                    </form>
+                </div>
+                <div class="col">
+                    <h3>{{ menu.tabs[menu.selected_tab] }}</h3>
+                </div>
+                <div class="col">
+                    <form action="" method="post">
+                        <button type="submit" name="slider" value="next"><span class="carousel-control-next-icon"
+                                                                             aria-hidden="true"></span></button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="container">
+                    {% for asset in menu.tab_items[menu.selected_tab] %}
+                        <img class="cropped" src="{{ asset }}" width="600" height="600">
+                    {% endfor %}
+                </div>
+            </div>
         </div>
 
-        <div class="col-sm">
-            <form method="POST">
-                <input type="submit" name="next" value="hairstyles">
-            </form>
-            <form method="POST">
-                <input type="submit" name="next" value="faceshape">
-            </form>
-            <form method="POST">
-                <input type="submit" name="next" value="eyes">
-            </form>
-            <form method="POST">
-                <input type="submit" name="next" value="lips">
-            </form>
-            <form method="POST">
-                <input type="submit" name="save" value="save">
-            </form>
-        </div>
-        <div class="col-lg">
-            <div>
-                <h1 class="center">Preview: </h1>
-                <img src="{{ preview.image }}" alt="image">
+        <div class="col">
+            <h1>PREVIEW</h1>
+            <div class="row">
+                <div class="col-sm">
+                    {% for avatar in avatar_list %}
+                    <img src="{{ avatar.image }}" width="300" height="400">
+                    {% endfor %}
+                </div>
+
+                <div class="col-sm">
+                    <form method="POST">
+                        <input type="submit" name="next" value="hairstyles">
+                    </form>
+                    <form method="POST">
+                        <input type="submit" name="next" value="faceshape">
+                    </form>
+                    <form method="POST">
+                        <input type="submit" name="next" value="eyes">
+                    </form>
+                    <form method="POST">
+                        <input type="submit" name="next" value="lips">
+                    </form>
+                    <form method="POST">
+                        <input type="submit" name="save" value="save">
+                    </form>
+                </div>
+                <div class="col-lg">
+                    <div>
+                        <img src="{{ preview.image }}" alt="image">
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
 </div>
 </body>
 </html>
