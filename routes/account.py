@@ -17,12 +17,6 @@ from models.account.account_classes import Customer, Staff
 account = Blueprint('account', __name__)
 
 
-@account.route('/CustomerDashboard')
-@customer_login_required
-def customer_dashboard():
-    return render_template('account/customer_dashboard.html')
-
-
 @account.route('/customerProfile', methods=["POST", "GET"])
 @customer_login_required
 def customer_profile():
