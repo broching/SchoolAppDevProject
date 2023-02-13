@@ -393,6 +393,7 @@ def createServiceReview():
                     db['Staff_Service_Reviews'] = staff_service_reviews_dict
                 # end
 
+
                 # filter db for Hair Cut
                 if service_review.get_service_selection() == 'Hair Cut':
                     with shelve.open('DB/reviews/serviceReviews/Service1/serviceReview.db', 'c') as db:
