@@ -96,7 +96,7 @@ body {
 .insideproductsrow {
     margin-left: auto;
     margin-right: auto;
-    text-align: center;
+    /*text-align: center; */
 }
 
 
@@ -114,6 +114,7 @@ body {
     background: rgba(15, 15, 15, 0.8);
     padding: 30px;
     border-radius: 10px;
+    color: white;
 }
 
 .productSpecificForProduct img {

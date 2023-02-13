@@ -332,7 +332,7 @@ def viewCart():
                                     itemToUpdate['_Product__image'] = product.get_product_image()
 
                                 if itemToUpdate['_Product__productName'] != product.get_product_name():
-                                    itemToUpdate['_Product__image'] = product.get_product_name()
+                                    itemToUpdate['_Product__productName'] = product.get_product_name()
 
                                 if itemToUpdate['_Product__price'] != product.get_product_price():
                                     itemToUpdate['_Product__price'] = product.get_product_price()

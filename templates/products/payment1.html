@@ -28,13 +28,13 @@
 
     </div>
 
-    <div class="grid-item">
+    <div class="grid-item text-decoration-none">
         <ul>
             <!--Product name-->
             <li class="psfpli2">{{ product.get_product_name() }}</li>
 
             <!--Product price-->
-            <li class="psfpli2">${{ "%.2f"|format(product.get_product_price()) }}</li>
+            <li class="h1 bg-light text-black p-2 rounded" style="font-weight: normal;">${{ "%.2f"|format(product.get_product_price()) }}</li>
 
             <!--Product rating-->
             <li class="psfpli2">5/5 (Temp rating)</li>
@@ -49,7 +49,7 @@
 
         <div class="pbtnset">
             <!--        submit-->
-            <a href="{{url_for('productr.productOrder', id=product.get_product_id())}}" class="btn btn-primary btnpbtnse">Buy</a>
+            <a href="{{url_for('productr.productOrder', id=product.get_product_id())}}" class="btn btn-outline-light btnpbtnse">Buy</a>
         </div>
 
 <!--            <form action="{{url_for('productr.productOrder', id=product.get_product_id())}}" method="POST">-->
@@ -58,7 +58,7 @@
 
         <!--        add to cart-->
             <form action="{{url_for('productr.addToCart', id=product.get_product_id())}}" method="POST">
-                <input type="submit" value="Add to cart" class="btn btn-primary btnpbtnse">
+                <input type="submit" value="Add to cart" class="btn btn-outline-light btnpbtnse">
             </form>
 
     </div>

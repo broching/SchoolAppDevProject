@@ -663,8 +663,11 @@ def staff_add_account():
         if not validate_email(add_account_form.email.data, 'DB', ):
             error_messages['email'] = "The email is already taken"
         if add_account_form.phone_number.data:
-            if not str(add_account_form.data).isdigit() and not validate_number(add_account_form.phone_number.data,
-                                                                                'DB', ):
+            if str(add_account_form.phone_number.data).isdigit() and validate_number(
+                    add_account_form.phone_number.data, 'DB',
+                    exceptions=session['customer']['_Account__number']):
+                pass
+            else:
                 error_messages['number'] = "Invalid phone number"
         if error_messages == {}:
             if add_account_form.account_type.data == 'customer':

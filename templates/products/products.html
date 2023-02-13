@@ -10,7 +10,7 @@
     <p class="h2"></p>
 </div>
 
-<div class="grid-container productsrow mx-auto p-3">
+<div class="grid-container productsrow p-3">
 
     {% for product in products_list %}
     <div class="grid-item card addSpaceBetweenCard" style="width: 18rem;">
@@ -20,19 +20,19 @@
                  alt="Image of product with ID: {{ product.get_product_id() }}"
                  class="card-img-top">
         </a>
-        <div class="card-body">
-            <ul class="card-text text-black">
+        <div class="card-body insideproductsrow">
+            <ul class="card-text text-black mx-auto">
                 <li class="h5 mx-auto" style="margin-left: auto; margin-right: auto;">{{ product.get_product_name() }}</li>
-
+                <br>
                 <!--Product category-->
                 <li>Type: {{ product.get_product_type() }}</li>
-
+                <br>
                 <!--Product rating-->
                 <li>Rating: 5/5 (Temp rating)</li>
-
+                <br>
                 <!--Product quantity-->
                 <li>Quantity: {{ product.get_product_quantity() }}</li>
-
+                <br>
                 <!--Product price-->
                 <li class="h6 bg-warning p-3 m-3 rounded text-center"><a href="/products/{{product.get_product_id()}}" class="text-decoration-none text-black">${{ "%.2f"|format(product.get_product_price()) }}</a></li>
 
