@@ -431,7 +431,8 @@ def customer_default_card(card_id):
 @account.route('/StaffDashboard')
 @staff_login_required
 def staff_dashboard():
-    return render_template('account/staff_dashboard.html')
+    account_list = get_customers('DB') + get_staff('DB')
+    return render_template('account/staff_dashboard.html', account_list=account_list, account_count=len(account_list))
 
 
 @account.route('/StaffProfile', methods=["POST", "GET"])

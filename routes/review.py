@@ -1,13 +1,13 @@
 import shelve
 from flask import Blueprint, render_template, request, url_for, redirect, session, flash
 
-from models.auth.auth_functions import customer_login_required
+from models.auth.auth_functions import customer_login_required, staff_login_required
 from models.reviews.productReview import productReview
 from models.reviews.serviceReview import serviceReview
 from models.reviews.createProductReview import CreateProductReview
 from models.reviews.createServiceReview import CreateServiceReview
 
-from routes.account import customer_profile
+from routes.account import customer_profile, staff_profile
 
 review = Blueprint('review', __name__)
 
@@ -180,6 +180,7 @@ def deleteProductReview(id, pid):
                     product_reviews_dict.pop(pid)
                     next_pid = pid
                     db['Product_Reviews'] = product_reviews_dict
+                    flash('Your product review has been successfully deleted.', category='success')
 
                     # delete from product1 filter
                     product1_reviews_dict = {}
@@ -211,6 +212,9 @@ def deleteProductReview(id, pid):
                             product3_reviews_dict.pop(next_pid)
                             db['Product3_Reviews'] = product3_reviews_dict
 
+
+                else:
+                    flash('You are not authorised to delete this product review.', category='error')
 
     except IOError as ex:
         print(f"Error in retrieving product reviews from productReviews.db - {ex}")
@@ -248,8 +252,8 @@ def createServiceReview():
                 service_reviews_dict[service_review.get_service_id()] = service_review
                 db['Service_Reviews'] = service_reviews_dict
 
-                # filter db for Haircut/Hairwash
-                if service_review.get_service_selection() == 'Hair Cut / Hair Wash':
+                # filter db for Hair Cut
+                if service_review.get_service_selection() == 'Hair Cut':
                     with shelve.open('DB/reviews/serviceReviews/Service1/serviceReview.db', 'c') as db:
                         service1_reviews_dict = {}
                         if 'Service1_Reviews' in db:
@@ -421,6 +425,7 @@ def stylist1_filter():
     return render_template('reviews/stylist1Reviews.html', count=len(stylist1_reviews_list),
                            stylist1_reviews_list=stylist1_reviews_list)
 
+
 @review.route('/stylist2Reviews')
 def stylist2_filter():
     stylist2_reviews_list = []
@@ -439,6 +444,7 @@ def stylist2_filter():
 
     return render_template('reviews/stylist2Reviews.html', count=len(stylist2_reviews_list),
                            stylist2_reviews_list=stylist2_reviews_list)
+
 
 @review.route('/stylist3Reviews')
 def stylist3_filter():
@@ -473,8 +479,72 @@ def deleteServiceReview(id, pid):
                 delete_id = session['customer']['_Account__user_id']
 
                 if delete_id == id:
-                    service_reviews_dict.pop(pid)  # Step 1: Updates are handled using dictionaries first.
+                    service_reviews_dict.pop(pid)
+                    next_pid = pid
                     db['Service_Reviews'] = service_reviews_dict
+                    flash('Your service review has been successfully deleted.', category='success')
+
+                    # delete from service1 filter
+                    service1_reviews_dict = {}
+                    with shelve.open('DB/reviews/serviceReviews/Service1/serviceReview.db', 'w') as db:
+                        if 'Service1_Reviews' in db:
+                            service1_reviews_dict = db['Service1_Reviews']
+
+                        if next_pid in service1_reviews_dict:
+                            service1_reviews_dict.pop(next_pid)
+                            db['Service1_Reviews'] = service1_reviews_dict
+
+                    # delete from service2 filter
+                    service2_reviews_dict = {}
+                    with shelve.open('DB/reviews/serviceReviews/Service2/serviceReview.db', 'w') as db:
+                        if 'Service2_Reviews' in db:
+                            service2_reviews_dict = db['Service2_Reviews']
+
+                        if next_pid in service2_reviews_dict:
+                            service2_reviews_dict.pop(next_pid)
+                            db['Service2_Reviews'] = service2_reviews_dict
+
+                    # delete from service3 filter
+                    service3_reviews_dict = {}
+                    with shelve.open('DB/reviews/serviceReviews/Service3/serviceReview.db', 'w') as db:
+                        if 'Service3_Reviews' in db:
+                            service3_reviews_dict = db['Service3_Reviews']
+
+                        if next_pid in service3_reviews_dict:
+                            service3_reviews_dict.pop(next_pid)
+                            db['Service3_Reviews'] = service3_reviews_dict
+
+                    # delete from stylist1 filter
+                    stylist1_reviews_dict = {}
+                    with shelve.open('DB/reviews/serviceReviews/Stylist1/serviceReview.db', 'w') as db:
+                        if 'Stylist1_Reviews' in db:
+                            stylist1_reviews_dict = db['Stylist1_Reviews']
+
+                        if next_pid in stylist1_reviews_dict:
+                            stylist1_reviews_dict.pop(next_pid)
+                            db['Stylist1_Reviews'] = stylist1_reviews_dict
+
+                    # delete from stylist2 filter
+                    stylist2_reviews_dict = {}
+                    with shelve.open('DB/reviews/serviceReviews/Stylist2/serviceReview.db', 'w') as db:
+                        if 'Stylist2_Reviews' in db:
+                            stylist2_reviews_dict = db['Stylist2_Reviews']
+
+                        if next_pid in stylist2_reviews_dict:
+                            stylist2_reviews_dict.pop(next_pid)
+                            db['Stylist2_Reviews'] = stylist2_reviews_dict
+
+                    # delete from stylist3 filter
+                    stylist3_reviews_dict = {}
+                    with shelve.open('DB/reviews/serviceReviews/Stylist3/serviceReview.db', 'w') as db:
+                        if 'Stylist3_Reviews' in db:
+                            stylist3_reviews_dict = db['Stylist3_Reviews']
+
+                        if next_pid in stylist3_reviews_dict:
+                            stylist3_reviews_dict.pop(next_pid)
+                            db['Stylist3_Reviews'] = stylist3_reviews_dict
+                else:
+                    flash('You are not authorised to delete this service review.', category='error')
 
     except IOError as ex:
         print(f"Error in retrieving service reviews from serviceReviews.db - {ex}")

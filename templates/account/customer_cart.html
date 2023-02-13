@@ -1,0 +1,139 @@
+{% extends "productbase.html" %}
+{% block title %}Cart{% endblock %}
+{% block content %}
+
+{% if 'deleteCartItem' in session %}
+<div class="alert alert-info alert-dismissible fade show" role="alert">
+  <strong>Info</strong> {{ session.pop('deleteCartItem', None) }} removed from cart.
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+
+<h1 class="display-4 uptitel">Cart</h1>
+
+{% endblock %}
+{% block content2 %}
+<div class="m-2">
+    <!--    <div class="m-2 uptitel">-->
+    <!--        <p class="h3">View cart</p>-->
+    <!--    </div>-->
+
+    <!--    Conditions-->
+    <div class="uptitel">
+        {% if count == 0 %}
+        <p>There are no items.</p>
+        {% elif count == 1 %}
+        <p>There is 1 item.</p>
+        {% else %}
+        <p>There are {{ count }} items.</p>
+        {% endif %}
+    </div>
+
+    <!--    &lt;!&ndash;    Add new&ndash;&gt;-->
+    <!--    <div class="secondheader"><a href="/createProduct" style="color: white; text-decoration: none;">Add new</a></div>-->
+
+    <!--    Table to display products for Staff-->
+    <div class="productitems2343">
+        <table class="table table-striped">
+
+            <thead>
+            <tr class="tarow1first">
+                <th style="width: 100px;">Image</th>
+                <th>ID</th>
+                <th>Name</th>
+                <th style="width: 80px;">Price</th>
+                <th style="width: 80px;">Cost</th>
+                <th>Quantity</th>
+                <th style="width: 300px;">Description</th>
+                <th style="width: 70px"></th>
+                <th style="width: 50px"></th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% if count == 0 %}
+            <tr>
+                <td colspan="9">There are currently no items. Browse items here:&nbsp;&nbsp;&nbsp;<a href="/products" class="btn btn-outline-dark">Shop</a></td>
+            </tr>
+            {% endif %}
+            {% for item in cust_cart %}
+            <tr>
+                <td style="width: 100px; height: 100px; padding: 5px"><img
+                        src="../../static/media/images/product/{{ item._Product__image }}"
+                        alt="Image of product with ID: {{ item._Product__id }}"
+                        style="height: 90px; width: 90px; border-radius: 5px;"></td>
+                <td>{{ item._Product__id }}</td>
+                <td>{{ item._Product__productName }}</td>
+                <td>${{ "%.2f"|format(item._Product__price) }}</td>
+                <td>${{ "%.2f"|format(item._Product__productCost) }}</td>
+                <td>{{ item._Product__quantity }}</td>
+                <td>{{ item._Product__description }}</td>
+                <td>
+                    <div>
+                        <!--        submit-->
+                        <a href="{{url_for('productr.productOrder', id=item._Product__id)}}"
+                           class="btn btn-primary">Buy</a>
+                    </div>
+                </td>
+                <td>
+                    <!--                                    <form action="{{url_for('productr.deleteItemFromCart', id=item._Product__id)}}" method="POST">-->
+                    <!--                                        <input type="submit" value="Remove" class="btn btn-danger">-->
+                    <!--                                    </form>-->
+
+                    <!--                    <button onclick="removeItem(cust_cart)" class="btn btn-danger">-->
+                    <!--                        Remove-->
+                    <!--                    </button>-->
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                            data-bs-target="#targetmodal{{ item._Product__id }}">
+                        Delete
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="targetmodal{{ item._Product__id }}" tabindex="-1"
+                         aria-labelledby="exampleModalLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">{{ item._Product__productName }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to delete?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                                    </button>
+                                    <form action="{{url_for('productr.deleteItemFromCart', id=item._Product__id)}}"
+                                          method="POST">
+                                        <input type="submit" value="Remove" class="btn btn-danger">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </td>
+            </tr>
+            {% endfor %}
+
+            {% if count > 0 %}
+            <tr>
+                <td colspan="9">
+                    <div>
+                        <!--        submit-->
+                        <a href="{{url_for('productr.productOrderCart', id=cart_id)}}"
+                           class="btn btn-primary">Purchase All</a>
+                    </div>
+                </td>
+            </tr>
+            {% endif %}
+
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+{% endblock %}

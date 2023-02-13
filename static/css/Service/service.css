@@ -35,10 +35,9 @@
 .form{
     border-radius:10px;
 }
-.h5{
-    color:white;
-
-
+.table table-striped{
+color:White;
+background-color: Black;
 }
 
 

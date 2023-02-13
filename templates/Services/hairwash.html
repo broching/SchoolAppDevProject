@@ -9,16 +9,49 @@
 <div class="m-2">
     <p class="h2">Hair Wash</p>
 </div>
-{% endblock %}
-<img src="{{url_for('static', filename='haircut.png')}}" align="middle"/>
 <p class="hairwash_h5">Choose from the many hair dressers available in the salon to provide you a service</p>
 <div class="grid-items">
-        <div class="insideservicerow">
-            <a href="/Services/haircut.html">
-                <img src="static/media/images/Service/haircut.png">
-            </a>
+    <table class="table table-striped">
+        <thead>
+        <th>Service</th>
+        <th>Description</th>
+        <th>Duration of Service</th>
+        <th>Appointment Booking</th>
+        </thead>
+        <tbody>
+        <td>Hair Wash + Head Massage</td>
+        <td>Enjoy a relaxing hairwash and head Massage to unwind</td>
+        <td>1h 30 mins</td>
+        <td><a href="/Services/addNewServiceform" class="btn btn-warning">Book Appointment</a></td>
+        </tbody>
+        <tbody>
+        <td>Basic Hair Wash</td>
+        <td>In a hurry? want a quick hairwash? Enjoy a quick 15-20 min hair wash our very own skilled and professional hairdressers!</td>
+        <td>15-20 mins</td>
+        <td><a href="/Services/addNewServiceform" class="btn btn-warning">Book Appointment</a></td>
+        </tbody>
+        <tbody>
+        <td>Hair Wash + Hair Styling</td>
+        <td>Suitable for customers who are attending special occasions. Get your hair washed and styled by our hairstylist!</td>
+        <td>1h 30 mins</td>
+        <td><a href="/Services/addNewServiceform" class="btn btn-warning">Book Appointment</a></td>
+        </tbody>
+    </table>
 
-                <p class="h5" style="width: 80%; margin-left: auto; margin-right: auto;"> Hairwash by James</p>
+    </div>
+{% endblock %}
+
+
+<p class="hairwash_h5">Choose from the many hair dressers available in the salon to provide you a service</p>
+<div class="grid-items">
+    <table>
+        <thead>
+        <th>Hair Dresser</th>
+        <th>Service</th>
+        <th>Duration of Service</th>
+        <th>Appointment Booking</th>
+        </thead>
+    </table>
 
     </div>
 </div>

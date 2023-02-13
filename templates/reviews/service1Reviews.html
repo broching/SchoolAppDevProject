@@ -2,31 +2,40 @@
 {% block title %}All Service Reviews{% endblock %}
 {% block content %}<h1 class="display-4"></h1>{% endblock %}
 {% block content2 %}
+
+<!--alerts-->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+{% if category == 'error' %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+    </button>
+</div>
+{% else %}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+
+{% endfor %}
+{% endif %}
+{% endwith %}
+
 <div class="m-2">
 
     <div class="secondheader"><a href="#"></a></div>
 
-    <!--    Conditions-->
-    <div>
-        {% if count == 0 %}
-        <p>There are no reviews.</p>
-        {% elif count == 1 %}
-        <p>There is 1 review.</p>
-        {% else %}
-        <p>There are {{ count }} reviews.</p>
-        {% endif %}
-    </div>
+    <br>
 
-    <div>
-        Click <a href="/createServiceReview">here</a> to create a service review.
-    </div>
-
-    <!--    product filters & create review-->
+    <!--    service filters & create review-->
     <div class="container">
         <div class="row">
             <div class="col-md service-filters">
                 <button type="button" class="btn btn-outline-dark"><a href="/serviceReviews">All</a></button>
-                <button type="button" class="btn btn-outline-dark"><a href="/service1Reviews">Hair Cut / Hair Wash</a></button>
+                <button type="button" class="btn btn-outline-dark"><a href="/service1Reviews">Hair Cut</a></button>
                 <button type="button" class="btn btn-outline-dark"><a href="/service2Reviews">Hair Styling</a></button>
                 <button type="button" class="btn btn-outline-dark"><a href="/service3Reviews">Hair Dye</a></button>
             </div>
@@ -52,13 +61,24 @@
 
     <br>
 
-    <!--    Table to display all product reviews-->
+    <h2>Hair Cut Reviews</h2>
+
+    <br>
+
+    <!--    Table to display all service reviews-->
     <div class="service_reviews">
         <table class="table table-striped">
 
             <thead>
             <tr class="tarow1first">
-                <th style="font-size: 150%;">{{ count }} Service Reviews</th>
+                {% if count == 0 %}
+                <th style="font-size: 150%;">{{ count }} Reviews</th>
+                {% elif count == 1 %}
+                <th style="font-size: 150%;">{{ count }} Review</th>
+                {% else %}
+                <th style="font-size: 150%;">{{ count }} Reviews</th>
+                {% endif %}
+
             </tr>
             </thead>
 
@@ -72,11 +92,10 @@
                     <p><b>Rating: </b> {{ service1_review.get_service_rating() }} </p> <br>
                     <p><b>Image </b> <br>
 
-                        {{ service1_review.get_service_image() }}
+                    <p style="width: 200px; height: 200px; padding: 5px"><img
+                            src="../../static/media/images/reviews/service_reviews/haircut.jpg"
+                            style="height: 200px; width: 200px; border-radius: 5px;"></p>
 
-                    <p style="width: 100px; height: 100px; padding: 5px"><img
-                            src="../../static/media/images/reviews/service_reviews/{{ service1_review.get_service_image() }}"
-                            style="height: 90px; width: 90px; border-radius: 5px;"></p>
                     <p><b>Video </b> {{ service1_review.get_service_video() }} </p> <br>
                     <p><b>Comment </b> {{ service1_review.get_service_comment() }} </p> <br>
                     <p><b>Unique ID </b> {{ service1_review.get_service_id() }} </p> <br>

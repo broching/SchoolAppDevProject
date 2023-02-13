@@ -1,49 +1,34 @@
 {% extends "/Services/servicebase.html" %}
 {% block title %}Appointment retrieval - Retrieve Appointment{% endblock %}
-{% block content %}
-<h1 class="display-4">Retrieve Users</h1>
+{%block content %}
+<h1 class="display-4">Retrieve Appointment</h1>
 <div>
-    <div>
-        {% if count == 0 %}
-        <p>There are no users.</p>
-        {% elif count == 1 %}
-        <p>There is 1 user.</p>
-        {% else %}
-        <p>There are {{ count }} users.</p>
-        {% endif %}
-    </div
     <table class="table table-striped">
         <thead>
-
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Last Name</th>
+            <th>Gender</th>
+            <th>Appointment Date</th>
+            <th>Appointment Time</th>
+            <th></th>
+            <th></th>
+        </tr>
         </thead>
         <tbody>
-        {% for service in appt_list %}
         <tr>
-            <td>{{ service.get_first_Name() }}</td>
-            <td>{{ service.get_last_Name() }}</td>
-            <td>{{ service.get_gender() }}</td>
-            <td>{{ service.get_appointment_Date() }}</td>
-            <td>{{ service.get_appointment_Time() }}</td>
-            <td><a href="/addNewServiceform{{service.get_first_name}}" class="btn btn-warning">Update</a></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
             <td>
-                <form action="" method="POST">
-                    <input type="submit" value="Delete" class="btn btn-danger">
-                </form>
+            <form action="" method="GET">
+                <input type="submit" value="Delete" class="btn btn-danger">
+            </form>
             </td>
-        </tr>
-        {% endfor %}
-        <tr>
-            <td>First Name</td>
-            <td>Last Name</td>
-            <td>Gender</td>
-            <td>Appointment Date</td>
-            <td>Appointment Time</td>
-            <td>
-                <form action="" method="GET">
-                     <input type="submit" value="Delete" class="btn btn-danger">
-                </form>
-            </td>
-
         </tr>
         </tbody>
     </table>

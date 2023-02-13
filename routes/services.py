@@ -50,59 +50,37 @@ def add_new_service():
                            form=form)
 
 
-# routes for appointment booking
-
-# @service.route('/Services/addNewServiceform')
-# def book_appt():
-#     book_appt_form=AddNewService(request.form)
-#     if request.method=='POST' and book_appt_form.validate():
-#         cust_appt_dict={}
-#         db=shelve.open('service.db','c')
-#         try:
-#             cust_appt_dict=db['firstName']
-#         except:
-#             print("Error in Retrieving appointment records from service.db")
-#         appoitment=Service.Service(book_appt_form.first_name.data,
-#                                    book_appt_form.last_name.data,
-#                                    book_appt_form.gender.data,
-#                                    book_appt_form.appointment_date.data,
-#                                    book_appt_form.appointment_time.data)
-#         cust_appt_dict[appoitment.get_firstName()]=appoitment
-#         db['firstName']=cust_appt_dict
-#         db.close()
-#         return redirect('/Services/retrieveAppointment.html')
-#     return render_template('/Services/addNewServiceform.html',form=book_appt_form)
-
 
 @service.route('/addNewServiceform')
 def appointment():
     service_list = []
     try:
         service_dict = {}
-        with shelve.open('/Services/service_1.db', 'r') as db:
+        with shelve.open('/Services/service_2.db', 'c') as db:
             if 'Service' in db:
-                Service_dict = db['Service']
-            for key in Service_dict:
+                service_dict = db['Service']
+            for key in service_dict:
                 service = service_dict.get(key)
                 service_list.append(service)
     except IOError as ex:
-        print(f"Error in retrieving customers from customer.db - {ex}")
+        print(f"Error in retrieving customers from service_2.db - {ex}")
     except Exception as ex:
-        print(f"Unknown error in retrieving customers from customer.db - {ex}")
-
+        print(f"Unknown error in retrieving customers from service_2.db - {ex}")
+    print("1")
     return render_template('Services/service.html', count=len(service_dict), form=form)
 
 
 @service.route('/addNewServiceform', methods=['POST','GET'])
 def book_appointment():
+    print("1")
     Apointment_booking_form = AddNewService(request.form)
-    if request.method == 'POST' and Apointment_booking_form.validate():
+    if request.method == 'GET' and Apointment_booking_form.validate():
         try:
-            with shelve.open('service_1.db', 'c') as db:
+            with shelve.open('service_2.db', 'c') as db:
 
                 service_dict = {}
                 if 'Service' in db:
-                    service_dict = db['Service_1']
+                    service_dict = db['Service']
                 service = Service(Apointment_booking_form.first_name.data,
                                   Apointment_booking_form.last_name.data,
                                   Apointment_booking_form.gender.data,
@@ -112,12 +90,14 @@ def book_appointment():
 
                 service_dict[service.get_first_Name()] = service
                 db['Service'] = service_dict
+                print("2")
                 return ("Submission Succesful")
         except IOError as ex:
             print("Error in retrieving Appointment")
             return render_template('/Services/servicebase.html', form=Apointment_booking_form)
 
     else:
+        print("3")
         return render_template('/Services/addNewServiceform.html', form=Apointment_booking_form)
 
 
@@ -141,7 +121,7 @@ def retrieve_appt():
     appt_list = []
     try:
         appt_dict = {}
-        with shelve.open('service_1.db', 'r') as db:
+        with shelve.open('service_2.db', 'r') as db:
             if 'Service' in db:
                 appt_dict = db['Service']
             for key in appt_dict:
@@ -160,7 +140,7 @@ def add_new():
     add_new_form = update_service_form(request.form)
     if request.method == 'POST' and add_new_form.validate():
         appt_dict = {}
-        db = shelve.open('service.db', 'c')
+        db = shelve.open('service_2.db', 'c')
         try:
             appt_dict = db['hairstylist']
         except:

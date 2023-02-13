@@ -3,10 +3,23 @@
 {% block content %}<h1 class="display-4"></h1>{% endblock %}
 {% block content2 %}
 
-{% with messages = get_flashed_messages() %}
+<!--alerts-->
+{% with messages = get_flashed_messages(with_categories=true) %}
 {% if messages %}
-{% for message in messages %}
-{{ message }}
+{% for category, message in messages %}
+{% if category == 'error' %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+    </button>
+</div>
+{% else %}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+
 {% endfor %}
 {% endif %}
 {% endwith %}
@@ -27,7 +40,7 @@
                 <button type="button" class="btn btn-outline-dark"><a href="/product2Reviews">Product 2</a></button>
                 <button type="button" class="btn btn-outline-dark"><a href="/product3Reviews">Product 3</a></button>
             </div>
-            <div class="col-md col-2">
+            <div class="col-md create-product-review-button">
                 <button type="button" class="btn btn-outline-dark"><a href="/createProductReview">Create A Review</a>
                 </button>
             </div>
@@ -35,6 +48,10 @@
     </div>
 
     <br> <br>
+
+    <h2>Product 3 Reviews</h2>
+
+    <br>
 
     <!--    Table to display all product reviews-->
     <div class="product_reviews">
@@ -44,11 +61,11 @@
             <thead>
             <tr class="tarow1first">
                 {% if count == 0 %}
-                <th style="font-size: 150%;">{{ count }} Product Reviews</th>
+                <th style="font-size: 150%;">{{ count }} Reviews </th>
                 {% elif count == 1 %}
-                <th style="font-size: 150%;">{{ count }} Product Review</th>
+                <th style="font-size: 150%;">{{ count }} Review</th>
                 {% else %}
-                <th style="font-size: 150%;">{{ count }} Product Reviews</th>
+                <th style="font-size: 150%;">{{ count }} Reviews</th>
                 {% endif %}
 
             </tr>
@@ -64,7 +81,7 @@
                     <p><b>Comment </b> {{ product3_review.get_product_comment() }} </p> <br>
                     <p><b>Image </b> <br>
                     <p style="width: 200px; height: 200px; padding: 5px"><img
-                            src="../../static/media/images/reviews/product3_reviews/ {{ product3_review.get_product_image() }}"
+                            src="../../static/media/images/reviews/product_reviews/hairspray.jfif"
                             style="height: 200px; width: 200px; border-radius: 5px;"></p>
                     <p><b>Video </b> {{ product3_review.get_product_video() }} </p> <br>
                     <p><b>Unique ID </b> {{ product3_review.get_product_id() }} </p> <br>

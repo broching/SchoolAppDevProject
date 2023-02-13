@@ -43,14 +43,14 @@ Customer Billing
                     </div>
                     <div class="ms-4 small">
                     {% if details['_CreditCard__card_default'] %}
-                        <p>already default</p>
+                        <p>default</p>
                         {% else %}
                         <form method="post" action="{{url_for('account.customer_default_card', card_id=details['_CreditCard__card_id'])}}">
-                        {{ default_card_form.submit(class='text-muted me-3') }}
+                        {{ default_card_form.submit(class='text-muted btn-link', style='border:0; text-decoration:none;') }}
                         </form>
                         {% endif %}
 
-                        <a href="{{url_for('account.customer_edit_card', card_id=details['_CreditCard__card_id'])}}">Edit</a>
+                        <a style="text-decoration:none;" href="{{url_for('account.customer_edit_card', card_id=details['_CreditCard__card_id'])}}">Edit</a>
 
                             <button type="button" class="btn btn-danger-soft text-danger" data-bs-toggle="modal"
                                     data-bs-target="#targetid{{details['_CreditCard__card_id'][0:5]}}"> Delete
@@ -120,7 +120,7 @@ Customer Billing
                       /></td>
                             <td>{{ product['_Product__id'] }}</td>
                             <td>{{ product['_Product__productName'] }}</td>
-                            <td>${{ product['_Product__price'] }}</td>
+                            <td>{{ "$%.2f"|format(product['_Product__price']) }}</td>
                         </tr>
                         {% endfor %}
                         {% else %}

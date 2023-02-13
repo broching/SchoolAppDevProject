@@ -11,6 +11,10 @@ h1 {
     color: black;
 }
 
+h2 {
+    text-decoration: underline;
+}
+
 body {
     font-family: var(--font-poppins);
     background-repeat: no-repeat;
@@ -39,10 +43,27 @@ button > a:hover {
     margin-top: 30px;
 }
 
-.col-2 > button {
+.create-product-review-button > button {
     margin-left:450px;
 }
 
-.product_reviews {
+.product_reviews, h2 {
     margin-left:10px;
+}
+
+.service_reviews {
+    margin-left:10px;
+
+}
+
+.service-filters > button {
+    margin-bottom: 10px;
+}
+
+.create-service-review-button > button {
+    margin-left:200px;
+}
+
+.stylist-selection {
+    margin-left: 150px;
 }
