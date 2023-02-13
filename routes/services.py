@@ -1,5 +1,6 @@
 import os
 import shelve
+import datetime
 
 import flask
 from flask import Blueprint, render_template, request, url_for, redirect, Flask, session
@@ -45,22 +46,10 @@ def hairdyeing():
 
 @service.route('/Services/addNewServiceform', methods=['POST', 'GET'])
 def add_new_service():
-    cid = 0
+    cid = datetime.datetime.now()
+    cid = round(cid.timestamp())
+    cid = "Service" + str(cid)
     book_appt = AddNewService()
-    if request.method == ('POST'):
-        try:
-            with shelve.open("DB/service/counter.db", writeback=True) as counter:
-                if "coupon" not in counter:
-                    cid = 1
-                else:
-                    cid = counter["coupon"]
-                counter["coupon"] = cid
-                print(counter["coupon"])
-        except IOError as ex:
-            print(f"Error in opening counter.db - {ex}")
-        except Exception as ex:
-            print(f"Unknown error occurred while trying to open counter.db - {ex}")
-    print("1")
     Apointment_booking_form = AddNewService(request.form)
     if request.method == 'POST':
         print('form submiting')
@@ -68,8 +57,8 @@ def add_new_service():
             with shelve.open('DB/service/service.db', 'c') as db:
 
                 service_dict = {}
-                if 'Service' in db:
-                    service_dict = db['Service']
+                if 'service' in db:
+                    service_dict = db['service']
                 service = Service(Apointment_booking_form.first_name.data,
                                   Apointment_booking_form.last_name.data,
                                   Apointment_booking_form.gender.data,
@@ -108,9 +97,6 @@ def appointment():
         print(f"Unknown error in retrieving customers from service.db - {ex}")
     print("1")
     return render_template('Services/service.html', count=len(service_dict), form=form)
-
-
-
 
 
 @service.route('/addNewServiceform', methods=['POST', 'GET'])

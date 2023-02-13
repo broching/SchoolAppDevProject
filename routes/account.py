@@ -446,6 +446,7 @@ def staff_dashboard():
 
     product_list = []
     product_dict = {}
+    totalProfits = 0
     try:
         totalProfits = 0
         with shelve.open('DB/products/product.db', 'c') as pdb:
