@@ -180,7 +180,7 @@ def deleteProductReview(id, pid):
                     product_reviews_dict.pop(pid)
                     next_pid = pid
                     db['Product_Reviews'] = product_reviews_dict
-                    flash('Your review has been successfully deleted.', category='success')
+                    flash('Your product review has been successfully deleted.', category='success')
 
                     # delete from product1 filter
                     product1_reviews_dict = {}
@@ -214,7 +214,7 @@ def deleteProductReview(id, pid):
 
 
                 else:
-                    flash('You are not authorised to delete this review.', category='error')
+                    flash('You are not authorised to delete this product review.', category='error')
 
     except IOError as ex:
         print(f"Error in retrieving product reviews from productReviews.db - {ex}")
@@ -482,7 +482,7 @@ def deleteServiceReview(id, pid):
                     service_reviews_dict.pop(pid)
                     next_pid = pid
                     db['Service_Reviews'] = service_reviews_dict
-                    flash('Your review has been successfully deleted.', category='success')
+                    flash('Your service review has been successfully deleted.', category='success')
 
                     # delete from service1 filter
                     service1_reviews_dict = {}
@@ -544,7 +544,7 @@ def deleteServiceReview(id, pid):
                             stylist3_reviews_dict.pop(next_pid)
                             db['Stylist3_Reviews'] = stylist3_reviews_dict
                 else:
-                    flash('You are not authorised to delete this review.', category='error')
+                    flash('You are not authorised to delete this service review.', category='error')
 
     except IOError as ex:
         print(f"Error in retrieving service reviews from serviceReviews.db - {ex}")
