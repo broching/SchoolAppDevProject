@@ -430,9 +430,9 @@ def staff_dashboard():
     appt_list = []
     try:
         appt_dict = {}
-        with shelve.open('DB/services/service.db', 'r') as db:
-            if 'Service' in db:
-                appt_dict = db['Service']
+        with shelve.open('DB/service/service.db', 'r') as db:
+            if 'service' in db:
+                appt_dict = db['service']
             for key in appt_dict:
                 service = appt_dict.get(key)
                 appt_list.append(service)
@@ -442,6 +442,7 @@ def staff_dashboard():
         print(f"Unknown error in retrieving customers from service.db - {ex}")
     upcoming_appointments = len(appt_list)
     account_list = get_customers('DB') + get_staff('DB')
+    print(appt_list)
     return render_template('account/staff_dashboard.html', account_list=account_list, account_count=len(account_list), upcoming_appointments=upcoming_appointments)
 
 

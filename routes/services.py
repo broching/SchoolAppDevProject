@@ -79,7 +79,7 @@ def add_new_service():
                                   Apointment_booking_form.service.data, cid)
 
                 service_dict[service.get_appt_id()] = service
-                db['appt_id'] = service_dict
+                db['service'] = service_dict
                 print("2")
                 return ("Submission Succesful")
         except IOError as ex:
@@ -121,8 +121,8 @@ def book_appointment():
         with shelve.open('/service/service.db', 'c') as db:
 
             service_dict = {}
-            if 'Service' in db:
-                service_dict = db['appt_id']
+            if 'service' in db:
+                service_dict = db['service']
             service = Service(Apointment_booking_form.first_name.data,
                               Apointment_booking_form.last_name.data,
                               Apointment_booking_form.gender.data,
@@ -132,7 +132,7 @@ def book_appointment():
                               Apointment_booking_form.service.data)
 
             service_dict[service.get_first_Name()] = service
-            db['Service'] = service_dict
+            db['service'] = service_dict
             print("2")
         return ("Submission Succesful")
     except IOError as ex:
@@ -162,11 +162,12 @@ def retrieve_appt():
     try:
         appt_dict = {}
         with shelve.open('DB/service/service.db', 'r') as db:
-            if 'Service' in db:
-                appt_dict = db['Service']
+            if 'service' in db:
+                appt_dict = db['service']
             for key in appt_dict:
                 service = appt_dict.get(key)
                 appt_list.append(service)
+                print(appt_list)
     except IOError as ex:
         print(f"Error in retrieving products from service.db (inventory route)- {ex}")
     except Exception as ex:
