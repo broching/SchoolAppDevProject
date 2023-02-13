@@ -1,5 +1,7 @@
 {% extends "/staff_base.html" %}
 {% block title %}Appointment retrieval - Retrieve Appointment{% endblock %}
+
+{%block content %}
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <link rel="stylesheet"
       href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
@@ -10,14 +12,12 @@
 <link
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
         rel="stylesheet"/>
-{%block content %}
 <h1 class="display-4">Retrieve Appointment</h1>
 <div>
     <table class="table table-striped">
         <thead>
         <tr>
             <th>First Name</th>
-            <th>Last Name</th>
             <th>Last Name</th>
             <th>Gender</th>
             <th>Service</th>
@@ -32,8 +32,8 @@
         <tr>
             <td> {{ appointment.get_first_Name() }}  </td>
             <td>{{ appointment.get_last_Name() }}</td>
-            <td>{{ appointment.get_first_Name() }}</td>
             <td>{{ appointment.get_gender() }}</td>
+            <td>{{ appointment.get_service() }}</td>
             <td>{{ appointment.get_appointment_Date() }}</td>
             <td>{{ appointment.get_appointment_Time() }}</td>
             <td>
