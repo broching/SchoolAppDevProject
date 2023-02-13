@@ -224,7 +224,7 @@ def staffDeleteProductReview(id):
             product_reviews_dict.pop(id)
             next_id = id
             db['Product_Reviews'] = product_reviews_dict
-            print('2')
+            # print('2')
 
 
             # delete from CUSTOMER filter product1 reviews db
@@ -234,9 +234,9 @@ def staffDeleteProductReview(id):
                     product1_reviews_dict = db['Product1_Reviews']
 
                 if next_id in product1_reviews_dict:
-                    product1_reviews_dict.pop(id)
+                    product1_reviews_dict.pop(next_id)
                     db['Product1_Reviews'] = product1_reviews_dict
-                    print('3')
+                    # print('3')
 
             # delete from CUSTOMER filter product2 reviews db
             with shelve.open('DB/reviews/productReviews/Product2/productReview.db', 'w') as db:
@@ -245,9 +245,9 @@ def staffDeleteProductReview(id):
                     product2_reviews_dict = db['Product2_Reviews']
 
                 if next_id in product2_reviews_dict:
-                    product2_reviews_dict.pop(id)
+                    product2_reviews_dict.pop(next_id)
                     db['Product2_Reviews'] = product2_reviews_dict
-                    print('4')
+                    # print('4')
 
             # delete from CUSTOMER filter product3 reviews db
             with shelve.open('DB/reviews/productReviews/Product3/productReview.db', 'w') as db:
@@ -256,9 +256,9 @@ def staffDeleteProductReview(id):
                     product3_reviews_dict = db['Product3_Reviews']
 
                 if next_id in product3_reviews_dict:
-                    product3_reviews_dict.pop(id)
+                    product3_reviews_dict.pop(next_id)
                     db['Product3_Reviews'] = product3_reviews_dict
-                    print('5')
+                    # print('5')
 
     except IOError as ex:
         print(f"Error in retrieving product reviews from staff_productReviews.db - {ex}")
@@ -605,6 +605,69 @@ def stylist3_filter():
     return render_template('reviews/stylist3Reviews.html', count=len(stylist3_reviews_list),
                            stylist3_reviews_list=stylist3_reviews_list)
 
+
+@review.route('/staffDeleteServiceReview/<int:id>', methods=['POST'])
+@staff_login_required
+def staffDeleteServiceReview(id):
+    staff_service_reviews_dict = {}
+    try:
+        # delete for STAFF service reviews db
+        with shelve.open('DB/reviews/serviceReviews/Staff/serviceReview.db', 'w') as db:
+            if 'Staff_Service_Reviews' in db:
+                staff_service_reviews_dict = db['Staff_Service_Reviews']
+
+            staff_service_reviews_dict.pop(id)
+            db['Staff_Service_Reviews'] = staff_service_reviews_dict
+            print('10')
+
+        # delete for CUSTOMER service reviews db
+        with shelve.open('DB/reviews/serviceReviews/serviceReview.db', 'w') as db:
+            service_reviews_dict = {}
+            if 'Service_Reviews' in db:
+                service_reviews_dict = db['Service_Reviews']
+
+            service_reviews_dict.pop(id)
+            next_id = id
+            db['Service_Reviews'] = service_reviews_dict
+            print('11')
+
+            # delete from CUSTOMER filter service1 reviews db
+            with shelve.open('DB/reviews/serviceReviews/Service1/serviceReview.db', 'w') as db:
+                service1_reviews_dict = {}
+                if 'Service1_Reviews' in db:
+                    service1_reviews_dict = db['Service1_Reviews']
+
+                if next_id in service1_reviews_dict:
+                    service1_reviews_dict.pop(next_id)
+                    db['Service1_Reviews'] = service1_reviews_dict
+                    print('12')
+
+            # delete from CUSTOMER filter service2 reviews db
+            with shelve.open('DB/reviews/serviceReviews/Service2/serviceReview.db', 'w') as db:
+                service2_reviews_dict = {}
+                if 'Service2_Reviews' in db:
+                    service2_reviews_dict = db['Service2_Reviews']
+
+                if next_id in service2_reviews_dict:
+                    service2_reviews_dict.pop(next_id)
+                    db['Service2_Reviews'] = service2_reviews_dict
+                    print('13')
+
+            # delete from CUSTOMER filter service3 reviews db
+            with shelve.open('DB/reviews/serviceReviews/Service3/serviceReview.db', 'w') as db:
+                service3_reviews_dict = {}
+                if 'Service3_Reviews' in db:
+                    service3_reviews_dict = db['Service3_Reviews']
+
+                if next_id in service3_reviews_dict:
+                    service3_reviews_dict.pop(next_id)
+                    db['Service3_Reviews'] = service3_reviews_dict
+                    print('14')
+
+
+    except IOError as ex:
+        print(f"Error in retrieving service reviews from staff_serviceReviews.db - {ex}")
+    return redirect(url_for('review.staffServiceReviews'))
 
 @review.route('/deleteServiceReview/<int:id>/<int:pid>', methods=['POST'])
 @customer_login_required
