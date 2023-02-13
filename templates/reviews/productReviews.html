@@ -77,9 +77,21 @@
                     <p><b>Rating: </b> {{ product_review.get_product_rating() }} </p> <br>
                     <p><b>Comment </b> {{ product_review.get_product_comment() }} </p> <br>
                     <p><b>Image </b> <br>
+
+                    {% if product_review.get_product_selection() == 'Product 1' %}
                     <p style="width: 200px; height: 200px; padding: 5px"><img
-                            src="../../static/media/images/reviews/product_reviews/ {{ product_review.get_product_image() }}"
+                            src="../../static/media/images/reviews/product_reviews/oil.webp"
                             style="height: 200px; width: 200px; border-radius: 5px;"></p>
+                    {% elif product_review.get_product_selection() == 'Product 2' %}
+                    <p style="width: 200px; height: 200px; padding: 5px"><img
+                            src="../../static/media/images/reviews/product_reviews/shampoo.webp"
+                            style="height: 200px; width: 200px; border-radius: 5px;"></p>
+                    {% elif product_review.get_product_selection() == 'Product 3' %}
+                    <p style="width: 200px; height: 200px; padding: 5px"><img
+                            src="../../static/media/images/reviews/product_reviews/hairspray.jfif"
+                            style="height: 200px; width: 200px; border-radius: 5px;"></p>
+                    {% endif %}
+
                     <p><b>Video </b> {{ product_review.get_product_video() }} </p> <br>
                     <p><b>Unique ID </b> {{ product_review.get_product_id() }} </p> <br>
 

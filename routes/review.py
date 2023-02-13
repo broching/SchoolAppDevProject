@@ -252,8 +252,8 @@ def createServiceReview():
                 service_reviews_dict[service_review.get_service_id()] = service_review
                 db['Service_Reviews'] = service_reviews_dict
 
-                # filter db for Haircut/Hairwash
-                if service_review.get_service_selection() == 'Hair Cut / Hair Wash':
+                # filter db for Hair Cut
+                if service_review.get_service_selection() == 'Hair Cut':
                     with shelve.open('DB/reviews/serviceReviews/Service1/serviceReview.db', 'c') as db:
                         service1_reviews_dict = {}
                         if 'Service1_Reviews' in db:
