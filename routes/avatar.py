@@ -66,6 +66,13 @@ def avatar():
                     preview.save_avatar(user_id + "/preview")
                     db[user_id] = [preview, avatar_list]
 
+                elif 'select_avatar' in request.form:
+                    index = int(request.form['select_avatar'])
+                    extract = avatar_list[index]
+                    preview = Avatar(extract.hairstyles, extract.faceshape, extract.eyes, extract.lips, extract.image)
+                    preview.save_avatar(user_id + "/preview")
+                    db[user_id] = [preview, avatar_list]
+
                 else:
                     pass
 
