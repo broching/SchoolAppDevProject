@@ -104,6 +104,7 @@ def productOrder(id):
                 mode='payment',
                 success_url=request.host_url + 'products/order/success',
                 cancel_url=request.host_url + 'products/order/cancel',
+                billing_address_collection='required',
             )
 
     except IOError as ex:
@@ -168,6 +169,7 @@ def productOrderCart(id):
                     mode='payment',
                     success_url=request.host_url + 'products/order/successCart',
                     cancel_url=request.host_url + 'products/order/cancel',
+                    billing_address_collection='required',
                 )
 
                 return redirect(checkout_session.url)
@@ -307,7 +309,7 @@ def viewCart():
             #         Loop through customer's cart
             # If it does not exist, remove the product from customer's cart
             try:
-                with shelve.open('DB/products/product.db', 'w') as pdb:
+                with shelve.open('DB/products/product.db', 'c') as pdb:
                     if 'Products' in pdb:
                         products_dict = pdb['Products']
 

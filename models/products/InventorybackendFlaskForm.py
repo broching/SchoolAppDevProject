@@ -9,7 +9,7 @@ class CreateNewProduct(FlaskForm):
     product_name = StringField('Product name', [Length(min=1, max=100), DataRequired()])
     product_type = SelectField('Product type', [DataRequired()],
                                choices=[('', 'Select'), ('Shampoo', 'Shampoo'), ('Conditioner', 'Conditioner'),
-                                        ('Hair', 'Hair products'), ('Shaving', 'Shaving products'),
+                                        ('Hair products', 'Hair products'), ('Shaving products', 'Shaving products'),
                                         ('Others', 'Others')], default='')
     product_price = FloatField('Price ($)', [DataRequired()], default='0')
     product_quantity = IntegerField('Quantity', [DataRequired()])
