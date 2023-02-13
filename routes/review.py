@@ -43,8 +43,7 @@ def createProductReview():
                 product_reviews_dict[product_review.get_product_id()] = product_review
                 db['Product_Reviews'] = product_reviews_dict
 
-
-                #add into staff db
+                # add into staff db
                 with shelve.open('DB/reviews/productReviews/Staff/productReview.db', 'c') as db:
                     staff_product_reviews_dict = {}
                     if 'Staff_Product_Reviews' in db:
@@ -60,9 +59,13 @@ def createProductReview():
 
                     staff_product_review.set_product_id(staff_product_review.get_product_id())
 
+                    if customer_profile():
+                        username = session['customer']['_Account__username']
+                        staff_product_review.set_user_name(username)
+
                     staff_product_reviews_dict[staff_product_review.get_product_id()] = staff_product_review
                     db['Staff_Product_Reviews'] = staff_product_reviews_dict
-                #end
+                # end
 
                 # testing filter for product 1
                 if product_review.get_product_selection() == 'Product 1':
@@ -103,6 +106,7 @@ def createProductReview():
     else:
         return render_template('reviews/createProductReview.html', form=create_product_review_form)
 
+
 @review.route('/staffProductReviews')
 def staffProductReviews():
     staff_product_reviews_list = []
@@ -121,6 +125,7 @@ def staffProductReviews():
 
     return render_template('reviews/staffProductReviews.html', count=len(staff_product_reviews_list),
                            staff_product_reviews_list=staff_product_reviews_list)
+
 
 @review.route('/productReviews')
 def productReviews():
@@ -201,6 +206,7 @@ def product3_filter():
     return render_template('reviews/product3Reviews.html', count=len(product3_reviews_list),
                            product3_reviews_list=product3_reviews_list)
 
+
 @review.route('/staffDeleteProductReview/<int:id>', methods=['POST'])
 @staff_login_required
 def staffDeleteProductReview(id):
@@ -215,8 +221,8 @@ def staffDeleteProductReview(id):
             db['Staff_Product_Reviews'] = staff_product_reviews_dict
             # print('1')
 
-        #delete from CUSTOMER product reviews db
-        with shelve.open('DB/reviews/productReviews/productReview.db','w') as db:
+        # delete from CUSTOMER product reviews db
+        with shelve.open('DB/reviews/productReviews/productReview.db', 'w') as db:
             product_reviews_dict = {}
             if 'Product_Reviews' in db:
                 product_reviews_dict = db['Product_Reviews']
@@ -368,15 +374,19 @@ def createServiceReview():
                     if 'Staff_Service_Reviews' in db:
                         staff_service_reviews_dict = db['Staff_Service_Reviews']
                     staff_service_review = serviceReview(create_service_review_form.user_id.data,
-                                                   create_service_review_form.user_name.data,
-                                                   create_service_review_form.service_selection.data,
-                                                   create_service_review_form.stylist_selection.data,
-                                                   create_service_review_form.service_rating.data,
-                                                   create_service_review_form.service_image.data,
-                                                   create_service_review_form.service_video.data,
-                                                   create_service_review_form.service_comment.data)
+                                                         create_service_review_form.user_name.data,
+                                                         create_service_review_form.service_selection.data,
+                                                         create_service_review_form.stylist_selection.data,
+                                                         create_service_review_form.service_rating.data,
+                                                         create_service_review_form.service_image.data,
+                                                         create_service_review_form.service_video.data,
+                                                         create_service_review_form.service_comment.data)
 
                     staff_service_review.set_service_id(staff_service_review.get_service_id())
+
+                    if customer_profile():
+                        username = session['customer']['_Account__username']
+                        staff_service_review.set_user_name(username)
 
                     staff_service_reviews_dict[staff_service_review.get_service_id()] = staff_service_review
                     db['Staff_Service_Reviews'] = staff_service_reviews_dict
@@ -455,6 +465,7 @@ def createServiceReview():
     else:
         return render_template('reviews/createServiceReview.html', form=create_service_review_form)
 
+
 @review.route('/staffServiceReviews')
 def staffServiceReviews():
     staff_service_reviews_list = []
@@ -473,6 +484,7 @@ def staffServiceReviews():
 
     return render_template('reviews/staffServiceReviews.html', count=len(staff_service_reviews_list),
                            staff_service_reviews_list=staff_service_reviews_list)
+
 
 @review.route('/serviceReviews')
 def serviceReviews():
@@ -720,6 +732,7 @@ def staffDeleteServiceReview(id):
         print(f"Error in retrieving service reviews from staff_serviceReviews.db - {ex}")
     return redirect(url_for('review.staffServiceReviews'))
 
+
 @review.route('/deleteServiceReview/<int:id>/<int:pid>', methods=['POST'])
 @customer_login_required
 def deleteServiceReview(id, pid):
@@ -737,7 +750,6 @@ def deleteServiceReview(id, pid):
                     next_pid = pid
                     db['Service_Reviews'] = service_reviews_dict
                     flash('Your service review has been successfully deleted.', category='success')
-
 
                     while True:
                         # delete from service1 filter
