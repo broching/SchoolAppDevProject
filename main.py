@@ -44,6 +44,11 @@ def home():
     return render_template('home/home.html')
 
 
+@app.route('/AboutUs')
+def about_us():
+    return render_template('home/about_us.html')
+
+
 @app.errorhandler(404)
 def page_not_found_404(e):
     return render_template('error_pages/404.html'), 404
