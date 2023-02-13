@@ -1,5 +1,15 @@
-{% extends "/Services/servicebase.html" %}
+{% extends "/staff_base.html" %}
 {% block title %}Appointment retrieval - Retrieve Appointment{% endblock %}
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<link rel="stylesheet"
+      href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
+<script type="text/javascript"
+        src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript"
+        src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<link
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        rel="stylesheet"/>
 {%block content %}
 <h1 class="display-4">Retrieve Appointment</h1>
 <div>
@@ -27,9 +37,9 @@
             <td>{{ appointment.get_appointment_Date() }}</td>
             <td>{{ appointment.get_appointment_Time() }}</td>
             <td>
-            <form action="" method="GET">
-                <input type="submit" value="Delete" class="btn btn-danger">
-            </form>
+                <form action="" method="GET">
+                    <input type="submit" value="Delete" class="btn btn-danger">
+                </form>
             </td>
         </tr>
         {% endfor %}
