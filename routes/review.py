@@ -368,6 +368,7 @@ def createServiceReview():
                 service_reviews_dict[service_review.get_service_id()] = service_review
                 db['Service_Reviews'] = service_reviews_dict
 
+
                 # add into staff db
                 with shelve.open('DB/reviews/serviceReviews/Staff/serviceReview.db', 'c') as db:
                     staff_service_reviews_dict = {}
