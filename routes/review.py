@@ -664,6 +664,39 @@ def staffDeleteServiceReview(id):
                     db['Service3_Reviews'] = service3_reviews_dict
                     print('14')
 
+            # delete from CUSTOMER filter stylist1 reviews db
+            with shelve.open('DB/reviews/serviceReviews/Stylist1/serviceReview.db', 'w') as db:
+                stylist1_reviews_dict = {}
+                if 'Stylist1_Reviews' in db:
+                    stylist1_reviews_dict = db['Stylist1_Reviews']
+
+                if next_id in stylist1_reviews_dict:
+                    stylist1_reviews_dict.pop(next_id)
+                    db['Stylist1_Reviews'] = stylist1_reviews_dict
+                    print('15')
+
+            # delete from CUSTOMER filter stylist2 reviews db
+            with shelve.open('DB/reviews/serviceReviews/Stylist2/serviceReview.db', 'w') as db:
+                stylist2_reviews_dict = {}
+                if 'Stylist2_Reviews' in db:
+                    stylist2_reviews_dict = db['Stylist2_Reviews']
+
+                if next_id in stylist2_reviews_dict:
+                    stylist2_reviews_dict.pop(next_id)
+                    db['Stylist2_Reviews'] = stylist2_reviews_dict
+                    print('16')
+
+            # delete from CUSTOMER filter stylist3 reviews db
+            with shelve.open('DB/reviews/serviceReviews/Stylist3/serviceReview.db', 'w') as db:
+                stylist3_reviews_dict = {}
+                if 'Stylist3_Reviews' in db:
+                    stylist3_reviews_dict = db['Stylist3_Reviews']
+
+                if next_id in stylist3_reviews_dict:
+                    stylist3_reviews_dict.pop(next_id)
+                    db['Stylist3_Reviews'] = stylist3_reviews_dict
+                    # print('17')
+
 
     except IOError as ex:
         print(f"Error in retrieving service reviews from staff_serviceReviews.db - {ex}")
