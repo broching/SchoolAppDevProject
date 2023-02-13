@@ -43,6 +43,25 @@ class Avatar:
         else:
             setattr(self, attr, assets[index + 1])
 
+class Menu:
+    def __init__(self, tabs, selected_tab, tab_items):
+        self.tabs = tabs
+        self.selected_tab = selected_tab
+        self.tab_items = tab_items
+
+    def next(self):
+        if self.selected_tab == len(self.tabs) - 1:
+            self.selected_tab = 0
+        else:
+            self.selected_tab += 1
+
+    def prev(self):
+        if self.selected_tab == 0:
+            self.selected_tab = len(self.tabs) - 1
+        else:
+            self.selected_tab -= 1
+
+
 hairstyle_path = "static/media/images/avatar_assets/hairstyles"
 hairstyle_dir = os.listdir(hairstyle_path)
 hairstyle_assets = [hairstyle_path+"/"+hairstyle for hairstyle in hairstyle_dir]
@@ -58,4 +77,6 @@ eyes_assets = [eyes_path+"/"+eyes for eyes in eyes_dir]
 lips_path = "static/media/images/avatar_assets/lips"
 lips_dir = os.listdir(lips_path)
 lips_assets = [lips_path+"/"+lips for lips in lips_dir]
+
+assets = [hairstyle_assets, faceshape_assets, eyes_assets, lips_assets]
 

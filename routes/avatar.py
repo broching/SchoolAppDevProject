@@ -5,20 +5,29 @@ from models.auth.auth_functions import customer_login_required, staff_login_requ
 
 avatar_blueprint = Blueprint('avatar', __name__)
 
+#TODO: 1. Figure out how to shelve images as objects
+#TODO: 2. Create nice GUI for avatar staff and avatar customer
+#TODO: 3. Create better looking avatar assets
+#TODO: 4. Fix avatar navbar issues with login button
+#TODO: 5. Add flash warnings
+#TODO: 6. Add delete functions to avatars
+
+
 @avatar_blueprint.route("/avatar", methods=['GET', 'POST'])
-@customer_login_required
 def avatar():
-    hairstyle_dir = os.listdir(hairstyle_path)
-    hairstyle_assets = [hairstyle_path + "/" + hairstyle for hairstyle in hairstyle_dir]
+    # hairstyle_dir = os.listdir(hairstyle_path)
+    # hairstyle_assets = [hairstyle_path + "/" + hairstyle for hairstyle in hairstyle_dir]
 
     stock = Avatar(hairstyle_assets[0], faceshape_assets[0], eyes_assets[0], lips_assets[0], 0)
     stock.save_avatar("stock")
+
+    menu = Menu(["HAIRSTYLES","FACESHAPE", "EYES", "LIPS"], 0, assets)
 
     if "customer" in session:
         user_id = session["customer"].get("_Account__user_id")
         user_id = str(user_id)
     else:
-        pass
+        user_id = "notloggedin"
 
     try:
         with shelve.open("DB/avatar_temporary/avatar_lists", "c") as db:
@@ -42,16 +51,55 @@ def avatar():
                     db[user_id] = [preview, avatar_list]
 
                 elif 'save' in request.form:
-                    preview.save_avatar(user_id+"/"+str(len(avatar_list)))
-                    avatar_list.append(preview)
-                    db[user_id] = [preview, avatar_list]
+                    # preview.save_avatar(user_id+"/"+str(len(avatar_list)))
+                    # avatar_list.append(preview)
+                    # db[user_id] = [preview, avatar_list]
+                    avatarSave(preview, user_id, avatar_list, db)
+
+                else:
+                    pass
 
     except IOError as ex:
         print(f"Error in retrieving avatars from avatar_list.db - {ex}")
     except Exception as ex:
         print(f"Unknown error in retrieving avatars from avatar_list.db - {ex}")
 
-    return render_template('avatar/customer_avatar.html', preview=preview, avatar_list=avatar_list)
+    try:
+        with shelve.open("DB/avatar_temporary/menu", "c") as db:
+            if user_id not in db:
+                db[user_id] = menu
+            else:
+                pass
+
+            menu = db[user_id]
+
+            if request.method == "POST":
+                if "slider" in request.form:
+                    if request.form["slider"] == "next":
+                        menu.next()
+                    else:
+                        menu.prev()
+
+                    db[user_id] = menu
+
+            else:
+                pass
+
+    except IOError as ex:
+        print(f"Error in retrieving menu from menu.db - {ex}")
+    except Exception as ex:
+        print(f"Unknown error in retrieving menu from menu.db - {ex}")
+
+    return render_template('avatar/customer_avatar.html', preview=preview, avatar_list=avatar_list, menu=menu)
+
+
+@avatar_blueprint.route("/avatarSave", methods=['GET', 'POST'])
+@customer_login_required
+def avatarSave(preview, user_id, avatar_list, db):
+    print("test", preview, user_id, avatar_list, db)
+    preview.save_avatar(user_id + "/" + str(len(avatar_list)))
+    avatar_list.append(preview)
+    db[user_id] = [preview, avatar_list]
 
 
 @avatar_blueprint.route("/avatarStaff", methods=['GET', 'POST'])
