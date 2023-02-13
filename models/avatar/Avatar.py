@@ -43,6 +43,9 @@ class Avatar:
         else:
             setattr(self, attr, assets[index + 1])
 
+    def select(self, asset, attr):
+        setattr(self, attr, asset)
+
 class Menu:
     def __init__(self, tabs, selected_tab, tab_items):
         self.tabs = tabs
