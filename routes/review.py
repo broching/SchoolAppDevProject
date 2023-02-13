@@ -43,6 +43,24 @@ def createProductReview():
                 product_reviews_dict[product_review.get_product_id()] = product_review
                 db['Product_Reviews'] = product_reviews_dict
 
+                with shelve.open('DB/reviews/productReviews/Staff/productReview.db', 'c') as db:
+                    staff_product_reviews_dict = {}
+                    if 'Staff_Product_Reviews' in db:
+                        staff_product_reviews_dict = db['Staff_Product_Reviews']
+                    staff_product_review = productReview(
+                        create_product_review_form.user_name.data,
+                        create_product_review_form.user_id.data,
+                        create_product_review_form.product_selection.data,
+                        create_product_review_form.product_rating.data,
+                        create_product_review_form.product_comment.data,
+                        create_product_review_form.product_image.data,
+                        create_product_review_form.product_video.data)
+
+                    staff_product_review.set_product_id(staff_product_review.get_product_id())
+
+                    staff_product_reviews_dict[staff_product_review.get_product_id()] = staff_product_review
+                    db['Staff_Product_Reviews'] = staff_product_reviews_dict
+
                 # testing filter for product 1
                 if product_review.get_product_selection() == 'Product 1':
                     with shelve.open('DB/reviews/productReviews/Product1/productReview.db', 'c') as db:
@@ -82,6 +100,24 @@ def createProductReview():
     else:
         return render_template('reviews/createProductReview.html', form=create_product_review_form)
 
+@review.route('/staffProductReviews')
+def staffProductReviews():
+    staff_product_reviews_list = []
+    try:
+        staff_product_reviews_dict = {}
+        with shelve.open('DB/reviews/productReviews/Staff/productReview.db', 'r') as db:
+            if 'Staff_Product_Reviews' in db:
+                staff_product_reviews_dict = db['Staff_Product_Reviews']
+            for key in staff_product_reviews_dict:
+                staff_product_review = staff_product_reviews_dict.get(key)
+                staff_product_reviews_list.append(staff_product_review)
+    except IOError as ex:
+        print(f"Error in retrieving staff product reviews from staff_product_reviews.db - {ex}")
+    except Exception as ex:
+        print(f"Unknown error in retrieving staff product reviews from staff_product_reviews.db - {ex}")
+
+    return render_template('reviews/staffProductReviews.html', count=len(staff_product_reviews_list),
+                           staff_product_reviews_list=staff_product_reviews_list)
 
 @review.route('/productReviews')
 def productReviews():
