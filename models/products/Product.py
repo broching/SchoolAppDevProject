@@ -3,7 +3,7 @@ from PIL import Image
 class Product:
     count_id = 0
 
-    def __init__(self, name, productType, quantity, image, price, description, cost, id, profit):
+    def __init__(self, name, productType, quantity, image, price, description, cost, id):
         Product.count_id += 1
         self.__productName = name
         self.__id = id
@@ -13,8 +13,9 @@ class Product:
         self.__description = description
         self.__productType = productType
         self.__productCost = cost
-        self.__profit = profit
-        self.__sold = None
+        self.__profit = 0
+        self.__sold = 0
+        self.__profitTotal = 0
 
     # getters
     def get_product_name(self):
@@ -31,6 +32,9 @@ class Product:
 
     def get_product_profit(self):
         return self.__profit
+
+    def get_product_profitTotal(self):
+        return self.__profitTotal
 
     def get_product_image(self):
         return self.__image
@@ -65,6 +69,9 @@ class Product:
 
     def set_product_sold(self, sold):
         self.__sold = sold
+
+    def set_product_profitTotal(self, total):
+        self.__profitTotal = total
 
     def set_product_quantity(self, quantity):
         self.__quantity = quantity

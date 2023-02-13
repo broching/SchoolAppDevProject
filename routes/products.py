@@ -140,7 +140,7 @@ def productOrderCart(id):
                 mulidList = []
                 for item in cust_cart:
                     pid = item['_Product__id']
-                    price = int(item['_Product__price'])
+                    price = float(item['_Product__price'])
                     name = item['_Product__productName']
                     line_items.append({'price_data': {
                         'product_data': {'name': f"ID: {pid} | {name}",
@@ -561,6 +561,7 @@ def successCart():
                     products_dict = pdb['Products']
                 if productStripeId in products_dict:
                     product = products_dict.get(productStripeId)
+
                     product_dict_for_storing = account_to_dictionary_converter(product)
                 pdb['Products'] = products_dict
 
@@ -691,6 +692,15 @@ def new_event():
                         product_quantity_temp -= item.quantity
                         product.set_product_quantity(product_quantity_temp)
                         print(f"Product quantity new: {product_quantity_temp}")
+
+                        # Handle product profit
+                        profit_in_shelve = float(product.get_product_price()) - float(product.get_product_cost())
+                        product.set_product_profit(profit_in_shelve)
+
+                        current_profit = profit_in_shelve
+                        total_profit = float(product.get_product_profitTotal()) + float(current_profit)
+                        product.set_product_profitTotal(total_profit)
+
                     pdb['Products'] = products_dict
             except IOError as ex:
                 print(f"Error in opening product.db in new_event - {ex}")

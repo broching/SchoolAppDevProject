@@ -443,7 +443,30 @@ def staff_dashboard():
     upcoming_appointments = len(appt_list)
     account_list = get_customers('DB') + get_staff('DB')
     print(appt_list)
-    return render_template('account/staff_dashboard.html', account_list=account_list, account_count=len(account_list), upcoming_appointments=upcoming_appointments)
+
+    product_list = []
+    product_dict = {}
+    try:
+        totalProfits = 0
+        with shelve.open('DB/products/product.db', 'c') as pdb:
+            if 'Products' in pdb:
+                product_dict = pdb['Products']
+            for key in product_dict:
+                product = product_dict.get(key)
+                product_list.append(product)
+                profits = product.get_product_profitTotal()
+                totalProfits += profits
+
+            pdb['Products'] = product_dict
+
+            numProducts = len(product_list) if product_list else 0
+
+    except IOError as ex:
+        print(f"E(staff_dashboard) Error while trying to open product.db - {ex}")
+
+    return render_template('account/staff_dashboard.html', account_list=account_list, account_count=len(account_list),
+                           upcoming_appointments=upcoming_appointments, product_list=product_list,
+                           numProducts=numProducts, totalProfits=totalProfits)
 
 
 @account.route('/StaffProfile', methods=["POST", "GET"])
