@@ -49,6 +49,10 @@
 
     <br> <br>
 
+    <h2>Product 1 Reviews</h2>
+
+    <br>
+
     <!--    Table to display all product reviews-->
     <div class="product_reviews">
         <table class="table table-striped">
@@ -57,11 +61,11 @@
             <thead>
             <tr class="tarow1first">
                 {% if count == 0 %}
-                <th style="font-size: 150%;">{{ count }} Product Reviews</th>
+                <th style="font-size: 150%;">{{ count }} Reviews</th>
                 {% elif count == 1 %}
-                <th style="font-size: 150%;">{{ count }} Product Review</th>
+                <th style="font-size: 150%;">{{ count }} Review</th>
                 {% else %}
-                <th style="font-size: 150%;">{{ count }} Product Reviews</th>
+                <th style="font-size: 150%;">{{ count }} Reviews</th>
                 {% endif %}
 
             </tr>

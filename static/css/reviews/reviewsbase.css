@@ -11,6 +11,10 @@ h1 {
     color: black;
 }
 
+h2 {
+    text-decoration: underline;
+}
+
 body {
     font-family: var(--font-poppins);
     background-repeat: no-repeat;
@@ -43,7 +47,7 @@ button > a:hover {
     margin-left:450px;
 }
 
-.product_reviews {
+.product_reviews, h2 {
     margin-left:10px;
 }
 
