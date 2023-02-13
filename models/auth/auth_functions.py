@@ -292,4 +292,3 @@ def validate_birthday_(birthday_to_validate):
         return False
     else:
         return True
-

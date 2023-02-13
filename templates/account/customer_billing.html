@@ -120,7 +120,7 @@ Customer Billing
                       /></td>
                             <td>{{ product['_Product__id'] }}</td>
                             <td>{{ product['_Product__productName'] }}</td>
-                            <td>${{ product['_Product__price'] }}</td>
+                            <td>{{ "$%.2f"|format(product['_Product__price']) }}</td>
                         </tr>
                         {% endfor %}
                         {% else %}

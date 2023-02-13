@@ -27,12 +27,12 @@
 
 
 .contact-links {
-background-color: lightgray;
+background-color: gray;
   border-radius: 10px 0 0 10px;
 }
 
 .contact-form-wrapper {
-  background-color: gray;
+  background-color: lightgray;
   border-radius: 0 10px 10px 0;
 }
 

@@ -143,7 +143,3 @@ def reset_password(token):
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-#     greg was here
-# greg was here again
-# greg was here again again
