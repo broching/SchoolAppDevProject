@@ -13,6 +13,7 @@ h1 {
 
 h2 {
     text-decoration: underline;
+    color:black;
 }
 
 body {
@@ -21,9 +22,7 @@ body {
     color: white;
     }
 
-div {
-    color: black;
-}
+
 
 button {
     margin-right: 10px;
@@ -38,7 +37,7 @@ button > a:hover {
     color: white;
 }
 
-.container {
+.product-filters, service-filters {
     margin-left: 0px;
     margin-top: 30px;
 }
@@ -56,14 +55,18 @@ button > a:hover {
 
 }
 
-.service-filters > button {
+.service-filters {
+    margin-left:10px;
+}
+
+.service-choice > button {
     margin-bottom: 10px;
 }
 
 .create-service-review-button > button {
-    margin-left:200px;
+    margin-left:150px;
 }
 
 .stylist-selection {
-    margin-left: 150px;
+    margin-left: 250px;
 }
