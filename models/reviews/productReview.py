@@ -2,11 +2,10 @@ from datetime import datetime
 
 
 class productReview():
-    unique_id = datetime.now()
-    unique_id = int(unique_id.strftime('%Y%m%d%H%M%S'))
-
     def __init__(self, user_name, user_id, product_selection, product_rating, product_comment, product_image, product_video):
-        self.__product_id = productReview.unique_id
+        unique_id = datetime.now()
+        unique_id = int(unique_id.strftime('%Y%m%d%H%M%S'))
+        self.__product_id = unique_id
         self.__user_name = user_name
         self.__user_id = user_id
         self.__product_selection = product_selection
