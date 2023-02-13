@@ -11,6 +11,7 @@ avatar_blueprint = Blueprint('avatar', __name__)
 #TODO: 4. Fix avatar navbar issues with login button
 #TODO: 5. Add flash warnings
 #TODO: 6. Add delete functions to avatars
+#TODO: 7. Set avatar png for profile pic
 
 
 @avatar_blueprint.route("/avatar", methods=['GET', 'POST'])
@@ -114,8 +115,8 @@ def avatarSave(preview, user_id, avatar_list, db):
 @avatar_blueprint.route("/avatarStaff", methods=['GET', 'POST'])
 @staff_login_required
 def avatarStaff():
-    hairstyle_dir = os.listdir(hairstyle_path)
-    hairstyle_assets = [hairstyle_path + "/" + hairstyles for hairstyles in hairstyle_dir]
+    # hairstyle_dir = os.listdir(hairstyle_path)
+    # hairstyle_assets = [hairstyle_path + "/" + hairstyles for hairstyles in hairstyle_dir]
     total_assets = [hairstyle_assets, faceshape_assets, eyes_assets, lips_assets]
     assets = total_assets
     return render_template('avatar/staff_avatar.html', assets=assets, enumerate=enumerate)
