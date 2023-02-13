@@ -45,12 +45,27 @@ def hairdyeing():
 
 @service.route('/Services/addNewServiceform', methods=['POST', 'GET'])
 def add_new_service():
+    cid = 0
+    book_appt = AddNewService()
+    if request.method == ('POST'):
+        try:
+            with shelve.open("DB/service/counter.db", writeback=True) as counter:
+                if "coupon" not in counter:
+                    cid = 1
+                else:
+                    cid = counter["coupon"]
+                counter["coupon"] = cid
+                print(counter["coupon"])
+        except IOError as ex:
+            print(f"Error in opening counter.db - {ex}")
+        except Exception as ex:
+            print(f"Unknown error occurred while trying to open counter.db - {ex}")
     print("1")
     Apointment_booking_form = AddNewService(request.form)
     if request.method == 'POST':
         print('form submiting')
         try:
-            with shelve.open('DB/services/service.db', 'c') as db:
+            with shelve.open('DB/service/service.db', 'c') as db:
 
                 service_dict = {}
                 if 'Service' in db:
@@ -61,10 +76,10 @@ def add_new_service():
                                   Apointment_booking_form.appointment_date.data,
                                   Apointment_booking_form.appointment_time.data,
                                   Apointment_booking_form.remarks.data,
-                                  Apointment_booking_form.service.data)
+                                  Apointment_booking_form.service.data, cid)
 
-                service_dict[service.get_first_Name()] = service
-                db['Service'] = service_dict
+                service_dict[service.get_appt_id()] = service
+                db['appt_id'] = service_dict
                 print("2")
                 return ("Submission Succesful")
         except IOError as ex:
@@ -74,74 +89,55 @@ def add_new_service():
     else:
         print("3")
         return render_template('/Services/addNewServiceform.html', form=Apointment_booking_form)
+
 
 @service.route('/addNewService')
 def appointment():
-    service_list=[]
+    service_list = []
     try:
-        service_dict={}
-        with shelve.open('service_2.db','c') as db:
-            if 'Service'in db:
-                service_dict=db['Service']
+        service_dict = {}
+        with shelve.open('service.db', 'c') as db:
+            if 'Service' in db:
+                service_dict = db['Service']
             for key in service_dict:
-                service=service.dict.get(key)
+                service = service.dict.get(key)
                 service_list.append(service)
     except IOError as ex:
-        print(f"Error in retrieving customers from service_2.db - {ex}")
+        print(f"Error in retrieving customers from service.db - {ex}")
     except Exception as ex:
-        print(f"Unknown error in retrieving customers from service_2.db - {ex}")
+        print(f"Unknown error in retrieving customers from service.db - {ex}")
     print("1")
     return render_template('Services/service.html', count=len(service_dict), form=form)
 
-# @service.route('/addNewServiceform')
-# def appointment():
-#     service_list = []
-#     try:
-#         service_dict = {}
-#         with shelve.open('/Services/service_2.db', 'c') as db:
-#             if 'Service' in db:
-#                 service_dict = db['Service']
-#             for key in service_dict:
-#                 service = service_dict.get(key)
-#                 service_list.append(service)
-#     except IOError as ex:
-#         print(f"Error in retrieving customers from service_2.db - {ex}")
-#     except Exception as ex:
-#         print(f"Unknown error in retrieving customers from service_2.db - {ex}")
-#     print("1")
-#     return render_template('Services/service.html', count=len(service_dict), form=form)
 
 
-@service.route('/addNewServiceform', methods=['POST','GET'])
+
+
+@service.route('/addNewServiceform', methods=['POST', 'GET'])
 def book_appointment():
     print("1")
     Apointment_booking_form = AddNewService(request.form)
-    if request.method == 'GET' and Apointment_booking_form.validate():
-        try:
-            with shelve.open('service_2.db', 'c') as db:
+    try:
+        with shelve.open('/service/service.db', 'c') as db:
 
-                service_dict = {}
-                if 'Service' in db:
-                    service_dict = db['Service']
-                service = Service(Apointment_booking_form.first_name.data,
-                                  Apointment_booking_form.last_name.data,
-                                  Apointment_booking_form.gender.data,
-                                  Apointment_booking_form.appointment_date.data,
-                                  Apointment_booking_form.appointment_time.data,
-                                  Apointment_booking_form.remarks.data,
-                                  Apointment_booking_form.service.data)
+            service_dict = {}
+            if 'Service' in db:
+                service_dict = db['appt_id']
+            service = Service(Apointment_booking_form.first_name.data,
+                              Apointment_booking_form.last_name.data,
+                              Apointment_booking_form.gender.data,
+                              Apointment_booking_form.appointment_date.data,
+                              Apointment_booking_form.appointment_time.data,
+                              Apointment_booking_form.remarks.data,
+                              Apointment_booking_form.service.data)
 
-                service_dict[service.get_first_Name()] = service
-                db['Service'] = service_dict
-                print("2")
-                return ("Submission Succesful")
-        except IOError as ex:
-            print("Error in retrieving Appointment")
-            return render_template('/Services/servicebase.html', form=Apointment_booking_form)
-
-    else:
-        print("3")
-        return render_template('/Services/addNewServiceform.html', form=Apointment_booking_form)
+            service_dict[service.get_first_Name()] = service
+            db['Service'] = service_dict
+            print("2")
+        return ("Submission Succesful")
+    except IOError as ex:
+        print("Error in retrieving Appointment")
+        return render_template('/Services/servicebase.html', form=Apointment_booking_form)
 
 
 @service.route('/Services/addNewServiceform', methods=['POST', 'GET'])  # Datepicker(appointmentbooking)
@@ -165,7 +161,7 @@ def retrieve_appt():
     appt_list = []
     try:
         appt_dict = {}
-        with shelve.open('DB/services/service.db', 'r') as db:
+        with shelve.open('DB/service/service.db', 'r') as db:
             if 'Service' in db:
                 appt_dict = db['Service']
             for key in appt_dict:
@@ -185,7 +181,7 @@ def add_new():
     add_new_form = update_service_form(request.form)
     if request.method == 'POST' and add_new_form.validate():
         appt_dict = {}
-        db = shelve.open('service_2.db', 'c')
+        db = shelve.open('service.db', 'c')
         try:
             appt_dict = db['hairstylist']
         except:
@@ -249,7 +245,7 @@ def add_new():
 #         return render_template('/Services/addNewService.html', form=update_service_form)
 
 
-@service.route('/updateService.html', methods=['GET', 'POST'])  # Datepicker-update service
+@service.route('/updateService', methods=['GET', 'POST'])  # Datepicker-update service
 def add_appt_date():
     form = update_service_form
     if form.validate_on_submit():
