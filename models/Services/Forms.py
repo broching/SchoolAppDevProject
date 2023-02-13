@@ -1,4 +1,4 @@
-from wtforms import Form, StringField, SelectField, TextAreaField, validators, DateField
+from wtforms import Form, StringField, SelectField, TextAreaField, validators, DateField, SubmitField
 
 
 class AddNewService(Form):
@@ -34,6 +34,7 @@ class AddNewService(Form):
                          choices=[('', 'Select'),('10','10am') ,('10.30','10.30am'),('11','11am'),('11.30','11.30am'),('12', '12.30Pm'), ('1', '1PM'),('1.30','1.30pm'),('2pm','2pm'),('2.30','2.30pm'),('3.30','3.30pm'),('4','4pm')],
                          default='')
     remarks = TextAreaField('Remarks', [validators.Optional()])
+    submit = SubmitField('Book Appointment')
 
     def __init__(
             self,
