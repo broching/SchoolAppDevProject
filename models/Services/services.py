@@ -1,8 +1,7 @@
 class Service:
-    appointment_id = 0
 
-    def __init__(self, first_name, last_name, gender, appointment_date, appointment_time, remarks, service):
-        Service.appointment_id += 1
+
+    def __init__(self, first_name, last_name, gender, appointment_date, appointment_time, remarks, service, appt_id):
         self.__first_Name = first_name
         self.__last_Name = last_name
         self.__gender = gender
@@ -10,6 +9,8 @@ class Service:
         self.__appointment_Time = appointment_time
         self.__remarks = remarks
         self.__service = service
+        self.__appt_id=appt_id
+
 
     def get_first_Name(self):
         return self.__first_Name
@@ -32,6 +33,9 @@ class Service:
     def get_service(self):
         return self.__service
 
+    def get_appt_id(self):
+        return self.__appt_id
+
     def set_first_Name(self, first_name):
         self.__first_Name = first_name
 
@@ -52,3 +56,6 @@ class Service:
 
     def set_service(self, service):
         self.__service = service
+
+    def set_id(self, appt_id):
+        self.__appt_id = appt_id

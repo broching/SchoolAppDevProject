@@ -7,89 +7,93 @@ Staff Dashboard
 {% block content %}
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <link rel="stylesheet"
-href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
+      href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
 <script type="text/javascript"
-src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+        src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript"
-src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+        src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <link
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-  rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        rel="stylesheet"
 />
-    <h1 class="display-4 ">Dashboard</h1>
+<h1 class="display-4 ">Dashboard</h1>
 <div class="row mt-4">
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                No. of Accounts</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ account_count }}</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-user fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            No. of Accounts
                         </div>
-
-                        <!-- Staff count card -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-success shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                NO. of Upcoming Appointments</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{upcoming_appointments}}</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fa-brands fa-intercom fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                         <!-- Customer count card -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-success shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                NO. of customer</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ customer_count }}</div>
-
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fa-brands fa-intercom fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                       <!-- deactivated users card -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-danger shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                                Deactivated Accounts</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ deactivated_count }}</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fa-solid fa-signal text-danger fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ account_count }}</div>
                     </div>
+                    <div class="col-auto">
+                        <i class="fas fa-user fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Staff count card -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            NO. of Upcoming Appointments
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{upcoming_appointments}}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fa-brands fa-intercom fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer count card -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            NO. of products
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ numProducts }}</div>
+
+                    </div>
+                    <div class="col-auto">
+                        <i class="fa-brands fa-intercom fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- total profits card -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-danger shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                            Total profit
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">${{ "%.2f"|format(totalProfits) }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fa-solid fa-signal text-danger fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="row mt-4">
     <div class="col-md-5 mr-5 ml-5">
@@ -101,60 +105,61 @@ src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></scrip
         </button>
         <br>
         <br>
-          <table id="myTable" style=" padding: 0; max-height: 500px; overflow: auto; display: inline-block;" class="table align-middle mb-0 bg-white">
-              <thead class="bg-light">
-                <tr>
-                  <th>Account ID</th>
-                  <th>Username/Email</th>
-                  <th>Account Type</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-              {% for account in account_list%}
-              <tr>
-                  {% if account.get_account_type() == "customer" %}
+        <table id="myTable" style=" padding: 0; max-height: 500px; overflow: auto; display: inline-block;"
+               class="table align-middle mb-0 bg-white">
+            <thead class="bg-light">
+            <tr>
+                <th>Account ID</th>
+                <th>Username/Email</th>
+                <th>Account Type</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for account in account_list%}
+            <tr>
+                {% if account.get_account_type() == "customer" %}
                 <td>{{account.get_customer_id()}}</td>
-                  {% else %}
-                  <td>{{account.get_staff_id()}}</td>
-                  {% endif %}
+                {% else %}
+                <td>{{account.get_staff_id()}}</td>
+                {% endif %}
                 <td>
                     <div class="d-flex align-items-center">
 
-                      {% if account.get_user_image() %}
-                          <img
-                          src="../../static/media/images/account/{{account.get_user_image()}}"
-                          alt=""
-                          style="width: 45px; height: 45px"
-                          class="rounded-circle"
-                          />
-                      {% else %}
-                      <img
-                          src="../../static/media/images/account/blank_account.png"
-                          alt=""
-                          style="width: 45px; height: 45px"
-                          class="rounded-circle"
-                          />
-                      {% endif %}
-                      <div class="ms-3">
-                        <p class="fw-bold mb-1">{{account.get_username()}}</p>
-                        <p class="text-muted mb-0">{{account.get_email()}}</p>
-                      </div>
+                        {% if account.get_user_image() %}
+                        <img
+                                src="../../static/media/images/account/{{account.get_user_image()}}"
+                                alt=""
+                                style="width: 45px; height: 45px"
+                                class="rounded-circle"
+                        />
+                        {% else %}
+                        <img
+                                src="../../static/media/images/account/blank_account.png"
+                                alt=""
+                                style="width: 45px; height: 45px"
+                                class="rounded-circle"
+                        />
+                        {% endif %}
+                        <div class="ms-3">
+                            <p class="fw-bold mb-1">{{account.get_username()}}</p>
+                            <p class="text-muted mb-0">{{account.get_email()}}</p>
+                        </div>
                     </div>
                 </td>
-                  <td>&nbsp;&nbsp;&nbsp;{{account.get_account_type()}}</td>
-                  {% if account.get_status() == "active" %}
-                  <td style="color: green;">&nbsp;&nbsp;&nbsp;{{account.get_status()}}</td>
-                  {% else %}
-                  <td style="color: orange;">&nbsp;&nbsp;&nbsp;{{account.get_status()}}</td>
-                  {% endif %}
-              </tr>
-              {% endfor %}
-              </tbody>
-            </table>
+                <td>&nbsp;&nbsp;&nbsp;{{account.get_account_type()}}</td>
+                {% if account.get_status() == "active" %}
+                <td style="color: green;">&nbsp;&nbsp;&nbsp;{{account.get_status()}}</td>
+                {% else %}
+                <td style="color: orange;">&nbsp;&nbsp;&nbsp;{{account.get_status()}}</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
     <div class="col-md-5 ml-5">
-                <h3 class="d-inline">Inventory</h3>
+        <h3 class="d-inline">Inventory</h3>
         <button class="btn btn-primary d-inline">
             <a style="color: white; text-decoration: none;" href="{{ url_for('productr.inventory') }}">
                 View all
@@ -162,18 +167,29 @@ src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></scrip
         </button>
         <br>
         <br>
-          <table style=" padding: 0; max-height: 500px; overflow: auto; display: inline-block;" class="table align-middle mb-0 bg-white">
-              <thead class="bg-light">
-                <tr>
-                  <th>Name</th>
-                  <th>Price</th>
-                  <th>Cost</th>
-                  <th>Quantity</th>
-                </tr>
-              </thead>
-              <tbody>
-              </tbody>
-            </table>
+        <table style=" padding: 0; max-height: 500px; overflow: auto; display: inline-block;"
+               class="table align-middle mb-0 bg-white">
+            <thead class="bg-light">
+            <tr>
+                <th>Name</th>
+                <th>ID</th>
+                <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                <th>Total Profit</th>
+                <th>Quantity</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for product in product_list %}
+            <tr>
+                <td>{{ product.get_product_name() }}</td>
+                <td>{{ product.get_product_id() }}</td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td>${{ "%.2f"|format(product.get_product_profitTotal()) }}</td>
+                <td>{{ product.get_product_quantity() }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
 
 

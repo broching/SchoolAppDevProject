@@ -430,9 +430,9 @@ def staff_dashboard():
     appt_list = []
     try:
         appt_dict = {}
-        with shelve.open('DB/services/service.db', 'r') as db:
-            if 'Service' in db:
-                appt_dict = db['Service']
+        with shelve.open('DB/service/service.db', 'r') as db:
+            if 'service' in db:
+                appt_dict = db['service']
             for key in appt_dict:
                 service = appt_dict.get(key)
                 appt_list.append(service)
@@ -442,7 +442,32 @@ def staff_dashboard():
         print(f"Unknown error in retrieving customers from service.db - {ex}")
     upcoming_appointments = len(appt_list)
     account_list = get_customers('DB') + get_staff('DB')
-    return render_template('account/staff_dashboard.html', account_list=account_list, account_count=len(account_list), upcoming_appointments=upcoming_appointments)
+    print(appt_list)
+
+    product_list = []
+    product_dict = {}
+    totalProfits = 0
+    try:
+        totalProfits = 0
+        with shelve.open('DB/products/product.db', 'c') as pdb:
+            if 'Products' in pdb:
+                product_dict = pdb['Products']
+            for key in product_dict:
+                product = product_dict.get(key)
+                product_list.append(product)
+                profits = product.get_product_profitTotal()
+                totalProfits += profits
+
+            pdb['Products'] = product_dict
+
+            numProducts = len(product_list) if product_list else 0
+
+    except IOError as ex:
+        print(f"E(staff_dashboard) Error while trying to open product.db - {ex}")
+
+    return render_template('account/staff_dashboard.html', account_list=account_list, account_count=len(account_list),
+                           upcoming_appointments=upcoming_appointments, product_list=product_list,
+                           numProducts=numProducts, totalProfits=totalProfits)
 
 
 @account.route('/StaffProfile', methods=["POST", "GET"])

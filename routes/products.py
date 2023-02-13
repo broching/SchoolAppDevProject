@@ -72,6 +72,7 @@ def productOrder(id):
                 products_dict = pdb['Products']
             if id in products_dict:
                 product = products_dict.get(id)
+
                 product_quantity_temp = product.get_product_quantity()
                 print(product_quantity_temp)
             pdb['Products'] = products_dict
@@ -103,6 +104,7 @@ def productOrder(id):
                 mode='payment',
                 success_url=request.host_url + 'products/order/success',
                 cancel_url=request.host_url + 'products/order/cancel',
+                billing_address_collection='required',
             )
 
     except IOError as ex:
@@ -139,7 +141,7 @@ def productOrderCart(id):
                 mulidList = []
                 for item in cust_cart:
                     pid = item['_Product__id']
-                    price = int(item['_Product__price'])
+                    price = float(item['_Product__price'])
                     name = item['_Product__productName']
                     line_items.append({'price_data': {
                         'product_data': {'name': f"ID: {pid} | {name}",
@@ -167,6 +169,7 @@ def productOrderCart(id):
                     mode='payment',
                     success_url=request.host_url + 'products/order/successCart',
                     cancel_url=request.host_url + 'products/order/cancel',
+                    billing_address_collection='required',
                 )
 
                 return redirect(checkout_session.url)
@@ -302,6 +305,71 @@ def viewCart():
             cust_cart = customer.get_cart()
             print(cust_cart)
 
+            # Check if ID of products in customer cart exists in product.db
+            #         Loop through customer's cart
+            # If it does not exist, remove the product from customer's cart
+            try:
+                with shelve.open('DB/products/product.db', 'c') as pdb:
+                    if 'Products' in pdb:
+                        products_dict = pdb['Products']
+
+                    # set a list to store current existing product IDs
+                    productIDList = []
+
+                    # Loop through product db
+                    for key in products_dict:
+                        product = products_dict.get(key)
+                        productID = product.get_product_id()
+                        productIDList.append(productID)
+
+                        # Update products by checking against product.db Product class instance attributes
+                        for itemToUpdate in cust_cart:
+                            if itemToUpdate['_Product__id'] == productID:
+                                if itemToUpdate['_Product__quantity'] != product.get_product_quantity():
+                                    itemToUpdate['_Product__quantity'] = product.get_product_quantity()
+
+                                if itemToUpdate['_Product__image'] != product.get_product_image():
+                                    itemToUpdate['_Product__image'] = product.get_product_image()
+
+                                if itemToUpdate['_Product__productName'] != product.get_product_name():
+                                    itemToUpdate['_Product__image'] = product.get_product_name()
+
+                                if itemToUpdate['_Product__price'] != product.get_product_price():
+                                    itemToUpdate['_Product__price'] = product.get_product_price()
+
+                                if itemToUpdate['_Product__productCost'] != product.get_product_cost():
+                                    itemToUpdate['_Product__productCost'] = product.get_product_cost()
+
+                                if itemToUpdate['_Product__description'] != product.get_product_description():
+                                    itemToUpdate['_Product__description'] = product.get_product_description()
+
+                                if itemToUpdate['_Product__productType'] != product.get_product_type():
+                                    itemToUpdate['_Product__productType'] = product.get_product_type()
+
+                                print(f"(viewCart)Updated list item: {itemToUpdate}")
+
+                    pdb['Products'] = products_dict
+
+                    print(f"(viewCart)List of product IDs (All products that exist in db): {productIDList}")
+                    for cart_item in cust_cart:
+                        if cart_item['_Product__id'] not in productIDList:
+                            print(f"(viewCart) Cart item about to get removed from list: {cart_item}")
+                            print(f"(viewCart) Cart before cart item gets removed: {cust_cart}")
+                            cust_cart.remove(cart_item)
+                            print(f"(viewCart) Cart left after cart item got removed: {cust_cart}")
+
+                    # Set new cart list to the updated one that has the product appended.
+                    customer.set_cart(cust_cart)
+                    print(customer.get_cart())
+                    store_customer(customer, 'DB')
+
+                    # Update session with new info
+                    customer_dict = account_to_dictionary_converter(customer)
+                    session['customer'] = customer_dict
+
+            except IOError as ex:
+                print(f"Error in view cart (Opening product.db) - {ex}")
+
     # def removeitem(itemId):
     #     cust_cart.pop(itemId)
 
@@ -349,6 +417,38 @@ def deleteItemFromCart(id):
             session['customer'] = customer_dict
 
     return redirect(url_for('productr.viewCart', id=id))
+
+
+# Clear cart
+@productr.route('/cart', methods=['POST'])
+def clearCart():
+    cust_list = get_customers('DB')
+
+    # Get customer id from current session
+    print(session['customer'])
+    target_id = session['customer']['_Account__user_id']
+    print(target_id)
+    for customer in cust_list:
+        if customer.get_user_id() == target_id:
+            print('Customer found')
+            print(customer)
+
+            # Set cart to empty list
+            cust_cart = []
+
+            # # Reset customer cart (USE FOR EMERGENCIES)
+            # cust_cart = []
+
+            # Set new cart list to the updated one that has the product appended.
+            customer.set_cart(cust_cart)
+            print(customer.get_cart())
+            store_customer(customer, 'DB')
+
+            # Update session with new info
+            customer_dict = account_to_dictionary_converter(customer)
+            session['customer'] = customer_dict
+
+    return redirect(url_for('productr.viewCart'))
 
 
 # Payment success page TODO: Receipt
@@ -405,18 +505,23 @@ def success():
 
                     # Get cart list
                     cust_cart = customer.get_cart()
-
-                    # # Append product dictionary into customer cart list
-                    # print(cust_cart)
-                    # flash(f"Removed item {cust_cart[id]['_Product__productName']} from cart.", category='info')
-                    # del cust_cart[id]
                     for item in cust_cart:
                         if item['_Product__id'] == productStripeId:
                             cust_cart.remove(item)
                             break
 
+                    # # Append product dictionary into customer cart list
+                    # print(cust_cart)
+                    # flash(f"Removed item {cust_cart[id]['_Product__productName']} from cart.", category='info')
+                    # del cust_cart[id]
+
                     # # Reset customer cart (USE FOR EMERGENCIES)
                     # cust_cart = []
+
+                    # # Append product dictionary into customer cart list
+                    # print(cust_cart)
+                    # flash(f"Removed item {cust_cart[id]['_Product__productName']} from cart.", category='info')
+                    # del cust_cart[id]
 
                     # Set new cart list to the updated one that has the product appended.
                     customer.set_cart(cust_cart)
@@ -458,10 +563,11 @@ def successCart():
                     products_dict = pdb['Products']
                 if productStripeId in products_dict:
                     product = products_dict.get(productStripeId)
+
                     product_dict_for_storing = account_to_dictionary_converter(product)
-                    cust_list = get_customers('DB')
                 pdb['Products'] = products_dict
 
+                cust_list = get_customers('DB')
                 # Update billing history
                 # Get customer id from current session
                 print(session['customer'])
@@ -588,6 +694,15 @@ def new_event():
                         product_quantity_temp -= item.quantity
                         product.set_product_quantity(product_quantity_temp)
                         print(f"Product quantity new: {product_quantity_temp}")
+
+                        # Handle product profit
+                        profit_in_shelve = float(product.get_product_price()) - float(product.get_product_cost())
+                        product.set_product_profit(profit_in_shelve)
+
+                        current_profit = profit_in_shelve
+                        total_profit = float(product.get_product_profitTotal()) + float(current_profit)
+                        product.set_product_profitTotal(total_profit)
+
                     pdb['Products'] = products_dict
             except IOError as ex:
                 print(f"Error in opening product.db in new_event - {ex}")

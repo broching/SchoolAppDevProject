@@ -2,12 +2,11 @@ from datetime import datetime
 
 
 class serviceReview:
-    unique_id = datetime.now()
-    unique_id = int(unique_id.strftime('%Y%m%d%H%M%S'))
-
     def __init__(self, user_id, user_name, service_selection, stylist_selection, service_rating, service_image, service_video,
                  service_comment):
-        self.__service_id = serviceReview.unique_id
+        unique_id = datetime.now()
+        unique_id = int(unique_id.strftime('%Y%m%d%H%M%S'))
+        self.__service_id = unique_id
         self.__user_id = user_id
         self.__user_name = user_name
         self.__service_selection = service_selection

@@ -13,6 +13,9 @@ class Product:
         self.__description = description
         self.__productType = productType
         self.__productCost = cost
+        self.__profit = 0
+        self.__sold = 0
+        self.__profitTotal = 0
 
     # getters
     def get_product_name(self):
@@ -23,6 +26,15 @@ class Product:
 
     def get_product_id(self):
         return self.__id
+
+    def get_product_sold(self):
+        return self.__sold
+
+    def get_product_profit(self):
+        return self.__profit
+
+    def get_product_profitTotal(self):
+        return self.__profitTotal
 
     def get_product_image(self):
         return self.__image
@@ -51,6 +63,15 @@ class Product:
 
     def set_product_id(self, id):
         self.__id = id
+
+    def set_product_profit(self, profit):
+        self.__profit = profit
+
+    def set_product_sold(self, sold):
+        self.__sold = sold
+
+    def set_product_profitTotal(self, total):
+        self.__profitTotal = total
 
     def set_product_quantity(self, quantity):
         self.__quantity = quantity

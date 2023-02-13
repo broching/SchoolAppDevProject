@@ -83,6 +83,13 @@
 
                 </td>
 
+                <td>
+                    <form action="{{url_for('review.staffDeleteServiceReview', id=staff_service_review.get_service_id())}}"
+                          method="POST">
+                        <input type="submit" value="X" class="btn btn-danger">
+                    </form>
+                </td>
+
             </tr>
             {% endfor %}
             </tbody>

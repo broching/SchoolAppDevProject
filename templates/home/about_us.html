@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}
+About us
+{% endblock title %}
+{% block content %}
+
+<div class="container">
+    <h1 class="display-4 w-100 text-center mt-5">About us</h1>
+    <div class="row mt-5">
+        <div class="col-lg-6 ">
+            <img style="border-radius: 10px; width:95%;" src="../../static/media/images/home/salon_home_page.jpg">
+        </div>
+        <div class="col-lg-6 d-flex align-items-center mt-4 mt-lg-0">
+            <div>
+                <h2 class="w-100 text-center">Our Story</h2>
+                <p> OneSalonSG is a premier beauty and wellness destination located in the heart of Singapore. Our
+                    mission is to provide a luxurious and relaxing experience for our clients, with a focus on
+                    exceptional service and personalized attention.<br>
+                    <br>Our team of highly trained stylists, aestheticians, and therapists are dedicated to helping you
+                    look and feel your best.At OneSalonSG, we offer a wide range of services, including haircuts and
+                    color, skincare treatments, massage therapy, and more. Our state-of-the-art facilities are designed
+                    to provide a comfortable and inviting atmosphere, where you can unwind and escape from the stresses
+                    of everyday life.
+                </p>
+                <button class="btn btn-primary"><a style="text-decoration:none; color: white;" href="{{url_for('home')}}">Back to home</a></button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+{% endblock content%}

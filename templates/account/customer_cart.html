@@ -4,8 +4,8 @@
 
 {% if 'deleteCartItem' in session %}
 <div class="alert alert-info alert-dismissible fade show" role="alert">
-  <strong>Info</strong> {{ session.pop('deleteCartItem', None) }} removed from cart.
-  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <strong>Info</strong> {{ session.pop('deleteCartItem', None) }} removed from cart.
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 {% endif %}
 
@@ -53,7 +53,9 @@
             <tbody>
             {% if count == 0 %}
             <tr>
-                <td colspan="9">There are currently no items. Browse items here:&nbsp;&nbsp;&nbsp;<a href="/products" class="btn btn-outline-dark">Shop</a></td>
+                <td colspan="9">There are currently no items. Browse items here:&nbsp;&nbsp;&nbsp;<a href="/products"
+                                                                                                     class="btn btn-outline-dark">Shop</a>
+                </td>
             </tr>
             {% endif %}
             {% for item in cust_cart %}
@@ -120,12 +122,61 @@
 
             {% if count > 0 %}
             <tr>
-                <td colspan="9">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td colspan="1" style="width: 180px;">
                     <div>
                         <!--        submit-->
                         <a href="{{url_for('productr.productOrderCart', id=cart_id)}}"
-                           class="btn btn-primary">Purchase All</a>
+                           class="btn btn-primary">Checkout</a>
                     </div>
+                </td>
+                <td colspan="1" style="width: 130px;">
+                    <!--                    <div>-->
+                    <!--                        <form action="{{url_for('productr.clearCart')}}"-->
+                    <!--                              method="POST">-->
+                    <!--                            <input type="submit" value="Clear cart" class="btn btn-danger">-->
+                    <!--                        </form>-->
+                    <!--                    </div>-->
+
+
+                    <!--                    </button>-->
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                            data-bs-target="#targetmodalclearcart">
+                        Clear cart
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="targetmodalclearcart" tabindex="-1"
+                         aria-labelledby="exampleModalLabel2"
+                         aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel2">Clear cart</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to clear your cart?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                                    </button>
+                                    <form action="{{url_for('productr.clearCart')}}"
+                                        method="POST">
+                                        <input type="submit" value="Clear cart" class="btn btn-danger">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </td>
             </tr>
             {% endif %}
