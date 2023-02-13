@@ -50,17 +50,16 @@ def add_new_service():
                            form=form)
 
 
-
 @service.route('/addNewServiceform')
 def appointment():
-    service_list = []
+    service_list=[]
     try:
-        service_dict = {}
-        with shelve.open('/Services/service_2.db', 'c') as db:
-            if 'Service' in db:
-                service_dict = db['Service']
+        service_dict={}
+        with shelve.open('service_2.db','c') as db:
+            if 'Service'in db:
+                service_dict=db['Service']
             for key in service_dict:
-                service = service_dict.get(key)
+                service=service.dict.get(key)
                 service_list.append(service)
     except IOError as ex:
         print(f"Error in retrieving customers from service_2.db - {ex}")
@@ -68,6 +67,24 @@ def appointment():
         print(f"Unknown error in retrieving customers from service_2.db - {ex}")
     print("1")
     return render_template('Services/service.html', count=len(service_dict), form=form)
+
+# @service.route('/addNewServiceform')
+# def appointment():
+#     service_list = []
+#     try:
+#         service_dict = {}
+#         with shelve.open('/Services/service_2.db', 'c') as db:
+#             if 'Service' in db:
+#                 service_dict = db['Service']
+#             for key in service_dict:
+#                 service = service_dict.get(key)
+#                 service_list.append(service)
+#     except IOError as ex:
+#         print(f"Error in retrieving customers from service_2.db - {ex}")
+#     except Exception as ex:
+#         print(f"Unknown error in retrieving customers from service_2.db - {ex}")
+#     print("1")
+#     return render_template('Services/service.html', count=len(service_dict), form=form)
 
 
 @service.route('/addNewServiceform', methods=['POST','GET'])
@@ -106,7 +123,7 @@ def book_appointment():
 def index():
     form = AddNewService()
     if form.validate_on_submit():
-        session['apointment_date'] = form.apointment_date.data
+        session['apointment_date'] = form.appointment_date.data
         return redirect('/Services/retrieveAppointment.html')
     return render_template('/Services/addNewServiceform.html', form=form)
 
