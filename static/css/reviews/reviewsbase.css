@@ -70,3 +70,7 @@ button > a:hover {
 .stylist-selection {
     margin-left: 250px;
 }
+
+.form-group {
+    color:black;
+}
