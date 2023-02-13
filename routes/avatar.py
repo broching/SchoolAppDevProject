@@ -73,6 +73,11 @@ def avatar():
                     preview.save_avatar(user_id + "/preview")
                     db[user_id] = [preview, avatar_list]
 
+                # elif 'delete' in request.form:
+                #     extract = preview
+                #     for i in avatar_list:
+                #         if extract.__dict__.pop("image") == i.__dict__.pop("image"):
+                #             print("exists")
                 else:
                     pass
 
