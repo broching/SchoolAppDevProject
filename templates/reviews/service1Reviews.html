@@ -61,13 +61,24 @@
 
     <br>
 
-    <!--    Table to display all product reviews-->
+    <h2>Hair Cut Reviews</h2>
+
+    <br>
+
+    <!--    Table to display all service reviews-->
     <div class="service_reviews">
         <table class="table table-striped">
 
             <thead>
             <tr class="tarow1first">
-                <th style="font-size: 150%;">{{ count }} Service Reviews</th>
+                {% if count == 0 %}
+                <th style="font-size: 150%;">{{ count }} Reviews</th>
+                {% elif count == 1 %}
+                <th style="font-size: 150%;">{{ count }} Review</th>
+                {% else %}
+                <th style="font-size: 150%;">{{ count }} Reviews</th>
+                {% endif %}
+
             </tr>
             </thead>
 
