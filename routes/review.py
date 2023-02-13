@@ -43,6 +43,8 @@ def createProductReview():
                 product_reviews_dict[product_review.get_product_id()] = product_review
                 db['Product_Reviews'] = product_reviews_dict
 
+
+                #add into staff db
                 with shelve.open('DB/reviews/productReviews/Staff/productReview.db', 'c') as db:
                     staff_product_reviews_dict = {}
                     if 'Staff_Product_Reviews' in db:
@@ -60,6 +62,7 @@ def createProductReview():
 
                     staff_product_reviews_dict[staff_product_review.get_product_id()] = staff_product_review
                     db['Staff_Product_Reviews'] = staff_product_reviews_dict
+                #end
 
                 # testing filter for product 1
                 if product_review.get_product_selection() == 'Product 1':
@@ -288,6 +291,26 @@ def createServiceReview():
                 service_reviews_dict[service_review.get_service_id()] = service_review
                 db['Service_Reviews'] = service_reviews_dict
 
+                # add into staff db
+                with shelve.open('DB/reviews/serviceReviews/Staff/serviceReview.db', 'c') as db:
+                    staff_service_reviews_dict = {}
+                    if 'Staff_Service_Reviews' in db:
+                        staff_service_reviews_dict = db['Staff_Service_Reviews']
+                    staff_service_review = serviceReview(create_service_review_form.user_id.data,
+                                                   create_service_review_form.user_name.data,
+                                                   create_service_review_form.service_selection.data,
+                                                   create_service_review_form.stylist_selection.data,
+                                                   create_service_review_form.service_rating.data,
+                                                   create_service_review_form.service_image.data,
+                                                   create_service_review_form.service_video.data,
+                                                   create_service_review_form.service_comment.data)
+
+                    staff_service_review.set_service_id(staff_service_review.get_service_id())
+
+                    staff_service_reviews_dict[staff_service_review.get_service_id()] = staff_service_review
+                    db['Staff_Service_Reviews'] = staff_service_reviews_dict
+                # end
+
                 # filter db for Hair Cut
                 if service_review.get_service_selection() == 'Hair Cut':
                     with shelve.open('DB/reviews/serviceReviews/Service1/serviceReview.db', 'c') as db:
@@ -361,6 +384,24 @@ def createServiceReview():
     else:
         return render_template('reviews/createServiceReview.html', form=create_service_review_form)
 
+@review.route('/staffServiceReviews')
+def staffServiceReviews():
+    staff_service_reviews_list = []
+    try:
+        staff_service_reviews_dict = {}
+        with shelve.open('DB/reviews/serviceReviews/Staff/serviceReview.db', 'r') as db:
+            if 'Staff_Service_Reviews' in db:
+                staff_service_reviews_dict = db['Staff_Service_Reviews']
+            for key in staff_service_reviews_dict:
+                staff_service_review = staff_service_reviews_dict.get(key)
+                staff_service_reviews_list.append(staff_service_review)
+    except IOError as ex:
+        print(f"Error in retrieving staff service reviews from staff_service_reviews.db - {ex}")
+    except Exception as ex:
+        print(f"Unknown error in retrieving staff service reviews from staff_service_reviews.db - {ex}")
+
+    return render_template('reviews/staffServiceReviews.html', count=len(staff_service_reviews_list),
+                           staff_service_reviews_list=staff_service_reviews_list)
 
 @review.route('/serviceReviews')
 def serviceReviews():
