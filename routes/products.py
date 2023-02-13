@@ -503,6 +503,10 @@ def success():
 
                     # Get cart list
                     cust_cart = customer.get_cart()
+                    for item in cust_cart:
+                        if item['_Product__id'] == productStripeId:
+                            cust_cart.remove(item)
+                            break
 
                     # # Append product dictionary into customer cart list
                     # print(cust_cart)
@@ -511,6 +515,11 @@ def success():
 
                     # # Reset customer cart (USE FOR EMERGENCIES)
                     # cust_cart = []
+
+                    # # Append product dictionary into customer cart list
+                    # print(cust_cart)
+                    # flash(f"Removed item {cust_cart[id]['_Product__productName']} from cart.", category='info')
+                    # del cust_cart[id]
 
                     # Set new cart list to the updated one that has the product appended.
                     customer.set_cart(cust_cart)

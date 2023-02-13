@@ -3,7 +3,7 @@ from PIL import Image
 class Product:
     count_id = 0
 
-    def __init__(self, name, productType, quantity, image, price, description, cost, id):
+    def __init__(self, name, productType, quantity, image, price, description, cost, id, profit):
         Product.count_id += 1
         self.__productName = name
         self.__id = id
@@ -13,8 +13,8 @@ class Product:
         self.__description = description
         self.__productType = productType
         self.__productCost = cost
-        # self.__profit = profit
-        # self.__sold = None
+        self.__profit = profit
+        self.__sold = None
 
     # getters
     def get_product_name(self):
