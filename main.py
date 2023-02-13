@@ -92,7 +92,6 @@ def customer_login():
     login_form = LoginForm()
     get_email_form = GetEmailForm()
     if request.method == "POST" and login_form.submit.data:
-        print('test')
         customer_dict = customer_login_authentication(login_form.username.data, login_form.password.data, 'DB')
         if customer_dict != {}:
             if login_form.remember.data:
@@ -101,7 +100,7 @@ def customer_login():
                 session.permanent = False
             session['customer'] = customer_dict
             flash(f"Account {login_form.username.data} successfully logged in!", category="success")
-            return redirect(url_for('account.customer_dashboard'))
+            return redirect(url_for('home'))
         else:
             flash("Login failed! Please check your username or password again", category='danger')
 

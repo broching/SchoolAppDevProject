@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request
-from models.auth.auth_forms import LoginForm, RegisterForm, GetEmailForm
+from models.auth.auth_forms import LoginForm, RegisterForm
 from models.auth.auth_functions import *
 from models.account.account_classes import Customer
 
@@ -23,7 +23,7 @@ def customer_register():
             store_customer(customer_object=customer, relative_path_to_db='DB')
             print('Customer of username is stored:', customer.get_username())
             flash("You have successfully created a new account", category='success')
-            return redirect(url_for('home'))
+            return redirect(url_for('customer_login'))
     return render_template('auth/register.html', form=register_form, error_messages=error_messages)
 
 
