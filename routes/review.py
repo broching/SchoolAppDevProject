@@ -201,6 +201,69 @@ def product3_filter():
     return render_template('reviews/product3Reviews.html', count=len(product3_reviews_list),
                            product3_reviews_list=product3_reviews_list)
 
+@review.route('/staffDeleteProductReview/<int:id>', methods=['POST'])
+@staff_login_required
+def staffDeleteProductReview(id):
+    staff_product_reviews_dict = {}
+    try:
+        # delete for STAFF product reviews db
+        with shelve.open('DB/reviews/productReviews/Staff/productReview.db', 'w') as db:
+            if 'Staff_Product_Reviews' in db:
+                staff_product_reviews_dict = db['Staff_Product_Reviews']
+
+            staff_product_reviews_dict.pop(id)
+            db['Staff_Product_Reviews'] = staff_product_reviews_dict
+            # print('1')
+
+        #delete from CUSTOMER product reviews db
+        with shelve.open('DB/reviews/productReviews/productReview.db','w') as db:
+            product_reviews_dict = {}
+            if 'Product_Reviews' in db:
+                product_reviews_dict = db['Product_Reviews']
+
+            product_reviews_dict.pop(id)
+            next_id = id
+            db['Product_Reviews'] = product_reviews_dict
+            print('2')
+
+
+            # delete from CUSTOMER filter product1 reviews db
+            with shelve.open('DB/reviews/productReviews/Product1/productReview.db', 'w') as db:
+                product1_reviews_dict = {}
+                if 'Product1_Reviews' in db:
+                    product1_reviews_dict = db['Product1_Reviews']
+
+                if next_id in product1_reviews_dict:
+                    product1_reviews_dict.pop(id)
+                    db['Product1_Reviews'] = product1_reviews_dict
+                    print('3')
+
+            # delete from CUSTOMER filter product2 reviews db
+            with shelve.open('DB/reviews/productReviews/Product2/productReview.db', 'w') as db:
+                product2_reviews_dict = {}
+                if 'Product2_Reviews' in db:
+                    product2_reviews_dict = db['Product2_Reviews']
+
+                if next_id in product2_reviews_dict:
+                    product2_reviews_dict.pop(id)
+                    db['Product2_Reviews'] = product2_reviews_dict
+                    print('4')
+
+            # delete from CUSTOMER filter product3 reviews db
+            with shelve.open('DB/reviews/productReviews/Product3/productReview.db', 'w') as db:
+                product3_reviews_dict = {}
+                if 'Product3_Reviews' in db:
+                    product3_reviews_dict = db['Product3_Reviews']
+
+                if next_id in product3_reviews_dict:
+                    product3_reviews_dict.pop(id)
+                    db['Product3_Reviews'] = product3_reviews_dict
+                    print('5')
+
+    except IOError as ex:
+        print(f"Error in retrieving product reviews from staff_productReviews.db - {ex}")
+    return redirect(url_for('review.staffProductReviews'))
+
 
 @review.route('/deleteProductReview/<int:id>/<int:pid>', methods=['POST'])
 @customer_login_required
