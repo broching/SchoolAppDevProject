@@ -86,7 +86,8 @@ def book_appointment():
                                   Apointment_booking_form.gender.data,
                                   Apointment_booking_form.appointment_date.data,
                                   Apointment_booking_form.appointment_time.data,
-                                  Apointment_booking_form.remarks.data)
+                                  Apointment_booking_form.remarks.data,
+                                  Apointment_booking_form.service.data)
 
                 service_dict[service.get_first_Name()] = service
                 db['Service'] = service_dict
@@ -148,7 +149,8 @@ def add_new():
         service = update_Service.Service(add_new_form.service.data,
                                          add_new_form.hairstylist.data,
                                          add_new_form.appointment_time.data,
-                                         add_new_form.appointment_date.data
+                                         add_new_form.appointment_date.data,
+
                                          )
         print("1")
         appt_dict[service.get_hairstylist()] = service
