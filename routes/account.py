@@ -664,8 +664,7 @@ def staff_add_account():
             error_messages['email'] = "The email is already taken"
         if add_account_form.phone_number.data:
             if str(add_account_form.phone_number.data).isdigit() and validate_number(
-                    add_account_form.phone_number.data, 'DB',
-                    exceptions=session['customer']['_Account__number']):
+                    add_account_form.phone_number.data, 'DB',):
                 pass
             else:
                 error_messages['number'] = "Invalid phone number"
