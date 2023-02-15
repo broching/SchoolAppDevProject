@@ -1,6 +1,8 @@
 from flask_mail import Mail, Message
-from datetime import timedelta
+from datetime import timedelta, datetime
 from flask import Flask, render_template, flash, redirect, url_for, request, session
+from models.message.message_functions import *
+from models.message.message_classes import EmailMessage
 from models.account.account_forms import ContactUsForm
 from models.auth.auth_forms import NewPasswordForm, LoginForm, GetEmailForm
 from models.auth.auth_functions import get_customers, store_customer, customer_login_authentication
@@ -10,6 +12,8 @@ from routes.account import account
 from routes.review import review
 from routes.products import productr
 from routes.avatar import avatar_blueprint
+
+import jwt
 
 app = Flask(__name__)
 
@@ -60,7 +64,8 @@ def page_not_found_500(e):
 
 
 def send_reset_email(user_id, email):
-    token = user_id
+    token = jwt.encode({'user_id': user_id, 'exp': datetime.utcnow() + timedelta(minutes=1)},
+                       key="user_id")
     msg = Message()
     msg.subject = "Password reset"
     msg.recipients = [email]
@@ -73,13 +78,9 @@ def send_reset_email(user_id, email):
 def send_contact_email(email, subject, message):
     msg = Message()
     msg.subject = subject
-    msg.recipients = ['onesalonsg05@gmail.com']
-    msg.sender = email
-    msg.body = f"""
-This is an enquire sent by our customer with email: {email}
-
-{message}
-"""
+    msg.recipients = [email]
+    msg.sender = 'onesalonsg05@gmail.com'
+    msg.body = message
     mail.send(msg)
 
 
@@ -87,9 +88,18 @@ This is an enquire sent by our customer with email: {email}
 def contact_us():
     contact_us_form = ContactUsForm()
     if request.method == "POST" and contact_us_form.submit.data:
-        send_contact_email(contact_us_form.email.data, contact_us_form.subject.data, contact_us_form.message.data)
+        message = EmailMessage(contact_us_form.email.data, contact_us_form.subject.data, contact_us_form.message.data)
+        store_message(message, "DB")
         flash('Message successfully sent', category='success')
+        return redirect(url_for('home'))
     return render_template('home/contact_us.html', contact_us_form=contact_us_form)
+
+
+@app.route('/SendMessage/<email>/<subject>/<message>', methods=["POST", "GET"])
+def send_email(email, subject, message):
+    send_contact_email(email, subject, message)
+    flash(f'Email sent successfully to {email}', category='success')
+    return redirect(url_for('account.staff_messages'))
 
 
 @app.route('/CustomerLogin', methods=["POST", "GET"])
@@ -119,31 +129,35 @@ def customer_login():
     return render_template('auth/customer_login.html', form=login_form, get_email_form=get_email_form)
 
 
-@app.route('/reset_password/<token>', methods=["POST", "GET"])
+@app.route('/ResetPassword/<token>', methods=["POST", "GET"])
 def reset_password(token):
-    new_password_form = NewPasswordForm()
-    user_id = token
     id_list = []
     error_messages = {}
-    for customer in get_customers('DB'):
-        id_list.append(customer.get_user_id())
-    if user_id not in str(id_list):
-        flash('That is an expired or invalid token, please send another password request email', category='warning')
-        return redirect(url_for('customer_login'))
-    else:
-        if request.method == 'POST' and new_password_form.submit.data:
-            if new_password_form.password1.data != new_password_form.password2.data:
-                error_messages['password'] = 'Passwords do not match'
-            if error_messages == {}:
-                for accounts in get_customers('DB'):
-                    if accounts.get_user_id() == int(user_id):
-                        accounts.set_password_hash(new_password_form.password1.data)
-                        store_customer(accounts, "DB")
-                        flash('Password successfully changed', category='success')
-                        return redirect(url_for('customer_login'))
+    new_password_form = NewPasswordForm()
+    try:
+        user_id = jwt.decode(token, "user_id", algorithms=["HS256"])['user_id']
+        for customer in get_customers('DB'):
+            id_list.append(customer.get_user_id())
+        if user_id not in id_list:
+            flash('That is an expired or invalid password request, please send another password request email', category='warning')
+            return redirect(url_for('customer_login'))
+        else:
+            if request.method == 'POST' and new_password_form.submit.data:
+                if new_password_form.password1.data != new_password_form.password2.data:
+                    error_messages['password'] = 'Passwords do not match'
+                if error_messages == {}:
+                    for accounts in get_customers('DB'):
+                        if accounts.get_user_id() == int(user_id):
+                            accounts.set_password_hash(new_password_form.password1.data)
+                            store_customer(accounts, "DB")
+                            flash('Password successfully changed', category='success')
+                            return redirect(url_for('customer_login'))
+    except jwt.ExpiredSignatureError:
+        flash("The password reset request has been expired, please try again", category="warning")
+        return redirect(url_for("home"))
     return render_template('auth/reset_password.html', new_password_form=new_password_form,
                            error_messages=error_messages)
 
 
 if __name__ == "__main__":
-    app.run(debug=False)
+    app.run(debug=True)

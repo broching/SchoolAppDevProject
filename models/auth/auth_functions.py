@@ -264,7 +264,7 @@ def staff_login_authentication(username_email, password, relative_path_to_db):
     return staff_dict
 
 
-def add_mass_customer(number_of_customer_to_add, id_to_start):
+def add_mass_customer(number_of_customer_to_add, id_to_start, relative_path_to_db):
     """Adds alot of customer"""
     for number in range(id_to_start, number_of_customer_to_add + id_to_start):
         username = 'customer' + str(number)
@@ -272,10 +272,10 @@ def add_mass_customer(number_of_customer_to_add, id_to_start):
         password = 'testtest'
         sleep(1)
         customer = Customer(username, email, password)
-        store_customer(customer, "../../DB")
+        store_customer(customer, relative_path_to_db)
 
 
-def add_mass_staff(number_of_staff_to_add, id_to_start):
+def add_mass_staff(number_of_staff_to_add, id_to_start, relative_path_to_db):
     """Adds alot of staff"""
     for number in range(id_to_start, number_of_staff_to_add + id_to_start):
         username = 'staff' + str(number)
@@ -283,7 +283,8 @@ def add_mass_staff(number_of_staff_to_add, id_to_start):
         password = 'testtest'
         sleep(1)
         staff = Staff(username, email, password)
-        store_staff(staff, "../../DB")
+        staff.set_account_type('staff')
+        store_staff(staff, relative_path_to_db)
 
 
 def validate_birthday_(birthday_to_validate):

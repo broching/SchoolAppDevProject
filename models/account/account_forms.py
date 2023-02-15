@@ -1,4 +1,5 @@
-from wtforms import StringField, SubmitField, EmailField, DateField, TelField, PasswordField, IntegerField, SelectField, TextAreaField
+from wtforms import StringField, SubmitField, EmailField, DateField, TelField, PasswordField, IntegerField, SelectField, \
+    TextAreaField
 from wtforms.validators import Email, Length, EqualTo, DataRequired
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField
@@ -60,3 +61,12 @@ class ContactUsForm(FlaskForm):
     subject = StringField(validators=[DataRequired()])
     message = TextAreaField(validators=[DataRequired()])
     submit = SubmitField()
+
+
+class AddMultipleAccounts(FlaskForm):
+    number_of_accounts = IntegerField('Number of accounts', validators=[DataRequired()])
+    start_id = IntegerField('Starting account number', validators=[DataRequired()])
+    password = PasswordField("Set Password", validators=[Length(min=5, max=15), DataRequired()])
+    account_type = SelectField('Account Type',
+                               choices=[('customer', 'customer'), ('staff', 'staff')], validators=[DataRequired()])
+    submit9 = SubmitField()

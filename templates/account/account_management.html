@@ -5,6 +5,7 @@ Account management
 {% endblock title %}
 
 {% block content %}
+<link rel="stylesheet" href="../../static/css/account/customer_profile.css">
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <link rel="stylesheet"
 href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
@@ -94,6 +95,46 @@ src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></scrip
                     </div>
 
 <button type="button" class="btn btn-primary"><a style="color: white; text-decoration: none;" href="{{url_for('account.staff_add_account')}}">Add Account</a></button>
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#multipleaccounts">
+  Add Multiple Accounts
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="multipleaccounts" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+  <form method="post">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Add Multiple Accounts</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+           <div class="mb-3">
+                {{ add_multiple_accounts_form.account_type.label(class="small mb-1") }}
+                {{ add_multiple_accounts_form.account_type(class="form-select")}}
+          </div>
+          <div class="mb-3">
+                {{ add_multiple_accounts_form.number_of_accounts.label(class="small mb-1") }}
+                {{ add_multiple_accounts_form.number_of_accounts(class="form-control")}}
+          </div>
+          <div class="mb-3">
+                {{ add_multiple_accounts_form.start_id.label(class="small mb-1") }}
+                {{ add_multiple_accounts_form.start_id(class="form-control")}}
+          </div>
+          <div class="mb-3">
+                {{ add_multiple_accounts_form.password.label(class="small mb-1") }}
+                {{ add_multiple_accounts_form.password(class="form-control")}}
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        {{add_multiple_accounts_form.submit9(class='btn btn-primary', value='Add Accounts')}}
+      </div>
+    </div>
+  </form>
+  </div>
+</div>
 <br>
 <br>
   <table id="myTable" style="padding: 0;" class="table align-middle mb-0 bg-white">

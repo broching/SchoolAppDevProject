@@ -1,0 +1,75 @@
+{% extends 'staff_base.html' %}
+
+{% block title %}
+Staff Messages
+{% endblock title %}
+
+{% block content %}
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<link rel="stylesheet"
+href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
+<script type="text/javascript"
+src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript"
+src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  rel="stylesheet"
+/>
+
+<h1 class="display-4 ">Reply Message</h1>
+<div class="row mt-5">
+    <div class="col-6">
+        <div class="card mb-4 box-shadow shadow">
+		<div class="card-header">
+
+			<h4 class="my-0 font-weight-normal">View Message</h4>
+		</div>
+		<div class="card-body d-flex flex-column">
+                <div class="row">
+                    <p><b>From:</b> {{selected_message.get_email()}}</p>
+                </div>
+                <div class="row">
+                    <p><b>TO:</b> onesalonsg05@gmail.com</p>
+                </div>
+                <hr style="background-color: gray;" class="w-100">
+                <div class="row">
+                    <p><b>Subject:</b> {{selected_message.get_subject()}}</p>
+                </div>
+                <hr style="background-color: gray;" class="w-100">
+                <div class="row">
+                    <textarea readonly name="" id="" cols="30" rows="8" style="outline:none; border: none;">
+{{selected_message.get_body()}}
+                    </textarea>
+                </div>
+		</div>
+	</div>
+    </div>
+    <div class="col-6">
+        <div class="card mb-4 box-shadow shadow">
+		<div class="card-header">
+
+			<h4 class="my-0 font-weight-normal">Send Reply</h4>
+		</div>
+		<div class="card-body d-flex flex-column">
+            <form method="post">
+
+                <div class="row">
+                    <p><b>TO:</b> {{selected_message.get_email()}}</p>
+                </div>
+                <hr style="background-color: gray;" class="w-100">
+                <div class="row">
+                    {{form.subject(style="border: none; outline: none;", placeholder="Subject")}}
+                </div>
+                <hr style="background-color: gray;" class="w-100">
+                <div class="row">
+                   {{form.message(style="border: none; outline: none; min-height:247px;", placeholder="Message")}}
+                </div>
+                    <button class="btn btn-secondary mt-2" ><a href="{{url_for('account.staff_messages')}}" style="color:white; text-decoration: none;">Back</a></button>
+                    {{form.submit(class="mx-auto btn btn-primary mt-2", value='Send')}}
+            </form>
+		</div>
+	</div>
+    </div>
+</div>
+{% endblock content %}

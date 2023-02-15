@@ -1,18 +1,18 @@
 import secrets
 import shelve
-
 from flask import Blueprint, render_template, request, session, flash, redirect, url_for
 
+from models.message.message_classes import EmailMessage
+from models.message.message_functions import *
 from models.account.account_classes import Customer, Staff
 from models.account.account_forms import UpdateProfileForm, UpdateSecurityForm, DeleteAccountForm, ShippingAddressForm, \
-    AddNewAccountForm
+    AddNewAccountForm, AddMultipleAccounts, ContactUsForm
 from models.account.account_functions import save_image, delete_image
 from models.auth.auth_functions import customer_login_required, validate_staff_password, staff_login_required, \
     validate_birthday_
 from models.auth.auth_functions import get_customers, store_customer, delete_customer, account_to_dictionary_converter, \
     validate_customer_password, validate_number, validate_email, validate_username, is_valid_card_number, get_staff, \
-    store_staff, \
-    delete_staff
+    store_staff, delete_staff, add_mass_staff, add_mass_customer
 from models.auth.payment_classes import CreditCard
 from models.auth.payment_forms import ProfileCreditCardForm, DeleteCreditCardForm, MakeCardDefaultForm
 
@@ -591,9 +591,85 @@ def staff_delete():
                            update_security_form=update_security_form, delete_account_form=delete_account_form, )
 
 
+@account.route('/StaffMessages', methods=['POST', 'GET'])
+@staff_login_required
+def staff_messages():
+    unanswered_count = []
+    answered_count = []
+    form = ContactUsForm()
+    delete_account_form = DeleteAccountForm()
+    message_list = get_message('DB')
+    for message in message_list:
+        if message.get_status() == 'unanswered':
+            unanswered_count.append(message)
+        else:
+            answered_count.append(message)
+    if request.method == "POST" and form.submit.data:
+        return redirect(
+            url_for('send_email', email=form.email.data, subject=form.subject.data, message=form.message.data))
+    return render_template('account/staff_messages.html', message_list=message_list, form=form,
+                           unanswered_count=len(unanswered_count), answered_count=len(answered_count),
+                           delete_account_form=delete_account_form)
+
+
+@account.route('/ReplyMessage/<message_id>', methods=['POST', 'GET'])
+@staff_login_required
+def staff_reply_message(message_id):
+    selected_message = EmailMessage('ExampleEmail@gmail.com', 'ExampleSubject', "ExampleMessage")
+    form = ContactUsForm()
+    message_list = get_message('DB')
+    for message_object in message_list:
+        if message_object.get_id() == message_id:
+            selected_message = message_object
+    if request.method == "POST" and form.submit.data:
+        selected_message.set_status('answered')
+        store_message(selected_message, 'DB')
+        return redirect(
+            url_for('send_email', email=selected_message.get_email(), subject=form.subject.data,
+                    message=form.message.data))
+    return render_template('account/staff_reply_message.html', form=form, selected_message=selected_message)
+
+
+@account.route('/ViewMessage/<message_id>', methods=['POST', 'GET'])
+@staff_login_required
+def staff_view_message(message_id):
+    selected_message = EmailMessage('ExampleEmail@gmail.com', 'ExampleSubject', "ExampleMessage")
+    form = ContactUsForm()
+    message_list = get_message('DB')
+    for message_object in message_list:
+        if message_object.get_id() == message_id:
+            selected_message = message_object
+    return render_template('account/staff_view_message.html', form=form, selected_message=selected_message)
+
+
+@account.route('/DeleteMessage/<message_id>', methods=['POST', 'GET'])
+@staff_login_required
+def delete_messages(message_id):
+    unanswered_count = []
+    answered_count = []
+    form = ContactUsForm()
+    delete_account_form = DeleteAccountForm()
+    message_list = get_message('DB')
+    for message_object in message_list:
+        if message_object.get_status() == 'unanswered':
+            unanswered_count.append(message_object)
+        else:
+            answered_count.append(message_object)
+    if request.method == "POST" and delete_account_form.submit3.data:
+        for i in message_list:
+            if i.get_id() == message_id:
+                delete_message(i, 'DB')
+                flash('Message deleted', category='success')
+                return redirect(url_for('account.staff_messages'))
+    return render_template('account/staff_messages.html', message_list=message_list, form=form,
+                           unanswered_count=len(unanswered_count), answered_count=len(answered_count),
+                           delete_account_form=delete_account_form)
+
+
 @account.route('/AccountManagement', methods=['POST', 'GET'])
 @staff_login_required
 def staff_account_management():
+    add_multiple_accounts_form = AddMultipleAccounts()
     delete_account_form = DeleteAccountForm()
     customer_list = []
     staff_list = []
@@ -609,6 +685,30 @@ def staff_account_management():
     staff_count = len(staff_list)
     customer_count = len(customer_list)
     deactivated_count = (len(get_staff('DB')) + len(get_customers('DB'))) - account_count
+
+    if request.method == "POST" and add_multiple_accounts_form.submit9.data:
+        if add_multiple_accounts_form.account_type.data == 'staff':
+            username = 'staff' + str(add_multiple_accounts_form.start_id)
+            email = 'staff' + str(add_multiple_accounts_form.start_id.data) + "@gmail.com"
+            if validate_username(username, "DB") and validate_email(email, "DB"):
+                add_mass_staff(add_multiple_accounts_form.number_of_accounts.data,
+                               add_multiple_accounts_form.start_id.data,
+                               "DB")
+                flash('Accounts have been successfully added', category='success')
+                return redirect(url_for('account.staff_account_management'))
+            else:
+                flash('Account username/email have already been taken', category='danger')
+        if add_multiple_accounts_form.account_type.data == 'customer':
+            username = 'customer' + str(add_multiple_accounts_form.start_id)
+            email = 'customer' + str(add_multiple_accounts_form.start_id.data) + "@gmail.com"
+            if validate_username(username, "DB") and validate_email(email, "DB"):
+                add_mass_customer(add_multiple_accounts_form.number_of_accounts.data,
+                                  add_multiple_accounts_form.start_id.data, "DB")
+                flash('Accounts have been successfully added', category='success')
+                return redirect(url_for('account.staff_account_management'))
+            else:
+                flash('Account username/email have already been taken', category='danger')
+
     if request.method == "GET":
         customer_list = []
         staff_list = []
@@ -626,7 +726,8 @@ def staff_account_management():
 
     return render_template('account/account_management.html', account_list=account_list,
                            delete_account_form=delete_account_form, account_count=account_count,
-                           customer_count=customer_count, staff_count=staff_count, deactivated_count=deactivated_count)
+                           customer_count=customer_count, staff_count=staff_count, deactivated_count=deactivated_count,
+                           add_multiple_accounts_form=add_multiple_accounts_form)
 
 
 @account.route('/StaffAccountDelete/<user_id>', methods=['POST', 'GET'])
@@ -664,7 +765,7 @@ def staff_add_account():
             error_messages['email'] = "The email is already taken"
         if add_account_form.phone_number.data:
             if str(add_account_form.phone_number.data).isdigit() and validate_number(
-                    add_account_form.phone_number.data, 'DB',):
+                    add_account_form.phone_number.data, 'DB', ):
                 pass
             else:
                 error_messages['number'] = "Invalid phone number"
